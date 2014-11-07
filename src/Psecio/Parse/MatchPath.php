@@ -37,9 +37,36 @@ class MatchPath
         return $this->iterate($node, $parts, $file, $path);
     }
 
+    public function formatConfig($parts)
+    {
+        $params = array();
+        $config = explode(':', $parts);
+        preg_match_all('/\[(.+)\]/', $config[1], $matches);
+
+        if (!empty($matches[0])) {
+            $config[1] = str_replace($matches[0][0], '', $config[1]);
+            $options = explode('&', $matches[1][0]);
+
+            foreach ($options as $option) {
+                $p = explode('=', $option);
+                $params[$p[0]] = $p[1];
+            }
+        }
+
+        $config = array(
+            'prefix' => $config[0],
+            'type' => $config[1],
+            'params' => $params
+        );
+
+        return $config;
+    }
+
     public function iterate($node, $parts, &$file, $path)
     {
-        $config = explode(':', $parts[0]);
+        $config = $this->formatConfig($parts[0]);
+        // print_r($config);
+
         $m = $this->isMatch($node, $config);
 
         if ($m === true) {
@@ -51,7 +78,6 @@ class MatchPath
             $stmts = $node->stmts;
             if (!empty($stmts)) {
                 foreach ($stmts as $stmt) {
-                    if ($found == true) { continue; }
                     $found = $this->iterate($stmt, $parts, $file, $path);
                 }
             } else {
@@ -66,17 +92,31 @@ class MatchPath
 
     public function isMatch($node, $config)
     {
-        if (method_exists($this, $config[0]) === true) {
-            return $this->$config[0]($node, $config);
+        if (method_exists($this, $config['prefix']) === true) {
+            return $this->$config['prefix']($node, $config);
         }
         return false;
     }
 
     public function type($node, $data)
     {
-        $parts = explode('.', $data[1]);
+        $parts = explode('.', $data['type']);
         $matchClass = 'PhpParser\\Node\\'.implode('\\', $parts);
 
         return (stristr(get_class($node), $matchClass) !== false);
+    }
+
+    public function func($node, $data)
+    {
+        $matchClass = 'PhpParser\\Node\\Expr\\FuncCall';
+
+        if (stristr(get_class($node), $matchClass) !== false && (string)$node->name !== $data['type']) {
+            return false;
+        }
+
+        if (isset($data['params']['args']) && count($node->args) !== (integer)$data['params']['args']) {
+            return false;
+        }
+        return true;
     }
 }
