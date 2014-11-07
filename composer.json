@@ -1,0 +1,10 @@
+{
+    "require": {
+        "nikic/php-parser": "1.0.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "Psecio\\Parse": "vendor/psecio/parse/src"
+        }
+    }
+}
