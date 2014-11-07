@@ -46,7 +46,11 @@ class Scanner
 
                 try {
                     $stmts = $this->parser->parse($file->getContents());
-                    $this->recurse($stmts, $match, $file);
+                    // $this->recurse($stmts, $match, $file);
+
+                    foreach ($stmts as $node) {
+                        $match->evaluate($node, $match->getPath(), $file);
+                    }
 
                 } catch (\PhpParser\Error $e) {
                     echo 'Parse Error: '.$e->getMessage();
@@ -56,17 +60,5 @@ class Scanner
         }
 
         return $files;
-    }
-
-    public function recurse($nodes, $match, &$file)
-    {
-        foreach ($nodes as $node)
-        {
-            $result = $match->evaluate($node, $match->getPath(), $file);
-
-            if (!empty($node->stmts) && $result == false) {
-                $this->recurse($node->stmts, $match, $file);
-            }
-        }
     }
 }

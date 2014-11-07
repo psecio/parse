@@ -34,7 +34,8 @@ class MatchPath
         }
         $path = $this->getPath();
         $parts = explode('>', $path);
-        return $this->iterate($node, $parts, $file, $path);
+        $lvl = 0;
+        return $this->iterate($node, $parts, $file, $path, $lvl);
     }
 
     public function formatConfig($parts)
@@ -62,11 +63,9 @@ class MatchPath
         return $config;
     }
 
-    public function iterate($node, $parts, &$file, $path)
+    public function iterate($node, $parts, &$file, $path, $lvl)
     {
         $config = $this->formatConfig($parts[0]);
-        // print_r($config);
-
         $m = $this->isMatch($node, $config);
 
         if ($m === true) {
@@ -74,19 +73,16 @@ class MatchPath
         }
 
         if (count($parts) > 0) {
-            $found = false;
             $stmts = $node->stmts;
             if (!empty($stmts)) {
                 foreach ($stmts as $stmt) {
-                    $found = $this->iterate($stmt, $parts, $file, $path);
+                    $this->iterate($stmt, $parts, $file, $path, $lvl);
                 }
             } else {
                 return $m;
             }
-            return $found;
-        } else {
+        } elseif ($m === true) {
             $file->addMatch($node, $path);
-            return $m;
         }
     }
 
