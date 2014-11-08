@@ -33,7 +33,7 @@ class MatchPath
             $this->setPath($path);
         }
         $path = $this->getPath();
-        $parts = explode('>', $path);
+        $parts = explode('->', $path);
         $lvl = 0;
         return $this->iterate($node, $parts, $file, $path, $lvl);
     }
@@ -49,8 +49,13 @@ class MatchPath
             $options = explode('&', $matches[1][0]);
 
             foreach ($options as $option) {
-                $p = explode('=', $option);
-                $params[$p[0]] = $p[1];
+                preg_match('/(.+?)([=<>!]+)(.+?)/', $option, $matches);
+                $param = array(
+                    'type' => $matches[1],
+                    'operation' => $matches[2],
+                    'value' => $matches[3]
+                );
+                $params[] = $param;
             }
         }
 
@@ -82,6 +87,7 @@ class MatchPath
                 return $m;
             }
         } elseif ($m === true) {
+            echo '...adding: '.get_class($node)."\n";
             $file->addMatch($node, $path);
         }
     }
@@ -106,12 +112,42 @@ class MatchPath
     {
         $matchClass = 'PhpParser\\Node\\Expr\\FuncCall';
 
-        if (stristr(get_class($node), $matchClass) !== false && (string)$node->name !== $data['type']) {
+        // If it's not a function...
+        if (stristr(get_class($node), $matchClass) == false) {
             return false;
         }
 
-        if (isset($data['params']['args']) && count($node->args) !== (integer)$data['params']['args']) {
+        // Be sure it's named correctly
+        if ((string)$node->name !== $data['type']) {
             return false;
+        }
+
+        // Check the number of arguments
+        $args = null;
+        foreach ($data['params'] as $param) {
+            if ($param['type'] == 'args') {
+                $args = $param;
+            }
+        }
+        if ($args !== null) {
+            $funcArgs = count($node->args);
+            switch($args['operation']) {
+                case '=':
+                    if ($funcArgs !== (integer)$args['value']) {
+                        return false;
+                    }
+                    break;
+                case '>':
+                    if ($funcArgs <= (integer)$args['value']) {
+                        return false;
+                    }
+                    break;
+                case '<':
+                    if ($funcArgs >= (integer)$args['value']) {
+                        return false;
+                    }
+                    break;
+            }
         }
         return true;
     }
