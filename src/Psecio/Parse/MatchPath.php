@@ -50,11 +50,18 @@ class MatchPath
 
             foreach ($options as $option) {
                 preg_match('/(.+?)([=<>!]+)(.+?)/', $option, $matches);
+
                 $param = array(
                     'type' => $matches[1],
                     'operation' => $matches[2],
                     'value' => $matches[3]
                 );
+
+                // See if we have options on the "type"
+                if (preg_match('/\((.+)\)/', $matches[1], $opt) > 0) {
+                    $param['options'] = array_slice($opt, 1);
+                }
+
                 $params[] = $param;
             }
         }
