@@ -4,9 +4,22 @@ namespace Psecio\Parse;
 
 class Scanner
 {
+    /**
+     * Target (directory/file) for evaluation
+     * @var string
+     */
     private $target;
+
+    /**
+     * php-parser instance
+     * @var \PhpParser\Parser
+     */
     private $parser;
 
+    /**
+     * Init the object and set target (if given) and create parser
+     * @param [type] $target [description]
+     */
     public function __construct($target = null)
     {
         if ($target !== null) {
@@ -15,15 +28,32 @@ class Scanner
         $this->parser = new \PhpParser\Parser(new \PhpParser\Lexer\Emulative);
     }
 
+    /**
+     * Set the target for evaluation
+     *
+     * @param string $target File/path for evaluation
+     */
     public function setTarget($target)
     {
         $this->target = $target;
     }
+
+    /**
+     * Get the current evaluation target
+     *
+     * @return string Target file/directory path
+     */
     public function getTarget()
     {
         return $this->target;
     }
 
+    /**
+     * Execute the scan
+     *
+     * @param array $matches Set of "paths" to evaluate and match
+     * @return array Set of files with any matches attached
+     */
     public function execute(array $matches)
     {
         $target = $this->getTarget();
