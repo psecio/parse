@@ -40,6 +40,8 @@ class Scanner
 
             $file = new \Psecio\Parse\File($pathname);
 
+            echo "----- Scanning: ".$pathname." ----------\n";
+
             foreach ($matches as $matchPath) {
                 $match = new \Psecio\Parse\MatchPath();
                 $match->setPath($matchPath);
