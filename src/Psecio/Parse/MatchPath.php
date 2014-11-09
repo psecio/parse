@@ -86,25 +86,42 @@ class MatchPath
         preg_match_all('/\[(.+)\]/', $config[1], $matches);
 
         if (!empty($matches[0])) {
-            $config[1] = str_replace($matches[0][0], '', $config[1]);
+            // We have options to parse!
             $options = explode('&', $matches[1][0]);
 
-            foreach ($options as $option) {
-                preg_match('/(.+?)([=<>!]+)(.+?)/', $option, $matches);
-
-                $param = array(
-                    'type' => $matches[1],
-                    'operation' => $matches[2],
-                    'value' => $matches[3]
+            foreach ($options as $opt) {
+                $tmp = array(
+                    'original' => $opt,
+                    'options' => array()
                 );
+                preg_match('/(.+?)\{(.+?)\}/', $opt, $optionMatches);
 
-                // See if we have options on the "type"
-                if (preg_match('/\((.+)\)/', $matches[1], $opt) > 0) {
-                    $param['options'] = array_slice($opt, 1);
+                $tmp['type'] = $optionMatches[1];
+                $parts = explode(',', $optionMatches[2]);
+
+                foreach ($parts as $part) {
+                    preg_match('/(.*?)([=<>])(.+)/', $part, $sections);
+                    $sections[1] = (empty($sections[1])) ? 'eval' : $sections[1];
+
+                    // See if we need to split up the value
+                    if (preg_match('/\((.+?)\)(.+)/', $sections[3], $valueMatches) == 1){
+                        $sections[3] = array(
+                            'type' => $valueMatches[1],
+                            'value' => $valueMatches[2]
+                        );
+                    }
+
+                    $sections = array(
+                        'param' => $sections[1],
+                        'operation' => $sections[2],
+                        'value' => $sections[3]
+                    );
+                    $tmp['options'][] = $sections;
                 }
-
-                $params[] = $param;
+                $params[] = $tmp;
             }
+
+            $config[1] = str_replace($matches[0][0], '', $config[1]);
         }
 
         $config = array(
@@ -112,7 +129,6 @@ class MatchPath
             'type' => $config[1],
             'params' => $params
         );
-
         return $config;
     }
 

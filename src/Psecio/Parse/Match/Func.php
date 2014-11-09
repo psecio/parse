@@ -18,33 +18,23 @@ class Func extends \Psecio\Parse\Match
             return false;
         }
 
-        // Check the number of arguments
-        $args = null;
-        foreach ($config['params'] as $param) {
-            if ($param['type'] == 'args') {
-                $args = $param;
+        // Do we have other checks to evaluate?
+        if (isset($config['params']) && !empty($config['params'])) {
+            foreach ($config['params'] as $param) {
+                $paramNs = '\\Psecio\\Parse\\Param\\'.ucwords(strtolower($param['type']));
+                if (!class_exists($paramNs)) {
+                    throw new \InvalidArgumentException('Count not create object: '.$paramNs);
+                }
+                $arg = new $paramNs($config['params'], $node);
+                $result = $arg->evaluate();
+
+                // If any of our checks fail, return false
+                if ($result == false) {
+                    return false;
+                }
             }
         }
-        if ($args !== null) {
-            $funcArgs = count($node->args);
-            switch($args['operation']) {
-                case '=':
-                    if ($funcArgs !== (integer)$args['value']) {
-                        return false;
-                    }
-                    break;
-                case '>':
-                    if ($funcArgs <= (integer)$args['value']) {
-                        return false;
-                    }
-                    break;
-                case '<':
-                    if ($funcArgs >= (integer)$args['value']) {
-                        return false;
-                    }
-                    break;
-            }
-        }
+
         return true;
 	}
 }
