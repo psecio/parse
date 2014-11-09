@@ -158,77 +158,11 @@ class MatchPath
      */
     public function isMatch($node, $config)
     {
-        if (method_exists($this, $config['prefix']) === true) {
-            return $this->$config['prefix']($node, $config);
+        $matchClass = 'Psecio\\Parse\\Match\\'.ucwords(strtolower($config['prefix']));
+        if (class_exists($matchClass)) {
+            $match = new $matchClass();
+            return $match->execute($node, $config);
         }
         return false;
-    }
-
-    /**
-     * Check the "type" of the node (node class)
-     *
-     * @param object $node Node instance
-     * @param array $data Configuration data
-     * @return boolean Pass/fail of evaluation
-     */
-    public function type($node, $data)
-    {
-        $parts = explode('.', $data['type']);
-        $matchClass = 'PhpParser\\Node\\'.implode('\\', $parts);
-
-        return (stristr(get_class($node), $matchClass) !== false);
-    }
-
-    /**
-     * Check the function information on node:
-     *     - Name
-     *     - Argument evaluation
-     *
-     * @param object $node Node instance
-     * @param array $data Configuration data
-     * @return boolean Pass/fail of function evaluation
-     */
-    public function func($node, $data)
-    {
-        $matchClass = 'PhpParser\\Node\\Expr\\FuncCall';
-
-        // If it's not a function...
-        if (stristr(get_class($node), $matchClass) == false) {
-            return false;
-        }
-
-        // Be sure it's named correctly
-        if ((string)$node->name !== $data['type']) {
-            return false;
-        }
-
-        // Check the number of arguments
-        $args = null;
-        foreach ($data['params'] as $param) {
-            if ($param['type'] == 'args') {
-                $args = $param;
-            }
-        }
-        if ($args !== null) {
-            $funcArgs = count($node->args);
-            switch($args['operation']) {
-                case '=':
-                    if ($funcArgs !== (integer)$args['value']) {
-                        return false;
-                    }
-                    break;
-                case '>':
-                    if ($funcArgs <= (integer)$args['value']) {
-                        return false;
-                    }
-                    break;
-                case '<':
-                    if ($funcArgs >= (integer)$args['value']) {
-                        return false;
-                    }
-                    break;
-            }
-        }
-        return true;
     }
 }
