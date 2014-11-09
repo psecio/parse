@@ -26,7 +26,14 @@ $matches = array(
     'type:expr.eval'
 
     // Ensure that if "extract" is called, it has two params
-    'func:extract[args=2]'
+    // 	and find ones that don't
+    'func:extract[argcount{<2}]'
+
+    // Or we can get a lot more complex:
+    // 	- ensure that argument one is set (required=true)
+    // 	- ensure that argument two is set (required=true)
+    // 	- ensure that argument two is equal to 0 when compared as integers
+    'func:extract[arg{location=1,required=true}&arg{location=2,required=true,=(integer)0}]'
 );
 
 $results = $scan->execute($matches);
