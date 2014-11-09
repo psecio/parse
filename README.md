@@ -45,6 +45,19 @@ For example: since using `eval` is a terrible idea, any `File` in the results th
 should be flagged as having a vulnerability. From here we can get the file that the issue is in and the line number(s)
 off of the `Node` object to narrow down the location.
 
+### Output
+
+Currently there's only one method for output included with the tool - XML. You can either use the result from the `execute` method ont he `Scanner` directly, or you can pass the output to the `Output` handler:
+
+```php
+<?php
+$results = $scan->execute($matches);
+
+$xml = new \Psecio\Parse\Output\Xml();
+$output = $xml->generate($results);
+?>
+```
+
 ### TODO
 
 1. Create the list of security checks
