@@ -6,14 +6,25 @@ set_time_limit(0);
 
 (@include_once __DIR__ . '/../vendor/autoload.php') || @include_once __DIR__ . '/../../../autoload.php';
 
-$target = '';
-$scanner = new \Psecio\Parse\Scanner($target);
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
-$matches = array(
-	'type:expr.eval'
-);
+$output = new ConsoleOutput();
+$app = new Application('Parse Scan', '1.0');
+$app->addCommands(array(
+	new \Psecio\Parse\Command\ScanCommand(),
+));
+$app->setCatchExceptions(false);
 
-$results = $scan->execute($matches);
+try {
+    $app->run();
+} catch (\Exception $e) {
+    $indent = str_repeat(' ', 3);
+    $output->writeLn(
+        $indent."<fg=white;bg=red;options=bold>ERROR:".str_repeat(' ', 20)."</fg=white;bg=red;options=bold>\n"
+        .$indent."<fg=red>[".$e->getCode()."] ".$e->getMessage()."</fg=red>"
+    );
+    exit(1);
+}
 
-print_r($results);
 ?>
