@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+date_default_timezone_set('UTC');
+
+set_time_limit(0);
+
+(@include_once __DIR__ . '/../vendor/autoload.php') || @include_once __DIR__ . '/../../../autoload.php';
+
+$target = '';
+$scanner = new \Psecio\Parse\Scanner($target);
+
+$matches = array(
+	'type:expr.eval'
+);
+
+$results = $scan->execute($matches);
+
+print_r($results);
+?>
