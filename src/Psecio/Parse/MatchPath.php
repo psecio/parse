@@ -160,7 +160,6 @@ class MatchPath
                 return $m;
             }
         } elseif ($m === true) {
-            echo '...adding: '.get_class($node)."\n";
             $file->addMatch($node, $path);
         }
     }
