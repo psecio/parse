@@ -14,7 +14,7 @@
     ],
     "require":{
 		"nikic/php-parser": "1.0.2",
-        "aura/cli": "2.0.1"
+        "symfony/console": "2.5.6"
     },
     "require-dev": {
         "phpunit/phpunit": "4.2.*"
