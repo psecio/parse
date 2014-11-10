@@ -70,16 +70,12 @@ class Scanner
 
             $file = new \Psecio\Parse\File($pathname);
 
-            echo "----- Scanning: ".$pathname." ----------\n";
-
             foreach ($matches as $matchPath) {
                 $match = new \Psecio\Parse\MatchPath();
                 $match->setPath($matchPath);
 
                 try {
                     $stmts = $this->parser->parse($file->getContents());
-                    // $this->recurse($stmts, $match, $file);
-
                     foreach ($stmts as $node) {
                         $match->evaluate($node, $match->getPath(), $file);
                     }
