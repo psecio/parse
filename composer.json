@@ -1,10 +1,33 @@
 {
-    "require": {
-        "nikic/php-parser": "1.0.2"
+    "name":"psecio/parse",
+    "type":"library",
+    "description":"A PHP Security Scanner",
+    "keywords":["security","scanner","static"],
+    "homepage":"https://github.com/psecio/parse.git",
+    "license":"MIT",
+    "authors":[
+        {
+            "name":"Chris Cornutt",
+            "email":"ccornutt@phpdeveloper.org",
+            "homepage":"http://www.phpdeveloper.org/"
+        }
+    ],
+    "require":{
+		"nikic/php-parser": "1.0.2",
+        "aura/cli": "2.0.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.2.*"
     },
     "autoload": {
         "psr-0": {
-            "Psecio\\Parse": "vendor/psecio/parse/src"
+            "Psecio": "src/"
         }
-    }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "bin": [
+        "bin/parse"
+    ]
 }
