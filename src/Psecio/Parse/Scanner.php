@@ -97,6 +97,7 @@ class Scanner
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
+print_r($stmts);
 
                 $stmts = $traverser->traverse($stmts);
                 $file->setMatches($visitor->getResults());
