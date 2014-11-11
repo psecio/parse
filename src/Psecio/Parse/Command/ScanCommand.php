@@ -24,7 +24,7 @@ class ScanCommand extends Command
     }
 
     /**
-     * Execute the "fix" command
+     * Execute the "scan" command
      *
      * @param  InputInterface $input Input object
      * @param  OutputInterface $output Output object
@@ -33,14 +33,6 @@ class ScanCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		$matches = array();
-		$matchFile = realpath(__DIR__.'/../checks.json');
-
-		if (is_file($matchFile)) {
-			$match = json_decode(file_get_contents($matchFile));
-			$matches = $match->checks;
-		}
-
 		$output = $input->getOption('output');
 		if ($output == null) {
 			$output = 'xml';
@@ -52,7 +44,7 @@ class ScanCommand extends Command
 		$debug = $input->getOption('debug');
 
 		$scanner = new \Psecio\Parse\Scanner($target);
-		$results = $scanner->execute($matches, $debug);
+		$results = $scanner->execute($debug);
 
 		if ($debug !== false && $debug !== null) {
 			// print_r($results);

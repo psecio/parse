@@ -56,11 +56,10 @@ class Scanner
     /**
      * Execute the scan
      *
-     * @param array $matches Set of "paths" to evaluate and match
      * @param boolean $debug Show debug information
      * @return array Set of files with any matches attached
      */
-    public function execute(array $matches, $debug = false)
+    public function execute($debug = false)
     {
         $target = $this->getTarget();
 
@@ -103,6 +102,7 @@ class Scanner
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
+// print_r($stmts);
                 $stmts = $traverser->traverse($stmts);
 
                 $results = $visitor->getResults();
