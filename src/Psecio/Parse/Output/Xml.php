@@ -26,11 +26,11 @@ class Xml extends \Psecio\Parse\Output
 
 			foreach ($file->getMatches() as $match) {
 				$m = $xml->createElement('match');
-				$m->setAttribute('path', $match['path']);
+				$m->setAttribute('test', get_class($match['test']));
 
 				$node = $match['node'];
 				$n = $xml->createElement('node');
-				$n->setAttribute('type', get_class($node));
+				$n->setAttribute('type', get_class($match['node']));
 
 				$matches->appendChild($m);
 			}
