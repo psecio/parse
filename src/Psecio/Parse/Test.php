@@ -14,5 +14,5 @@ abstract class Test
 	{
 		return $this->logger;
 	}
-	abstract public function evaluate($node);
+	abstract public function evaluate($node, $file = null);
 }
