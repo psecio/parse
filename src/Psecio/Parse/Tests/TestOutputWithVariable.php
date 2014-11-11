@@ -26,5 +26,7 @@ class TestOutputWithVariable extends \Psecio\Parse\Test
 				return false;
 			}
 		}
+
+		return true;
 	}
 }

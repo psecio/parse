@@ -23,8 +23,7 @@ class TestExtractNotOverwrite extends \Psecio\Parse\Test
 			if ($node->args[1]->value->name->parts[0] === 'EXTR_OVERWRITE') {
 				return false;
 			}
-
-			return true;
 		}
+		return true;
 	}
 }

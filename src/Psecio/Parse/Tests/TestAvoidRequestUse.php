@@ -12,5 +12,6 @@ class TestAvoidRequestUse extends \Psecio\Parse\Test
 		if ($node instanceof \PhpParser\Node\Expr\Variable && $node->name == '_REQUEST') {
 			return false;
 		}
+		return true;
 	}
 }
