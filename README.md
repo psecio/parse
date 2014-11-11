@@ -44,6 +44,7 @@ Here's the current list of tests being executed:
 - Avoid use of `$_REQUEST` (know where your data is coming from)
 - Don't use `mysql_real_escape_string`
 - Avoiding use of `import_request_variables`
+- Avoid use of `$GLOBALS`
 
 Plenty more to come... (yup, `@todo`)
 
