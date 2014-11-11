@@ -46,6 +46,7 @@ Here's the current list of tests being executed:
 - Avoiding use of `import_request_variables`
 - Avoid use of `$GLOBALS`
 - Ensure the use of type checking validating against booleans (`===`)
+- Ensure that the `/e` modifier isn't used in regular expressions (execute)
 
 Plenty more to come... (yup, `@todo`)
 
