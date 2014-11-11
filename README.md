@@ -36,6 +36,8 @@ Here's the current list of tests being executed:
 - Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
 - Checking output methods (echo, print, printf, print_r, vprintf, sprintf) that use variables in their options
 - Ensuring you're not using echo with file_get_contents
+- Testing for the system execution functions and shell exec (backticks)
+- Use of readfile, readlink and readgzfile
 
 Plenty more to come... (yup, `@todo`)
 
