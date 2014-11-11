@@ -98,4 +98,9 @@ class File
     {
         return $this->matches;
     }
+
+    public function setMatches(array $matches)
+    {
+        $this->matches[] = $matches;
+    }
 }
