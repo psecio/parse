@@ -2,10 +2,14 @@
 
 namespace Psecio\Parse\Tests;
 
+/**
+ * Don't use eval. Ever.
+ */
 class TestEval extends \Psecio\Parse\Test
 {
 	public function evaluate($node)
 	{
-		return (get_class($node) == "PhpParser\\Node\\Expr\\Eval_");
+		$result = (get_class($node) !== "PhpParser\\Node\\Expr\\Eval_");
+		return $result;
 	}
 }
