@@ -83,7 +83,10 @@ class Scanner
         $tests = new \Psecio\Parse\TestCollection($testSet, $logger);
 
         foreach ($iterator as $info) {
-            $visitor = new \Psecio\Parse\NodeVisitor($tests);
+            $visitor = new \Psecio\Parse\NodeVisitor($tests, $logger);
+            $traverser = new \PhpParser\NodeTraverser;
+            $traverser->addVisitor($visitor);
+
             $pathname = $info->getPathname();
             if (strtolower(substr($pathname, -3)) !== 'php') {
                 continue;
@@ -94,9 +97,6 @@ class Scanner
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
-
-                $traverser = new \PhpParser\NodeTraverser;
-                $traverser->addVisitor($visitor);
                 $stmts = $traverser->traverse($stmts);
 
 echo '----> path: '.$pathname."\n";
