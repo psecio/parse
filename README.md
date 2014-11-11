@@ -40,9 +40,10 @@ Here's the current list of tests being executed:
 - Use of `readfile`, `readlink` and `readgzfile`
 - Using `parse_str` or `mb_parse_str` (writes values to the local scope)
 - Throws exception if a `.phps` file is found
-- Using session_regenerate_id either without a paramater or using false
-- Avoid use of $_REQUEST (know where your data is coming from)
-- Don't use mysql_real_escape_string
+- Using `session_regenerate_id` either without a paramater or using false
+- Avoid use of `$_REQUEST` (know where your data is coming from)
+- Don't use `mysql_real_escape_string`
+- Avoiding use of `import_request_variables`
 
 Plenty more to come... (yup, `@todo`)
 
