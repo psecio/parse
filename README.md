@@ -34,12 +34,13 @@ Here's the current list of tests being executed:
 - Avoid the use of logcial operators (ex. using `and` over `&&`)
 - Avoid the use of the `ereg*` functions (now deprecated)
 - Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
-- Checking output methods (echo, print, printf, print_r, vprintf, sprintf) that use variables in their options
-- Ensuring you're not using echo with file_get_contents
+- Checking output methods (`echo`, `print`, `printf`, `print_r`, `vprintf`, `sprintf`) that use variables in their options
+- Ensuring you're not using `echo` with `file_get_contents`
 - Testing for the system execution functions and shell exec (backticks)
-- Use of readfile, readlink and readgzfile
-- Using parse_str or mb_parse_str (writes values to the local scope)
-- Throws exception if a .phps file is found
+- Use of `readfile`, `readlink` and `readgzfile`
+- Using `parse_str` or `mb_parse_str` (writes values to the local scope)
+- Throws exception if a `.phps` file is found
+- Using session_regenerate_id either without a paramater or using false
 
 Plenty more to come... (yup, `@todo`)
 
