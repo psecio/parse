@@ -87,7 +87,7 @@ class Scanner
             $pathname = $info->getPathname();
 
             // Having .phps is a really bad thing....throw an exception if it's found
-            if (strtolower(substr($pathname, -4)) !== 'phps') {
+            if (strtolower(substr($pathname, -4)) == 'phps') {
                 throw new \Exception('You have a .phps file - REMOVE NOW: '.$pathname);
             }
             if (strtolower(substr($pathname, -3)) !== 'php') {
