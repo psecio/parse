@@ -85,6 +85,11 @@ class Scanner
 
         foreach ($iterator as $info) {
             $pathname = $info->getPathname();
+
+            // Having .phps is a really bad thing....throw an exception if it's found
+            if (strtolower(substr($pathname, -4)) !== 'phps') {
+                throw new \Exception('You have a .phps file - REMOVE NOW: '.$pathname);
+            }
             if (strtolower(substr($pathname, -3)) !== 'php') {
                 continue;
             }
@@ -97,7 +102,6 @@ class Scanner
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
-print_r($stmts);
 
                 $stmts = $traverser->traverse($stmts);
                 $file->setMatches($visitor->getResults());
