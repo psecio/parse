@@ -26,56 +26,20 @@ The `target` parameter is required as it tells the `parse` tool where to start.
 
 ### The Details:
 
-If you're interested in how the matching happens in the background, here's an example of a few different
-rule formats:
+Here's the current list of tests being executed:
 
-```php
-<?php
+- Avoid magic constants `__DIR__` or `__FILE__`
+- Avoid the use of `eval()`
+- Avoid the use of `exit` or `die()`
+- Avoid the use of logcial operators (ex. using `and` over `&&`)
+- Avoid the use of the `ereg*` functions (now deprecated)
+- Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
 
-require_once 'vendor/autoload.php';
-
-$target = __DIR__.'/parsedir';
-
-$scan = new \Psecio\Parse\Scanner($target);
-
-// Give the "paths" to match against
-$matches = array(
-    // Find a class method(s) in a class under a namespace
-    'type:stmt.namespace->type:stmt.class->type:stmt.classMethod',
-
-    // Look for any eval calls
-    'type:expr.eval',
-
-    // Ensure that if "extract" is called, it has two params
-    // 	and find ones that don't
-    'func:extract[argcount{<2}]',
-
-    // Or we can get a lot more complex:
-    // 	- ensure that argument one is set (required=true)
-    // 	- ensure that argument two is set (required=true)
-    // 	- ensure that argument two is equal to 0 when compared as integers
-    'func:extract[arg{location=1,required=true}&arg{location=2,required=true,=(integer)0}]'
-);
-
-$results = $scan->execute($matches);
-
-echo "RESULTS:\n";
-print_r($results);
-
-?>
-```
-
-The basic idea here is to create a DSL that lets us locate patterns in the files. If the pattern is found (like an `eval`)
-expression, we have a problem. The matches will be attached to the `File` instances which are returned in the `$results`
-above.
-
-For example: since using `eval` is a terrible idea, any `File` in the results that has a match of node type `Expr\Eval`
-should be flagged as having a vulnerability. From here we can get the file that the issue is in and the line number(s)
-off of the `Node` object to narrow down the location.
+Plenty more to come... (yup, `@todo`)
 
 ### Output
 
-Currently there's only one method for output included with the tool - XML. You can either use the result from the `execute` method ont he `Scanner` directly, or you can pass the output to the `Output` handler:
+Currently there's only one method for output included with the tool - XML. You can either use the result from the `execute` method on the `Scanner` directly, or you can pass the output to the `Output` handler:
 
 ```php
 <?php
