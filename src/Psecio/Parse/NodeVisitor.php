@@ -7,11 +7,13 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 	private $tests = array();
 	private $results = array();
 	private $logger;
+	private $file;
 
-	public function __construct(\Psecio\Parse\TestCollection $tests, $logger)
+	public function __construct(\Psecio\Parse\TestCollection $tests, \Psecio\Parse\File $file, $logger)
 	{
 		$this->tests = $tests;
 		$this->logger = $logger;
+		$this->file = $file;
 	}
 
 	public function getResults()
@@ -27,10 +29,11 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 	public function enterNode(\PhpParser\Node $node)
 	{
 		foreach ($this->tests as $test) {
-			if ($test->evaluate($node) === false) {
-				$this->logger->addInfo('oops');
-
-				$this->addResult($node);
+			if ($test->evaluate($node, $this->file) === false) {
+				$this->addResult(array(
+					'test' => $test,
+					'node' => $node
+				));
 			}
 		}
 	}
