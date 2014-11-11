@@ -71,6 +71,10 @@ class Scanner
             $file = new \Psecio\Parse\File($pathname);
 
             foreach ($matches as $matchPath) {
+                if (is_object($matchPath)) {
+                    $matchPath = $matchPath->match;
+                }
+
                 $match = new \Psecio\Parse\MatchPath();
                 $match->setPath($matchPath);
 
