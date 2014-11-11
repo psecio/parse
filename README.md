@@ -34,6 +34,7 @@ Here's the current list of tests being executed:
 - Avoid the use of logcial operators (ex. using `and` over `&&`)
 - Avoid the use of the `ereg*` functions (now deprecated)
 - Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
+- Checking output methods (echo, print, printf, print_r, vprintf, sprintf) that use variables in their options
 
 Plenty more to come... (yup, `@todo`)
 
