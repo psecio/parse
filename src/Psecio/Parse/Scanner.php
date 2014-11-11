@@ -57,9 +57,10 @@ class Scanner
      * Execute the scan
      *
      * @param boolean $debug Show debug information
+     * @param array $testList List of tests to execute [optional]
      * @return array Set of files with any matches attached
      */
-    public function execute($debug = false)
+    public function execute($debug = false, array $testList = array())
     {
         $target = $this->getTarget();
 
@@ -74,6 +75,11 @@ class Scanner
         $testSet = array();
         foreach ($testIterator as $file) {
             if (!$file->isDot()) {
+                $basename = $file->getBasename('.php');
+                if (!empty($testList) && !in_array($basename, $testList)) {
+                    continue;
+                }
+
                 $testSet[] = array(
                     'path' => $file->getPathName(),
                     'name' => str_replace('.php', '', $file->getFileName())
@@ -84,7 +90,6 @@ class Scanner
 
         foreach ($iterator as $info) {
             $pathname = $info->getPathname();
-            $logger->addInfo('Scanning file: '.$pathname);
 
             // Having .phps is a really bad thing....throw an exception if it's found
             if (strtolower(substr($pathname, -4)) == 'phps') {
@@ -93,6 +98,9 @@ class Scanner
             if (strtolower(substr($pathname, -3)) !== 'php') {
                 continue;
             }
+echo 'file: '.$pathname."\n";
+
+            $logger->addInfo('Scanning file: '.$pathname);
 
             $file = new \Psecio\Parse\File($pathname);
             $visitor = new \Psecio\Parse\NodeVisitor($tests, $file, $logger);
