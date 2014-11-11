@@ -10,7 +10,7 @@ namespace Psecio\Parse\Tests;
  */
 class TestExtractNotOverwrite extends \Psecio\Parse\Test
 {
-	public function evaluate($node)
+	public function evaluate($node, $file = null)
 	{
 		if (get_class($node) == "PhpParser\\Node\\Expr\\FuncCall" && $node->name == 'extract') {
 
