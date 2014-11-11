@@ -76,6 +76,24 @@ class File
     }
 
     /**
+     * Pull out the given lines from the current file contents
+     *
+     * @param integer $startLine Start line
+     * @param integer $endLine End line [optional]
+     * @return array Set of matching lines
+     */
+    public function getLines($startLine, $endLine = null)
+    {
+        if ($endLine === null) {
+            $endLine = $startLine + 1;
+        }
+        $count = $endLine - $startLine;
+        $content = explode("\n", $this->getContents());
+
+        return array_slice($content, $startLine-1, $count);
+    }
+
+    /**
      * Add a node instance to match on file
      *
      * @param object $match Node instance
@@ -83,10 +101,7 @@ class File
      */
     public function addMatch($match, $path)
     {
-        $this->matches[] = array(
-            'path' => $path,
-            'node' => $match
-        );
+        $this->matches[] = $match;
     }
 
     /**
@@ -101,6 +116,6 @@ class File
 
     public function setMatches(array $matches)
     {
-        $this->matches[] = $matches;
+        $this->matches = $matches;
     }
 }
