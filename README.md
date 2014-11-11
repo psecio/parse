@@ -47,6 +47,7 @@ Here's the current list of tests being executed:
 - Avoid use of `$GLOBALS`
 - Ensure the use of type checking validating against booleans (`===`)
 - Ensure that the `/e` modifier isn't used in regular expressions (execute)
+- Using concatenation in `header()` calls
 
 Plenty more to come... (yup, `@todo`)
 
