@@ -38,6 +38,8 @@ Here's the current list of tests being executed:
 - Ensuring you're not using echo with file_get_contents
 - Testing for the system execution functions and shell exec (backticks)
 - Use of readfile, readlink and readgzfile
+- Using parse_str or mb_parse_str (writes values to the local scope)
+- Throws exception if a .phps file is found
 
 Plenty more to come... (yup, `@todo`)
 
