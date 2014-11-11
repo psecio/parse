@@ -45,6 +45,7 @@ Here's the current list of tests being executed:
 - Don't use `mysql_real_escape_string`
 - Avoiding use of `import_request_variables`
 - Avoid use of `$GLOBALS`
+- Ensure the use of type checking validating against booleans (`===`)
 
 Plenty more to come... (yup, `@todo`)
 
