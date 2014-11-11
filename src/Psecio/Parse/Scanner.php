@@ -2,6 +2,9 @@
 
 namespace Psecio\Parse;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class Scanner
 {
     /**
@@ -15,6 +18,8 @@ class Scanner
      * @var \PhpParser\Parser
      */
     private $parser;
+
+    private $logPath = '/tmp/parse-track.log';
 
     /**
      * Init the object and set target (if given) and create parser
@@ -62,7 +67,23 @@ class Scanner
         $iterator = new \RecursiveIteratorIterator($directory);
         $files = array();
 
+        $logger = new Logger('scanner');
+        $logger->pushHandler(new StreamHandler($this->logPath, Logger::WARNING));
+
+        $testIterator = new \DirectoryIterator(__DIR__.'/Tests');
+        $testSet = array();
+        foreach ($testIterator as $file) {
+            if (!$file->isDot()) {
+                $testSet[] = array(
+                    'path' => $file->getPathName(),
+                    'name' => str_replace('.php', '', $file->getFileName())
+                );
+            }
+        }
+        $tests = new \Psecio\Parse\TestCollection($testSet, $logger);
+
         foreach ($iterator as $info) {
+            $visitor = new \Psecio\Parse\NodeVisitor($tests);
             $pathname = $info->getPathname();
             if (strtolower(substr($pathname, -3)) !== 'php') {
                 continue;
@@ -70,24 +91,22 @@ class Scanner
 
             $file = new \Psecio\Parse\File($pathname);
 
-            foreach ($matches as $matchPath) {
-                if (is_object($matchPath)) {
-                    $matchPath = $matchPath->match;
-                }
+            // We need to recurse through the nodes and run our tests on each node
+            try {
+                $stmts = $this->parser->parse($file->getContents());
 
-                $match = new \Psecio\Parse\MatchPath();
-                $match->setPath($matchPath);
+                $traverser = new \PhpParser\NodeTraverser;
+                $traverser->addVisitor($visitor);
+                $stmts = $traverser->traverse($stmts);
 
-                try {
-                    $stmts = $this->parser->parse($file->getContents());
-                    foreach ($stmts as $node) {
-                        $match->evaluate($node, $match->getPath(), $file);
-                    }
+echo '----> path: '.$pathname."\n";
 
-                } catch (\PhpParser\Error $e) {
-                    echo 'Parse Error: '.$e->getMessage();
-                };
-            }
+                $file->setMatches($visitor->getResults());
+
+            } catch (\PhpParser\Error $e) {
+                echo 'Parse Error: '.$e->getMessage();
+            };
+
             $files[] = $file;
         }
 
