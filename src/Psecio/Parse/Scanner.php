@@ -69,7 +69,7 @@ class Scanner
         $files = array();
 
         $logger = new Logger('scanner');
-        $logger->pushHandler(new StreamHandler($this->logPath, Logger::WARNING));
+        $logger->pushHandler(new StreamHandler($this->logPath, Logger::INFO));
 
         $testIterator = new \DirectoryIterator(__DIR__.'/Tests');
         $testSet = array();
@@ -85,6 +85,7 @@ class Scanner
 
         foreach ($iterator as $info) {
             $pathname = $info->getPathname();
+            $logger->addInfo('Scanning file: '.$pathname);
 
             // Having .phps is a really bad thing....throw an exception if it's found
             if (strtolower(substr($pathname, -4)) == 'phps') {
@@ -102,9 +103,17 @@ class Scanner
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
-
                 $stmts = $traverser->traverse($stmts);
-                $file->setMatches($visitor->getResults());
+
+                $results = $visitor->getResults();
+                $file->setMatches($results);
+
+                if (count($results) > 0) {
+                    $logger->addInfo(
+                        'Matches found',
+                        array('path' => $pathname, 'count' => count($results))
+                    );
+                }
 
             } catch (\PhpParser\Error $e) {
                 echo 'Parse Error: '.$e->getMessage();
