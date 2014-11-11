@@ -52,10 +52,10 @@ class ScanCommand extends Command
 		$debug = $input->getOption('debug');
 
 		$scanner = new \Psecio\Parse\Scanner($target);
-		$results = $scanner->execute($matches);
+		$results = $scanner->execute($matches, $debug);
 
 		if ($debug !== false && $debug !== null) {
-			print_r($results);
+			// print_r($results);
 		}
 
 		$xml = new \Psecio\Parse\Output\Xml();
