@@ -18,7 +18,7 @@ class TestUseTypeCheckEqualsOnBoolean extends \Psecio\Parse\Test
 				$attrs = $node->getAttributes();
 				$lines = $file->getLines($attrs['startLine']);
 				if (strstr($lines[0], '===') === false) {
-					return false
+					return false;
 				}
 			}
 		}
