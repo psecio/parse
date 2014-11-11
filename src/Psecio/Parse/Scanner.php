@@ -57,9 +57,10 @@ class Scanner
      * Execute the scan
      *
      * @param array $matches Set of "paths" to evaluate and match
+     * @param boolean $debug Show debug information
      * @return array Set of files with any matches attached
      */
-    public function execute(array $matches)
+    public function execute(array $matches, $debug = false)
     {
         $target = $this->getTarget();
 
@@ -83,24 +84,21 @@ class Scanner
         $tests = new \Psecio\Parse\TestCollection($testSet, $logger);
 
         foreach ($iterator as $info) {
-            $visitor = new \Psecio\Parse\NodeVisitor($tests, $logger);
-            $traverser = new \PhpParser\NodeTraverser;
-            $traverser->addVisitor($visitor);
-
             $pathname = $info->getPathname();
             if (strtolower(substr($pathname, -3)) !== 'php') {
                 continue;
             }
 
             $file = new \Psecio\Parse\File($pathname);
+            $visitor = new \Psecio\Parse\NodeVisitor($tests, $file, $logger);
+            $traverser = new \PhpParser\NodeTraverser;
+            $traverser->addVisitor($visitor);
 
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
+
                 $stmts = $traverser->traverse($stmts);
-
-echo '----> path: '.$pathname."\n";
-
                 $file->setMatches($visitor->getResults());
 
             } catch (\PhpParser\Error $e) {
