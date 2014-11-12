@@ -69,6 +69,9 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 	 */
 	public function enterNode(\PhpParser\Node $node)
 	{
+		// Make a node object with helpers
+		$node = new \Psecio\Parse\Node($node);
+
 		foreach ($this->tests as $test) {
 			if ($test->evaluate($node, $this->file) === false) {
 				$this->addResult(array(
