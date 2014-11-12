@@ -94,17 +94,6 @@ class File
     }
 
     /**
-     * Add a node instance to match on file
-     *
-     * @param object $match Node instance
-     * @param string $path Path (DSL) matched against
-     */
-    public function addMatch($match, $path)
-    {
-        $this->matches[] = $match;
-    }
-
-    /**
      * Get the full list of matches on File instance
      *
      * @return array Matches set
