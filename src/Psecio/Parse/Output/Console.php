@@ -19,11 +19,11 @@ class Console extends \Psecio\Parse\Output
 
 			$ct = 1;
 			foreach ($file->getMatches() as $match) {
-				// print_r($match['node']);
-				$attrs = $match['node']->getAttributes(); //print_r($attrs);
+				$node = $match['node']->getNode();
+				$attrs = $node->getAttributes();
 
 				echo '# '.$ct.' | '
-					.get_class($match['node'])." | "
+					.get_class($node)." | "
 					.trim(implode("\n",$file->getLines($attrs['startLine'])))
 					."\n";
 
