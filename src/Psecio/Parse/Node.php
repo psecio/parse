@@ -64,8 +64,15 @@ class Node
 		if ($this->node instanceof \PhpParser\Node\Expr\FuncCall) {
 			$result = true;
 		}
-		if ($name !== null) {
-			if ((string)$this->node->name !== $name) {
+		if ($result == true && $name !== null) {
+			// This matches variables used as object names
+			if ($this->node->name instanceof \PhpParser\Node\Expr\ArrayDimFetch) {
+				return $result;
+			}
+			$nodeName = ($this->node->name instanceof \PhpParser\Node\Expr\Variable)
+				? $this->node->name->name : (string)$this->node->name;
+
+			if ($nodeName !== $name) {
 				$result = false;
 			}
 		}
