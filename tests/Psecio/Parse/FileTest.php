@@ -76,4 +76,18 @@ class FileTest extends \PHPUnit_Framework_TestCase
 			array('a test with', 'newlines', 'here')
 		);
 	}
+
+	/**
+	 * Test the getter/setter for matches on the file
+	 */
+	public function testGetSetMatches()
+	{
+		$matches = array('foo', 'bar');
+		$this->file->setMatches($matches);
+
+		$this->assertEquals(
+			$this->file->getMatches(),
+			$matches
+		);
+	}
 }
