@@ -60,8 +60,9 @@ class Scanner
      * @param array $testList List of tests to execute [optional]
      * @return array Set of files with any matches attached
      */
-    public function execute($debug = false, array $testList = array())
+    public function execute($debug = false, array $testList = array(), array $excludeList = array())
     {
+        ob_start();
         $target = $this->getTarget();
 
         $directory = new \RecursiveDirectoryIterator($target, \FilesystemIterator::SKIP_DOTS);
@@ -76,7 +77,12 @@ class Scanner
         foreach ($testIterator as $file) {
             if (!$file->isDot()) {
                 $basename = $file->getBasename('.php');
+
+                // Skip based on the include and exclude lists
                 if (!empty($testList) && !in_array($basename, $testList)) {
+                    continue;
+                }
+                if (!empty($excludeList) && in_array($basename, $excludeList)) {
                     continue;
                 }
 
@@ -89,6 +95,8 @@ class Scanner
         $tests = new \Psecio\Parse\TestCollection($testSet, $logger);
 
         foreach ($iterator as $info) {
+            echo '.'; ob_flush();
+
             $pathname = $info->getPathname();
 
             // Having .phps is a really bad thing....throw an exception if it's found
@@ -98,7 +106,6 @@ class Scanner
             if (strtolower(substr($pathname, -3)) !== 'php') {
                 continue;
             }
-echo 'file: '.$pathname."\n";
 
             $logger->addInfo('Scanning file: '.$pathname);
 
@@ -110,7 +117,6 @@ echo 'file: '.$pathname."\n";
             // We need to recurse through the nodes and run our tests on each node
             try {
                 $stmts = $this->parser->parse($file->getContents());
-// print_r($stmts);
                 $stmts = $traverser->traverse($stmts);
 
                 $results = $visitor->getResults();
@@ -129,6 +135,7 @@ echo 'file: '.$pathname."\n";
 
             $files[] = $file;
         }
+        ob_end_flush();
 
         return $files;
     }
