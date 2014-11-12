@@ -14,7 +14,10 @@ class TestUseTypeCheckEqualsOnBoolean extends \Psecio\Parse\Test
 
 		if ($node instanceof \PhpParser\Node\Expr\BinaryOp\Equal) {
 			// Check to see if either the "right" or "left" are booleans
-			$rightName = strtolower((string)$node->right->name);
+			$nodeName = ($node->right->name instanceof \PhpParser\Node\Expr\Variable)
+				? $node->right->name->name : (string)$node->right->name;
+
+			$rightName = strtolower($nodeName);
 
 			if ($rightName == 'true' || $rightName == 'false') {
 				$attrs = $node->getAttributes();

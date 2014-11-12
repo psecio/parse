@@ -15,7 +15,9 @@ class TestUseSystemFunctions extends \Psecio\Parse\Test
 	{
 		if ($node->isFunction() === true) {
 			foreach ($this->functions as $function) {
-				if (strtolower($node->name) == $function) {
+				$name = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
+
+				if (strtolower($name) == $function) {
 					return false;
 				}
 			}
