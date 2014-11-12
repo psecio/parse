@@ -107,4 +107,14 @@ class TestCollection implements \Countable, \Iterator
             unset($this->data[$dataId]);
         }
     }
+
+    /**
+     * Return the current data as an array
+     *
+     * @return array Current data
+     */
+    public function toArray()
+    {
+		return $this->data;
+    }
 }
