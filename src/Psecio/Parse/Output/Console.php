@@ -12,13 +12,15 @@ class Console extends \Psecio\Parse\Output
 	 */
 	public function generate(array $data)
 	{
-		// print_r($data);
-
 		foreach ($data as $file) {
-			echo '#### Path: '.$file->getPath()." ########\n";
-
 			$ct = 1;
-			foreach ($file->getMatches() as $match) {
+			$matches = $file->getMatches();
+			if (count($matches) == 0) {
+				continue;
+			}
+
+			echo '#### Path: '.$file->getPath()." ########\n";
+			foreach ($matches as $match) {
 				$node = $match['node']->getNode();
 				$attrs = $node->getAttributes();
 
