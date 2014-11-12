@@ -54,7 +54,7 @@ class ScanCommand extends Command
 			// print_r($results);
 		}
 
-		$xml = new \Psecio\Parse\Output\Xml();
+		$xml = new \Psecio\Parse\Output\Console();
 		echo $xml->generate($results);
     }
 }
