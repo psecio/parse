@@ -9,7 +9,7 @@ class TestExitOrDie extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\Exit_) {
+		if ($node->isExpression('Exit')) {
 			return false;
 		}
 		return true;

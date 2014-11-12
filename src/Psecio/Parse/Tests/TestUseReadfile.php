@@ -9,15 +9,14 @@ class TestUseReadfile extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'readfile') {
+		if (
+			$node->isFunction('readfile')
+			|| $node->isFunction('readlink')
+			|| $node->isFunction('readgzfile')
+		) {
 			return false;
 		}
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'readlink') {
-			return false;
-		}
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'readgzfile') {
-			return false;
-		}
+
 		return true;
 	}
 }

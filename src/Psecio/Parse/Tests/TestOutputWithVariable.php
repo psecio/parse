@@ -13,6 +13,8 @@ class TestOutputWithVariable extends \Psecio\Parse\Test
 
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
+
 		// See if our echo or print (constructs) uses concat
 		if ($node instanceof \PhpParser\Node\Stmt\Echo_ || $node instanceof PhpParser\Node\Expr\Print_) {
 			if (isset($node->exprs[0]) && $node->exprs[0] instanceof PhpParser\Node\Expr\BinaryOp\Concat) {

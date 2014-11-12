@@ -13,7 +13,7 @@ class TestUseSystemFunctions extends \Psecio\Parse\Test
 
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall) {
+		if ($node->isFunction() === true) {
 			foreach ($this->functions as $function) {
 				if (strtolower($node->name) == $function) {
 					return false;
@@ -21,7 +21,7 @@ class TestUseSystemFunctions extends \Psecio\Parse\Test
 			}
 		}
 
-		if ($node instanceof \PhpParser\Node\Expr\ShellExec) {
+		if ($node->isExpression('ShellExec') === true) {
 			return false;
 		}
 

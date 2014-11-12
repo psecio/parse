@@ -9,7 +9,7 @@ class TestSessionRegenFalse extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'session_regenerate_id') {
+		if ($node->isFunction('session_regenerate_id') === true) {
 			// If the argument isn't even set...
 			if (count($node->args) < 1) {
 				return false;

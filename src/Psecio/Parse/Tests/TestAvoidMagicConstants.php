@@ -9,6 +9,7 @@ class TestAvoidMagicConstants extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
 		if ($node instanceof \PhpParser\Node\Scalar\MagicConst\Dir) {
 			return false;
 		}

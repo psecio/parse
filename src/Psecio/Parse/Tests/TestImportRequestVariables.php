@@ -10,7 +10,7 @@ class TestImportRequestVariables extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'import_request_variables') {
+		if ($node->isFunction('import_request_variables') === true) {
 			return false;
 		}
 		return true;

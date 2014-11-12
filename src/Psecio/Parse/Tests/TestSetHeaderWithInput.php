@@ -9,7 +9,7 @@ class TestSetHeaderWithInput extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'header') {
+		if ($node->isFunction('header') === true) {
 			if ($node->args[0]->value instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {
 				return false;
 			}

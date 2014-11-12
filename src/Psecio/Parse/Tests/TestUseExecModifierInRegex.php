@@ -13,6 +13,8 @@ class TestUseExecModifierInRegex extends \Psecio\Parse\Test
 
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
+
 		if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array(strtolower($node->name), $this->functions)) {
 			$regex = (string)$node->args[0]->value->value;
 			if (strstr($regex, '/e') !== false) {

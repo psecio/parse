@@ -10,6 +10,8 @@ class TestUseTypeCheckEqualsOnBoolean extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
+
 		if ($node instanceof \PhpParser\Node\Expr\BinaryOp\Equal) {
 			// Check to see if either the "right" or "left" are booleans
 			$rightName = strtolower((string)$node->right->name);

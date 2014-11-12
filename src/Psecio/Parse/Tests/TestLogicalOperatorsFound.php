@@ -15,6 +15,7 @@ class TestLogicalOperatorsFound extends \Psecio\Parse\Test
 
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
 		if ($node instanceof \PhpParser\Node\Expr\BinaryOp\NotIdentical) {
 			// See what's on the line
 			$attr = $node->getAttributes();

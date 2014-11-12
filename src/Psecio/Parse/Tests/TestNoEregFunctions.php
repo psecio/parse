@@ -14,6 +14,7 @@ class TestNoEregFunctions extends \Psecio\Parse\Test
 
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
 		if (get_class($node) == "PhpParser\\Node\\Expr\\FuncCall" && in_array(strtolower($node->name), $this->functions)) {
 			return false;
 		}

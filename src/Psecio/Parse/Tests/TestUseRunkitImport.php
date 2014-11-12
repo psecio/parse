@@ -9,7 +9,7 @@ class TestUseRunkitImport extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'runkit_import') {
+		if ($node->isFunction('runkit_import') === true) {
 			return false;
 		}
 		return true;

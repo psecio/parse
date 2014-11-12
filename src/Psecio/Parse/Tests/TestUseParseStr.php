@@ -10,10 +10,7 @@ class TestUseParseStr extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'mb_parse_str') {
-			return false;
-		}
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'parse_str') {
+		if ($node->isFunction('mb_parse_str') === true || $node->isFunction('parse_str') === true) {
 			return false;
 		}
 		return true;

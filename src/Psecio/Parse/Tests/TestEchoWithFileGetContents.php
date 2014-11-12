@@ -9,6 +9,7 @@ class TestEchoWithFileGetContents extends \Psecio\Parse\Test
 {
 	public function evaluate($node, $file = null)
 	{
+		$node = $node->getNode();
 		if ($node instanceof \PhpParser\Node\Stmt\Echo_) {
 			if (isset($node->exprs[0]) && $node->exprs[0] instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {
 
