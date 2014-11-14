@@ -54,26 +54,19 @@ class Scanner
     }
 
     /**
-     * Execute the scan
+     * Get the current tests set and return a collection
      *
-     * @param boolean $debug Show debug information
-     * @param array $testList List of tests to execute [optional]
-     * @return array Set of files with any matches attached
+     * @param string $testPath Test path (file system location)
+     * @param object $logger Logger instance [optional]
+     * @param array $testList Test name list (inclusion)
+     * @param array $excludeList Test name list (exclusion)
+     * @return \Psecio\Parse\TestCollection instance
      */
-    public function execute($debug = false, array $testList = array(), array $excludeList = array())
+    public function getTests($testPath, $logger = null, array $testList = array(), array $excludeList = array())
     {
-        ob_start();
-        $target = $this->getTarget();
-
-        $directory = new \RecursiveDirectoryIterator($target, \FilesystemIterator::SKIP_DOTS);
-        $iterator = new \RecursiveIteratorIterator($directory);
-        $files = array();
-
-        $logger = new Logger('scanner');
-        $logger->pushHandler(new StreamHandler($this->logPath, Logger::INFO));
-
         $testIterator = new \DirectoryIterator(__DIR__.'/Tests');
         $testSet = array();
+
         foreach ($testIterator as $file) {
             if (!$file->isDot()) {
                 $basename = $file->getBasename('.php');
@@ -92,7 +85,31 @@ class Scanner
                 );
             }
         }
+
         $tests = new \Psecio\Parse\TestCollection($testSet, $logger);
+        return $tests;
+    }
+
+    /**
+     * Execute the scan
+     *
+     * @param boolean $debug Show debug information
+     * @param array $testList List of tests to execute [optional]
+     * @return array Set of files with any matches attached
+     */
+    public function execute($debug = false, array $testList = array(), array $excludeList = array())
+    {
+        ob_start();
+        $target = $this->getTarget();
+
+        $directory = new \RecursiveDirectoryIterator($target, \FilesystemIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator($directory);
+        $files = array();
+
+        $logger = new Logger('scanner');
+        $logger->pushHandler(new StreamHandler($this->logPath, Logger::INFO));
+
+        $tests = $this->getTests(__DIR__.'/Tests', $logger, $testList, $excludeList);
 
         foreach ($iterator as $info) {
             echo '.'; ob_flush();
