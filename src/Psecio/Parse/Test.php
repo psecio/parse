@@ -17,6 +17,12 @@ abstract class Test
 	protected $level = 'INFO';
 
 	/**
+	 * Test description/summary
+	 * @var string
+	 */
+	protected $description = '';
+
+	/**
 	 * Init the object and set the logger
 	 *
 	 * @param object $logger Logger instance
@@ -54,6 +60,26 @@ abstract class Test
 	public function setLevel($level)
 	{
 		$this->level = $level;
+	}
+
+	/**
+	 * Get the curernt test's description
+	 *
+	 * @return string Description information
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
+	/**
+	 * Set the description of the current test
+	 *
+	 * @param string $description Test description
+	 */
+	public function setDescription($description)
+	{
+		$this->description = $description;
 	}
 
 	/**
