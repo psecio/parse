@@ -18,6 +18,7 @@ class ScanCommand extends Command
                 new InputOption('output', 'output', InputOption::VALUE_OPTIONAL, 'Output method [xml]'),
                 new InputOption('debug', 'debug', InputOption::VALUE_NONE, 'Show debug output'),
                 new InputOption('tests', 'tests', InputOption::VALUE_OPTIONAL, 'Test(s) to execute'),
+                new InputOption('exclude', 'exclude', InputOption::VALUE_OPTIONAL, 'Test(s) to exclude'),
             ))
             ->setHelp(
                 'Scan the given location for possible security issues'
@@ -37,6 +38,9 @@ class ScanCommand extends Command
 		$tests = $input->getOption('tests');
 		$testList = ($tests !== null) ? explode(',', $tests) : array();
 
+		$exclude = $input->getOption('exclude');
+		$excludeList = ($exclude !== null) ? explode(',', $excludeList) : array();
+
 		$output = $input->getOption('output');
 		if ($output == null) {
 			$output = 'xml';
@@ -48,7 +52,7 @@ class ScanCommand extends Command
 		$debug = $input->getOption('debug');
 
 		$scanner = new \Psecio\Parse\Scanner($target);
-		$results = $scanner->execute($debug, $testList);
+		$results = $scanner->execute($debug, $testList, $excludeList);
 
 		if ($debug !== false && $debug !== null) {
 			// print_r($results);
