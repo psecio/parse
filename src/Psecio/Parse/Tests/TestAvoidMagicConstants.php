@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestAvoidMagicConstants extends \Psecio\Parse\Test
 {
+	protected $description = 'Avoid the use of magic constants like __DIR__ & __FILE__';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

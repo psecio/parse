@@ -8,6 +8,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestUseMysqlRealEscapeString extends \Psecio\Parse\Test
 {
+	protected $description = 'Use of mysql_real_escape_string is not recommended. Use prepared statements/bind variables.';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

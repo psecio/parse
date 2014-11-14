@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestSetHeaderWithInput extends \Psecio\Parse\Test
 {
+	protected $description = 'Avoid the use of input in calls to `header`';
+
 	public function evaluate($node, $file = null)
 	{
 		if ($node->isFunction('header') === true) {

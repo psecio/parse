@@ -11,6 +11,8 @@ class TestUseExecModifierInRegex extends \Psecio\Parse\Test
 		'preg_match', 'preg_match_all'
 	);
 
+	protected $description = 'Do not use the eval modifier in regular expressions (\e)';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

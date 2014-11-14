@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestAvoidGlobalsUse extends \Psecio\Parse\Test
 {
+	protected $description = 'The use of $GLOBALS should be avoided.';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

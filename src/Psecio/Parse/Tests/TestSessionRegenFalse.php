@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestSessionRegenFalse extends \Psecio\Parse\Test
 {
+	protected $description = 'If session_regenerate_id is used, must use second paramater and set to true.';
+
 	public function evaluate($node, $file = null)
 	{
 		if ($node->isFunction('session_regenerate_id') === true) {

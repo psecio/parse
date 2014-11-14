@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestEchoWithFileGetContents extends \Psecio\Parse\Test
 {
+	protected $description = 'Using `echo` with results of `file_get_contents` could lead to injection issues. ';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

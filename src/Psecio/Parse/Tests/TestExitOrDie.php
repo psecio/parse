@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestExitOrDie extends \Psecio\Parse\Test
 {
+	protected $description = 'Avoid the use of `exit` or `die` (could lead to injection issues (direct output)';
+
 	public function evaluate($node, $file = null)
 	{
 		if ($node->isExpression('Exit')) {

@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestHttpRawPostData extends \Psecio\Parse\Test
 {
+	protected $description = 'Avoid the use of http_raw_post_data. Deprecated and will be removed.';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

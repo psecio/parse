@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestUseReadfile extends \Psecio\Parse\Test
 {
+	protected $description = 'The readfile/readlink/readgzfile functions output content directly (possible injection)';
+
 	public function evaluate($node, $file = null)
 	{
 		if (

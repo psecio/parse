@@ -11,6 +11,8 @@ class TestUseSystemFunctions extends \Psecio\Parse\Test
 		'exec', 'passthru', 'system', 'exec'
 	);
 
+	protected $description = 'Use of system functions, especially with user input, is not recommended.';
+
 	public function evaluate($node, $file = null)
 	{
 		if ($node->isFunction() === true) {

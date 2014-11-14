@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestUseRunkitImport extends \Psecio\Parse\Test
 {
+	protected $description = 'Using the `runkit_import` function overwrites functions/classes by default.';
+
 	public function evaluate($node, $file = null)
 	{
 		if ($node->isFunction('runkit_import') === true) {

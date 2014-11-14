@@ -13,6 +13,8 @@ class TestLogicalOperatorsFound extends \Psecio\Parse\Test
 		'xor'
 	);
 
+	protected $description = 'Avoid the use of logical operations (XOR, OR, etc) in favor of operators like && and ||';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

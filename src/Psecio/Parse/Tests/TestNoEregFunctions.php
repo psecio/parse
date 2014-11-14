@@ -12,6 +12,8 @@ class TestNoEregFunctions extends \Psecio\Parse\Test
 		'ereg', 'eregi', 'ereg_replace', 'eregi_replace'
 	);
 
+	protected $description = 'Remove any use of ereg functions, deprecated and removed. Use preg_*';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

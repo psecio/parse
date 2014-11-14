@@ -7,6 +7,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestAvoidRequestUse extends \Psecio\Parse\Test
 {
+	protected $description = 'Avoid the use of $_REQUEST (know where your data comes fron)';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

@@ -8,6 +8,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestUseTypeCheckEqualsOnBoolean extends \Psecio\Parse\Test
 {
+	protected $description = 'Evaluation with booleans should use strict type checking (ex: if $foo === false)';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();

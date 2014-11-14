@@ -10,6 +10,8 @@ namespace Psecio\Parse\Tests;
  */
 class TestExtractNotOverwrite extends \Psecio\Parse\Test
 {
+	protected $description = 'By default `extract` overwrites variables in the local scope with values given.';
+
 	public function evaluate($node, $file = null)
 	{
 		if ($node->isFunction('extract') === true) {

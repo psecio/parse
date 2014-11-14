@@ -11,6 +11,8 @@ class TestOutputWithVariable extends \Psecio\Parse\Test
 		'print_r', 'printf', 'vprintf', 'sprintf'
 	);
 
+	protected $description = 'Avoid the use of an output method (echo, print, etc) directly with a variable';
+
 	public function evaluate($node, $file = null)
 	{
 		$node = $node->getNode();
