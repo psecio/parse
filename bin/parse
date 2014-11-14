@@ -13,6 +13,7 @@ $output = new ConsoleOutput();
 $app = new Application('Parse Scan', '1.0');
 $app->addCommands(array(
 	new \Psecio\Parse\Command\ScanCommand(),
+	new \Psecio\Parse\Command\ListCommand()
 ));
 $app->setCatchExceptions(false);
 
