@@ -36,6 +36,8 @@ The `target` parameter is required as it tells the `parse` tool where to start.
 
 Here's the current list of tests being executed:
 
+- Warn when sensitive values are committed (as defined by a variable like "username" set to a string)
+- Warn when `display_errors` is enabled manually
 - Avoid magic constants `__DIR__` or `__FILE__`
 - Avoid the use of `eval()`
 - Avoid the use of `exit` or `die()`
