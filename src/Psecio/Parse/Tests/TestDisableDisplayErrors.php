@@ -15,7 +15,6 @@ class TestDisableDisplayErrors extends \Psecio\Parse\Test
             // see if the setting is "display_errors" && if they're enabling it
             if ($node->args[0]->value->value == 'display_errors') {
                 $value = $node->args[1]->value;
-                print_r($value);
 
                 if ($value instanceof \PhpParser\Node\Expr\ConstFetch) {
                     $value = $value->name->parts[0];
