@@ -14,6 +14,14 @@ For example, you really shouldn't be using [eval](http://php.net/eval) in your c
 help it. When the scanner runs, it will parse down each of your files and look for any `eval()` calls.
 If it finds any, it adds that match to the file and reports it in the results.
 
+### Installation:
+
+You can install the tool using Composer:
+
+```
+composer require psecio/parse
+```
+
 ### Usage:
 
 To use the scanner, you can execute it from the command line:
@@ -54,22 +62,32 @@ Plenty more to come... (yup, `@todo`)
 
 ### Output
 
-Currently there's only one method for output included with the tool - XML. You can either use the result from the `execute` method on the `Scanner` directly, or you can pass the output to the `Output` handler:
+Currently the tool will just output to the console in a not-so-machine-readable format. There is an XML output object defined and working, but the console command doesn't have a switch for it yet (an easy add).
 
-```php
-<?php
-$results = $scan->execute($matches);
+### Listing the checks
 
-$xml = new \Psecio\Parse\Output\Xml();
-$output = $xml->generate($results);
-?>
+You can also get a listing of the current checks being done with the `list` command:
+
 ```
+bin/parse list
+```
+
+Resulting in:
+
+```
+ID  | Name                                | Description
+================================================================================
+0   | TestAvoidGlobalsUse                 | The use of $GLOBALS should be avoided.
+1   | TestAvoidMagicConstants             | Avoid the use of magic constants like __DIR__ & __FILE__
+2   | TestAvoidRequestUse                 | Avoid the use of $_REQUEST (know where your data comes fron)
+3   | TestEchoWithFileGetContents         | Using `echo` with results of `file_get_contents` could lead to injection issues.
+```
+
+etc...
 
 ### TODO
 
-1. Create the list of security checks
-2. Add more evaluation functionality and operators
-3. Decide on report output type (is there a standard output that makes sense?)
+See the current issues list for `@todo` items...
 
 Parse is covered under the MIT license.
 
