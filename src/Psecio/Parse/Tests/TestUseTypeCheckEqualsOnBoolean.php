@@ -16,12 +16,7 @@ class TestUseTypeCheckEqualsOnBoolean extends \Psecio\Parse\Test
 
 		if ($node instanceof \PhpParser\Node\Expr\BinaryOp\Equal) {
 			// Check to see if either the "right" or "left" are booleans
-			$nodeName = ($node->right->name instanceof \PhpParser\Node\Expr\Variable)
-				? $node->right->name->name : (string)$node->right->name;
-
-			$rightName = strtolower($nodeName);
-
-			if ($rightName == 'true' || $rightName == 'false') {
+			if ($this->isBoolLiteral($node->left) || $this->isBoolLiteral($node->right)) {
 				$attrs = $node->getAttributes();
 				$lines = $file->getLines($attrs['startLine']);
 				if (strstr($lines[0], '===') === false) {
@@ -30,5 +25,16 @@ class TestUseTypeCheckEqualsOnBoolean extends \Psecio\Parse\Test
 			}
 		}
 		return true;
+	}
+
+	private function isBoolLiteral($node)
+	{
+		if ($node->name instanceof \PhpParser\Node\Name) {
+			$name = strtolower($node->name);
+			if ($name == 'true' || $name == 'false') {
+				return true;
+			}
+		}
+		return false;
 	}
 }
