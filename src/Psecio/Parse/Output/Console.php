@@ -21,11 +21,13 @@ class Console extends \Psecio\Parse\Output
 
 			echo '#### Path: '.$file->getPath()." ########\n";
 			foreach ($matches as $match) {
+				$test = $match['test'];
+				$testName = str_replace('Psecio\\Parse\\Tests\\', '', get_class($test));
 				$node = $match['node']->getNode();
 				$attrs = $node->getAttributes();
 
 				echo '# '.$ct.' | '
-					.get_class($node)." | "
+					.$testName." | "
 					.trim(implode("\n",$file->getLines($attrs['startLine'])))
 					."\n";
 
