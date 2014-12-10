@@ -92,29 +92,29 @@ abstract class Test
 	abstract public function evaluate($node, $file = null);
 
 
-    /**
-     * Determine if $node is a boolean literal, optionally testing for a specific value
-     *
-     * If $value is true or false, check if $node is specifically $value.
-     *
-     * @param \PhpParser\Node $node   Node to evaulate
-     * @param bool|null       $value  Value to check for. Don't check if null.
-     *
-     * @return bool  True if a boolean literal and $value is matched
-     */
-    protected function nodeIsBoolLiteral($node, $value = null)
-    {
+	/**
+	 * Determine if $node is a boolean literal, optionally testing for a specific value
+	 *
+	 * If $value is true or false, check if $node is specifically $value.
+	 *
+	 * @param \PhpParser\Node $node	  Node to evaulate
+	 * @param bool|null		  $value  Value to check for. Don't check if null.
+	 *
+	 * @return bool	 True if a boolean literal and $value is matched
+	 */
+	protected function nodeIsBoolLiteral($node, $value = null)
+	{
 		if ($node->name instanceof \PhpParser\Node\Name) {
 			$name = strtolower($node->name);
 			if ($name === 'true' || $name === 'false') {
-                if ($value === true) {
-                    return $name === 'true';
-                } elseif ($value === false) {
-                    return $name === 'false';
-                }
+				if ($value === true) {
+					return $name === 'true';
+				} elseif ($value === false) {
+					return $name === 'false';
+				}
 				return true;
 			}
 		}
 		return false;
-    }
+	}
 }

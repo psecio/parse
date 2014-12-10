@@ -19,7 +19,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "4.2.*",
-        "codeclimate/php-test-reporter": "dev-master"
+        "codeclimate/php-test-reporter": "dev-master",
+        "mockery/mockery": "0.9.*"
     },
     "autoload": {
         "psr-0": {
