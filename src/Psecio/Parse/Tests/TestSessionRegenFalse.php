@@ -19,7 +19,7 @@ class TestSessionRegenFalse extends \Psecio\Parse\Test
 
 			// If it's set but it's set to false
 			$arg = $node->args[0];
-			if (strtolower($arg->value->name->parts[0]) !== 'true') {
+			if (!$this->nodeIsBoolLiteral($arg->value, true)) {
 				return false;
 			}
 		}
