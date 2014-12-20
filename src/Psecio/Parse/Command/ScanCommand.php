@@ -10,10 +10,10 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class ScanCommand extends Command
 {
-	protected function configure()
+    protected function configure()
     {
         $this->setName('scan')
-			->setDescription('Scan the given location for possible security issues')
+            ->setDescription('Scan the given location for possible security issues')
             ->setDefinition(array(
                 new InputArgument('target', InputArgument::REQUIRED, 'Path to the file/directory to scan'),
                 new InputOption('output', 'output', InputOption::VALUE_OPTIONAL, 'Output method (txt or xml)', 'txt'),
@@ -36,17 +36,17 @@ class ScanCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		$scanner = new \Psecio\Parse\Scanner($input->getArgument('target'));
+        $scanner = new \Psecio\Parse\Scanner($input->getArgument('target'));
 
-		$results = $scanner->execute(
+        $results = $scanner->execute(
             $input->getOption('debug'),
             array_filter(explode(',', $input->getOption('tests'))),
             array_filter(explode(',', $input->getOption('exclude')))
         );
 
-		if ($input->getOption('debug')) {
-			// print_r($results);
-		}
+        if ($input->getOption('debug')) {
+            // print_r($results);
+        }
 
         switch (strtolower($input->getOption('output'))) {
             case 'txt':
