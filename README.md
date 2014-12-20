@@ -27,10 +27,8 @@ composer require psecio/parse
 To use the scanner, you can execute it from the command line:
 
 ```
-bin/parse scan --target=/path/to/myproject
+bin/parse scan /path/to/myproject
 ```
-
-The `target` parameter is required as it tells the `parse` tool where to start.
 
 ### The Details:
 
@@ -64,7 +62,13 @@ Plenty more to come... (yup, `@todo`)
 
 ### Output
 
-Currently the tool will just output to the console in a not-so-machine-readable format. There is an XML output object defined and working, but the console command doesn't have a switch for it yet (an easy add).
+Currently cleartext and xml output formats are available (cleartext is used
+by default). Set format with the `output` option.
+
+```
+bin/parse scan /path/to/myproject --output=xml
+bin/parse scan /path/to/myproject --output=txt
+```
 
 ### Listing the checks
 

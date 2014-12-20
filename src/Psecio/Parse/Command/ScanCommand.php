@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 
 class ScanCommand extends Command
 {
@@ -14,11 +15,11 @@ class ScanCommand extends Command
         $this->setName('scan')
 			->setDescription('Scan the given location for possible security issues')
             ->setDefinition(array(
-                new InputOption('target', 'target', InputOption::VALUE_REQUIRED, 'Path to the file/directory'),
-                new InputOption('output', 'output', InputOption::VALUE_OPTIONAL, 'Output method [xml]'),
+                new InputArgument('target', InputArgument::REQUIRED, 'Path to the file/directory to scan'),
+                new InputOption('output', 'output', InputOption::VALUE_OPTIONAL, 'Output method (txt or xml)', 'txt'),
                 new InputOption('debug', 'debug', InputOption::VALUE_NONE, 'Show debug output'),
-                new InputOption('tests', 'tests', InputOption::VALUE_OPTIONAL, 'Test(s) to execute'),
-                new InputOption('exclude', 'exclude', InputOption::VALUE_OPTIONAL, 'Test(s) to exclude'),
+                new InputOption('tests', 'tests', InputOption::VALUE_REQUIRED, 'Test(s) to execute', ''),
+                new InputOption('exclude', 'exclude', InputOption::VALUE_REQUIRED, 'Test(s) to exclude', ''),
             ))
             ->setHelp(
                 'Scan the given location for possible security issues'
@@ -35,30 +36,29 @@ class ScanCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		$tests = $input->getOption('tests');
-		$testList = ($tests !== null) ? explode(',', $tests) : array();
+		$scanner = new \Psecio\Parse\Scanner($input->getArgument('target'));
 
-		$exclude = $input->getOption('exclude');
-		$excludeList = ($exclude !== null) ? explode(',', $excludeList) : array();
+		$results = $scanner->execute(
+            $input->getOption('debug'),
+            array_filter(explode(',', $input->getOption('tests'))),
+            array_filter(explode(',', $input->getOption('exclude')))
+        );
 
-		$output = $input->getOption('output');
-		if ($output == null) {
-			$output = 'xml';
-		}
-		$target = $input->getOption('target');
-		if ($target == null) {
-			throw new \Exception('Target directory/file path required! None given...');
-		}
-		$debug = $input->getOption('debug');
-
-		$scanner = new \Psecio\Parse\Scanner($target);
-		$results = $scanner->execute($debug, $testList, $excludeList);
-
-		if ($debug !== false && $debug !== null) {
+		if ($input->getOption('debug')) {
 			// print_r($results);
 		}
 
-		$xml = new \Psecio\Parse\Output\Console();
-		echo $xml->generate($results);
+        switch (strtolower($input->getOption('output'))) {
+            case 'txt':
+                $txt = new \Psecio\Parse\Output\Console();
+                $output->write($txt->generate($results));
+                break;
+            case 'xml':
+                $xml = new \Psecio\Parse\Output\Xml();
+                $output->write($xml->generate($results));
+                break;
+            default:
+                throw new \Exception("Unknown output method '{$input->getOption('output')}'");
+        }
     }
 }
