@@ -7,22 +7,31 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Psecio\Parse\Scanner;
+use Exception;
 
+/**
+ * The main command: scans specified paths for possible security issues
+ */
 class ScanCommand extends Command
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
-        $this->setName('scan')
-            ->setDescription('Scan the given location for possible security issues')
-            ->setDefinition(array(
-                new InputArgument('target', InputArgument::REQUIRED, 'Path to the file/directory to scan'),
-                new InputOption('output', 'output', InputOption::VALUE_OPTIONAL, 'Output method (txt or xml)', 'txt'),
-                new InputOption('debug', 'debug', InputOption::VALUE_NONE, 'Show debug output'),
-                new InputOption('tests', 'tests', InputOption::VALUE_REQUIRED, 'Test(s) to execute', ''),
-                new InputOption('exclude', 'exclude', InputOption::VALUE_REQUIRED, 'Test(s) to exclude', ''),
-            ))
-            ->setHelp(
-                'Scan the given location for possible security issues'
+        $this
+            ->setName('scan')
+            ->setDescription('Scans specified paths for possible security issues')
+            ->addArgument('path', InputArgument::OPTIONAL|InputArgument::IS_ARRAY, 'Path to the file/directory to scan', [getcwd()])
+            ->addOption('output', null, InputOption::VALUE_OPTIONAL, 'Output method (txt or xml)', 'txt')
+            ->addOption('tests', null, InputOption::VALUE_REQUIRED, 'Test(s) to execute', '')
+            ->addOption('exclude', null, InputOption::VALUE_REQUIRED, 'Test(s) to exclude', '')
+            ->setHelp(<<<EOF
+The <info>%command.name%</info> command scans specified paths for possible security issues:
+
+  <info>php %command.full_name% /path/to/src</info>
+EOF
             );
     }
 
@@ -31,22 +40,16 @@ class ScanCommand extends Command
      *
      * @param  InputInterface $input Input object
      * @param  OutputInterface $output Output object
-     * @throws \Exception
+     * @throws Exception If output format is not valid
      * @return null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $scanner = new \Psecio\Parse\Scanner($input->getArgument('target'));
-
-        $results = $scanner->execute(
-            $input->getOption('debug'),
+        $results = (new Scanner)->execute(
+            $input->getArgument('path'),
             array_filter(explode(',', $input->getOption('tests'))),
             array_filter(explode(',', $input->getOption('exclude')))
         );
-
-        if ($input->getOption('debug')) {
-            // print_r($results);
-        }
 
         switch (strtolower($input->getOption('output'))) {
             case 'txt':
@@ -58,7 +61,7 @@ class ScanCommand extends Command
                 $output->write($xml->generate($results));
                 break;
             default:
-                throw new \Exception("Unknown output method '{$input->getOption('output')}'");
+                throw new Exception("Unknown output method '{$input->getOption('output')}'");
         }
     }
 }
