@@ -10,15 +10,24 @@ use Psecio\Parse\Scanner;
 use Psecio\Parse\Test;
 use Psecio\Parse\TestCollection;
 
+/**
+ * Command for listing current checks and their summaries
+ */
 class ListTestsCommand extends Command
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
         $this
             ->setName('list-tests')
             ->setDescription('List the current checks and their summaries')
-            ->setHelp(
-                'List the current checks and their summaries'
+            ->setHelp(<<<EOF
+The <info>%command.name%</info> command displays the current checks and their summaries:
+
+  <info>php %command.full_name%</info>
+EOF
             );
     }
 
