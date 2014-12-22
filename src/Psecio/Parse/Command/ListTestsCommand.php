@@ -38,27 +38,22 @@ EOF
      * @param  OutputInterface $output Output object
      * @return null
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->write("<comment>Searching for tests:</comment>");
+
         $scanner = new Scanner(null);
         $tests = $scanner->getTests(__DIR__.'/Tests');
 
+        $output->writeln(" " . count($tests) . " found");
+        $output->writeln("<comment>Listing:</comment>");
+
         $colWidth = $this->getTestNameColWidth($tests);
 
-        $output->writeLn("\n"
-            .str_pad('ID', 3, ' ').' | '
-            .str_pad('Name', $colWidth, ' ')
-            .' | Description'
-        );
-        $output->writeLn(str_repeat('=', 80));
-        foreach ($tests as $index => $test) {
-            $output->writeLn(
-                str_pad($index, 3, ' ').' | '
-                .str_pad($test->getName(), $colWidth, ' ')
-                .' | '.$test->getDescription()
-            );
+        foreach ($tests as $test) {
+            $output->write(" <info>" . str_pad($test->getName(), $colWidth) . "</info> ");
+            $output->writeln($test->getDescription());
         }
-        $output->writeLn("\n".count($tests)." Tests\n");
     }
 
     /**
