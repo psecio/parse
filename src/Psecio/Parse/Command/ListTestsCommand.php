@@ -41,10 +41,9 @@ class ListTestsCommand extends Command
         $output->writeLn(str_repeat('=', 80));
         foreach ($tests as $index => $test) {
             $count++;
-            $class = str_replace('Psecio\\Parse\\Tests\\', '', get_class($test));
             $output->writeLn(
                 str_pad($index, 3, ' ').' | '
-                .str_pad($class, 35, ' ')
+                .str_pad($test->getName(), 35, ' ')
                 .' | '.$test->getDescription()
             );
         }
