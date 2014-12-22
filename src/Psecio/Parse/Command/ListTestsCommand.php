@@ -9,11 +9,11 @@ use Symfony\Component\Console\Input\InputOption;
 
 class ListTestsCommand extends Command
 {
-	protected function configure()
+    protected function configure()
     {
         $this
             ->setName('list-tests')
-			->setDescription('List the current checks and their summaries')
+            ->setDescription('List the current checks and their summaries')
             ->setHelp(
                 'List the current checks and their summaries'
             );
@@ -29,7 +29,7 @@ class ListTestsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		$scanner = new \Psecio\Parse\Scanner(null);
+        $scanner = new \Psecio\Parse\Scanner(null);
         $tests = $scanner->getTests(__DIR__.'/Tests');
         $count = 0;
 
