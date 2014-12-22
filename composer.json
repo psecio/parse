@@ -13,7 +13,8 @@
         }
     ],
     "require":{
-	"nikic/php-parser": "~1.0",
+        "php": ">=5.4",
+        "nikic/php-parser": "~1.0",
         "symfony/console": "~2.5",
         "monolog/monolog": "~1.11"
     },
