@@ -1,9 +1,9 @@
 Parse: A PHP Security Scanner
-=================
+=============================
 
-**PLEASE NOTE:** This tool is still in a very early stage. The work continues...
+> **PLEASE NOTE:** This tool is still in a very early stage. The work continues...
 
-### The Basics:
+## The Basics
 
 The *Parse* scanner is a static scanning tool to review your PHP code for potential security-related
 issues. A static scanner means that the code is not executed and tested via a web interface (that's
@@ -14,23 +14,15 @@ For example, you really shouldn't be using [eval](http://php.net/eval) in your c
 help it. When the scanner runs, it will parse down each of your files and look for any `eval()` calls.
 If it finds any, it adds that match to the file and reports it in the results.
 
-### Installation:
+## Installation
 
 You can install the tool using Composer:
 
-```
+```shell
 composer require psecio/parse
 ```
 
-### Usage:
-
-To use the scanner, you can execute it from the command line:
-
-```
-bin/parse scan /path/to/myproject
-```
-
-### The Details:
+## The Details
 
 Here's the current list of tests being executed:
 
@@ -60,12 +52,23 @@ Here's the current list of tests being executed:
 
 Plenty more to come... (yup, `@todo`)
 
+## Usage
+
+> **NOTE:** In earlier versions the `--target` option was used to specify the
+> project path, this is no longer supported. Instead use the syntax below.
+
+To use the scanner, you can execute it from the command line:
+
+```shell
+bin/parse scan /path/to/myproject
+```
+
 ### Output
 
 Currently cleartext and xml output formats are available (cleartext is used
 by default). Set format with the `output` option.
 
-```
+```shell
 bin/parse scan /path/to/myproject --output=xml
 bin/parse scan /path/to/myproject --output=txt
 ```
@@ -74,7 +77,7 @@ bin/parse scan /path/to/myproject --output=txt
 
 You can also get a listing of the current checks being done with the `list` command:
 
-```
+```shell
 bin/parse list
 ```
 
@@ -91,7 +94,7 @@ ID  | Name                                | Description
 
 etc...
 
-### TODO
+## TODO
 
 See the current issues list for `@todo` items...
 
