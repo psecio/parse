@@ -6,6 +6,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Psecio\Parse\Scanner;
+use Psecio\Parse\Test;
+use Psecio\Parse\TestCollection;
 
 class ListTestsCommand extends Command
 {
@@ -22,31 +25,48 @@ class ListTestsCommand extends Command
     /**
      * Execute the "list" command
      *
-     * @param  InputInterface $input Input object
+     * @param  InputInterface  $input  Input object
      * @param  OutputInterface $output Output object
-     * @throws \Exception
      * @return null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $scanner = new \Psecio\Parse\Scanner(null);
+        $scanner = new Scanner(null);
         $tests = $scanner->getTests(__DIR__.'/Tests');
-        $count = 0;
+
+        $colWidth = $this->getTestNameColWidth($tests);
 
         $output->writeLn("\n"
             .str_pad('ID', 3, ' ').' | '
-            .str_pad('Name', 36, ' ')
-            .'| Description'
+            .str_pad('Name', $colWidth, ' ')
+            .' | Description'
         );
         $output->writeLn(str_repeat('=', 80));
         foreach ($tests as $index => $test) {
-            $count++;
             $output->writeLn(
                 str_pad($index, 3, ' ').' | '
-                .str_pad($test->getName(), 35, ' ')
+                .str_pad($test->getName(), $colWidth, ' ')
                 .' | '.$test->getDescription()
             );
         }
-        $output->writeLn("\n".$count." Tests\n");
+        $output->writeLn("\n".count($tests)." Tests\n");
+    }
+
+    /**
+     * Get length of the longest test name in collection
+     *
+     * @param  TestCollection $tests
+     * @return int
+     */
+    public function getTestNameColWidth(TestCollection $tests)
+    {
+        return max(
+            array_map(
+                function (Test $test) {
+                    return strlen($test->getName());
+                },
+                $tests->toArray()
+            )
+        );
     }
 }
