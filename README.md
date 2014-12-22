@@ -66,7 +66,7 @@ bin/parse scan /path/to/myproject
 ### Output
 
 Currently cleartext and xml output formats are available (cleartext is used
-by default). Set format with the `output` option.
+by default). Set format with the `--output` option.
 
 ```shell
 bin/parse scan /path/to/myproject --output=xml
@@ -75,24 +75,11 @@ bin/parse scan /path/to/myproject --output=txt
 
 ### Listing the checks
 
-You can also get a listing of the current checks being done with the `list` command:
+You can also get a listing of the current checks being done with the `list-tests` command:
 
 ```shell
-bin/parse list
+bin/parse list-tests
 ```
-
-Resulting in:
-
-```
-ID  | Name                                | Description
-================================================================================
-0   | TestAvoidGlobalsUse                 | The use of $GLOBALS should be avoided.
-1   | TestAvoidMagicConstants             | Avoid the use of magic constants like __DIR__ & __FILE__
-2   | TestAvoidRequestUse                 | Avoid the use of $_REQUEST (know where your data comes fron)
-3   | TestEchoWithFileGetContents         | Using `echo` with results of `file_get_contents` could lead to injection issues.
-```
-
-etc...
 
 ## TODO
 

@@ -82,6 +82,16 @@ abstract class Test
 		$this->description = $description;
 	}
 
+    /**
+     * Get test name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return preg_replace('/^.+\\\\/', '', get_class($this));
+    }
+
 	/**
 	 * Evaluation method to be called to execute the test
 	 *
