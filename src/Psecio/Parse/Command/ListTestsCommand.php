@@ -7,11 +7,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
-class ListCommand extends Command
+class ListTestsCommand extends Command
 {
 	protected function configure()
     {
-        $this->setName('list')
+        $this
+            ->setName('list-tests')
 			->setDescription('List the current checks and their summaries')
             ->setHelp(
                 'List the current checks and their summaries'
