@@ -5,25 +5,26 @@ namespace Psecio\Parse;
 class TestCollection implements \Countable, \Iterator
 {
     /**
-     * Current set of data for collection
-     * @var array
+     * @var Test[] Test collection
      */
-    private $data = array();
+    private $tests = array();
 
     /**
-     * Current position in data (used in Iterator)
-     * @var integer
+     * @var integer Current position (used in Iterator)
      */
     private $position = 0;
 
-    public function __construct($testSet, $logger)
+    /**
+     * Load tests into collection
+     *
+     * @param array $testSet
+     */
+    public function __construct(array $testSet)
     {
-    	$tests = array();
     	foreach ($testSet as $test) {
-    		$testNs = "\\Psecio\\Parse\\Tests\\".$test['name'];
-    		$tests[] = new $testNs($logger);
+    		$testName = "\\Psecio\\Parse\\Tests\\".$test['name'];
+    		$this->add(new $testName());
     	}
-    	$this->data = $tests;
     }
 
     // For Countable interface
@@ -34,7 +35,7 @@ class TestCollection implements \Countable, \Iterator
      */
     public function count()
     {
-        return count($this->data);
+        return count($this->tests);
     }
 
     // For Iterator
@@ -45,7 +46,7 @@ class TestCollection implements \Countable, \Iterator
      */
     public function current()
     {
-        return $this->data[$this->position];
+        return $this->tests[$this->position];
     }
 
     /**
@@ -83,17 +84,17 @@ class TestCollection implements \Countable, \Iterator
      */
     public function valid()
     {
-        return isset($this->data[$this->position]);
+        return isset($this->tests[$this->position]);
     }
 
     /**
-     * Add an item to the collection
+     * Add an test to collection
      *
-     * @param mixed $data Data item to add
+     * @param Test $test
      */
-    public function add($data)
+    public function add(Test $test)
     {
-        $this->data[] = $data;
+        $this->tests[] = $test;
     }
 
     /**
@@ -103,8 +104,8 @@ class TestCollection implements \Countable, \Iterator
      */
     public function remove($dataId)
     {
-        if (array_key_exists($dataId, $this->data)) {
-            unset($this->data[$dataId]);
+        if (array_key_exists($dataId, $this->tests)) {
+            unset($this->tests[$dataId]);
         }
     }
 
@@ -115,6 +116,6 @@ class TestCollection implements \Countable, \Iterator
      */
     public function toArray()
     {
-		return $this->data;
+		return $this->tests;
     }
 }
