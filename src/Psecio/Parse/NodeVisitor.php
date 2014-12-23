@@ -4,81 +4,72 @@ namespace Psecio\Parse;
 
 class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 {
-	/**
-	 * Current set of tests to execute
-	 * @var array
-	 */
-	private $tests = array();
+    /**
+     * @var TestCollection Current set of tests to execute
+     */
+    private $tests;
 
-	/**
-	 * Results from test evaluation
-	 * @var array
-	 */
-	private $results = array();
+    /**
+     * @var File Current file under evaluation
+     */
+    private $file;
 
-	/**
-	 * Logger object instance (Monolog)
-	 * @var object
-	 */
-	private $logger;
+    /**
+     * @var array Results from test evaluation
+     */
+    private $results = [];
 
-	/**
-	 * Current file under evaluation
-	 * @var \Psecio\Parse\File
-	 */
-	private $file;
+    /**
+     * Init the object and set up the tests and file
+     *
+     * @param TestCollection $tests Set of tests in a collection
+     * @param File $file File object instance
+     */
+    public function __construct(TestCollection $tests, File $file)
+    {
+        $this->tests = $tests;
+        $this->file = $file;
+    }
 
-	/**
-	 * Init the object and set up the tests, file and logger
-	 *
-	 * @param \Psecio\Parse\TestCollection $tests Set of tests in a collection
-	 * @param \Psecio\Parse\File $file File object instance
-	 * @param object $logger Logger object (Monolog)
-	 */
-	public function __construct(\Psecio\Parse\TestCollection $tests, \Psecio\Parse\File $file, $logger)
-	{
-		$this->tests = $tests;
-		$this->logger = $logger;
-		$this->file = $file;
-	}
+    /**
+     * Get the current results of test evaluation
+     *
+     * @return array Results set
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
 
-	/**
-	 * Get the current results of test evaluation
-	 *
-	 * @return array Results set
-	 */
-	public function getResults()
-	{
-		return $this->results;
-	}
+    /**
+     * Add a new test result
+     *
+     * @param object $node Node object
+     */
+    public function addResult($node)
+    {
+        $this->results[] = $node;
+    }
 
-	/**
-	 * Add a new test result
-	 *
-	 * @param object $node Node object
-	 */
-	public function addResult($node)
-	{
-		$this->results[] = $node;
-	}
+    /**
+     * Interface function called when node it first hit
+     *
+     * @param \PhpParser\Node $node Node instance
+     */
+    public function enterNode(\PhpParser\Node $node)
+    {
+        // Make a node object with helpers
+        $node = new Node($node);
 
-	/**
-	 * Interface function called when node it first hit
-	 *
-	 * @param \PhpParser\Node $node Node instance
-	 */
-	public function enterNode(\PhpParser\Node $node)
-	{
-		// Make a node object with helpers
-		$node = new \Psecio\Parse\Node($node);
-
-		foreach ($this->tests as $test) {
-			if ($test->evaluate($node, $this->file) === false) {
-				$this->addResult(array(
-					'test' => $test,
-					'node' => $node
-				));
-			}
-		}
-	}
+        foreach ($this->tests as $test) {
+            if ($test->evaluate($node, $this->file) === false) {
+                $this->addResult(
+                	[
+	                    'test' => $test,
+	                    'node' => $node
+                	]
+                );
+            }
+        }
+    }
 }

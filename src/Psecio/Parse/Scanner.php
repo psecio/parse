@@ -2,8 +2,6 @@
 
 namespace Psecio\Parse;
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use PhpParser\Parser;
 use PhpParser\Lexer\Emulative as Lexer;
 
@@ -30,13 +28,12 @@ class Scanner
     /**
      * Get the current tests set and return a collection
      *
-     * @param  string $testPath Test path (file system location)
-     * @param  object $logger Logger instance [optional]
-     * @param  array $testList Test name list (inclusion)
-     * @param  array $excludeList Test name list (exclusion)
+     * @param  string   $testPath Test path (file system location)
+     * @param  string[] $testList Test name list (inclusion)
+     * @param  string[] $excludeList Test name list (exclusion)
      * @return TestCollection instance
      */
-    public function getTests($testPath, $logger = null, array $testList = array(), array $excludeList = array())
+    public function getTests($testPath, array $testList = array(), array $excludeList = array())
     {
         $testIterator = new \DirectoryIterator(__DIR__.'/Tests');
         $testSet = array();
@@ -60,8 +57,7 @@ class Scanner
             }
         }
 
-        $tests = new TestCollection($testSet, $logger);
-        return $tests;
+        return new TestCollection($testSet);
     }
 
     /**
@@ -73,17 +69,14 @@ class Scanner
      */
     public function execute(array $paths, array $testList = array(), array $excludeList = array())
     {
-        $logger = new Logger('scanner');
-        $logger->pushHandler(new StreamHandler('/tmp/parse-track.log', Logger::INFO));
-
-        $tests = $this->getTests(__DIR__.'/Tests', $logger, $testList, $excludeList);
+        $tests = $this->getTests(__DIR__.'/Tests', $testList, $excludeList);
 
         $files = [];
 
         foreach ($paths as $path) {
             $files = array_merge(
                 $files,
-                $this->scanPath($path, $logger, $tests)
+                $this->scanPath($path, $tests)
             );
         }
 
@@ -94,11 +87,10 @@ class Scanner
      * Scan a specific path
      *
      * @param  string         $path Path to scan
-     * @param  Logger         $logger
      * @param  TestCollection $tests
      * @return File[]         Set of files with any matches attached
      */
-    private function scanPath($path, Logger $logger, TestCollection $tests)
+    private function scanPath($path, TestCollection $tests)
     {
         $directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
         $iterator = new \RecursiveIteratorIterator($directory);
@@ -117,10 +109,10 @@ class Scanner
                 continue;
             }
 
-            $logger->addInfo('Scanning file: '.$pathname);
+            #$logger->addInfo('Scanning file: '.$pathname);
 
             $file = new File($pathname);
-            $visitor = new \Psecio\Parse\NodeVisitor($tests, $file, $logger);
+            $visitor = new \Psecio\Parse\NodeVisitor($tests, $file);
             $traverser = new \PhpParser\NodeTraverser;
             $traverser->addVisitor($visitor);
 
@@ -132,12 +124,12 @@ class Scanner
                 $results = $visitor->getResults();
                 $file->setMatches($results);
 
-                if (count($results) > 0) {
+                /*if (count($results) > 0) {
                     $logger->addInfo(
                         'Matches found',
                         array('path' => $pathname, 'count' => count($results))
                     );
-                }
+                }*/
 
             } catch (\PhpParser\Error $e) {
                 echo 'Parse Error: '.$e->getMessage();
