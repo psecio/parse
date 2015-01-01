@@ -2,6 +2,8 @@
 
 namespace tests\Psecio\Parse;
 
+use \Psecio\Parse\Test;
+
 require 'ParseTestVisitor.php';
 
 /**
@@ -50,17 +52,40 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      */
     public function test_parseSample($code, $result)
     {
-        $this->evalTest($this->buildTest(), $code, $result);
+        $this->assertParseTestResult($this->buildTest(), $code, $result);
     }
 
     /**
-     * Run the Test and assert its correctness
+     * Assert that parsing $code with buildTest()'s Test returns false
+     *
+     * @param string $code     Code to test
+     * @param string $message  Message to display on failure
+     */
+    public function assertParseTestFalse($code, $message = '')
+    {
+        $this->assertParseTestResult($this->buildTest(), $code, false, $message);
+    }
+
+    /**
+     * Assert that parsing $code with buildTest()'s Test returns true
+     *
+     * @param string $code     Code to test
+     * @param string $message  Message to display on failure
+     */
+    public function assertParseTestTrue($code, $message = '')
+    {
+        $this->assertParseTestResult($this->buildTest(), $code, true, $message);
+    }
+
+    /**
+     * Assert that running $test against $code results in $expected
      *
      * @param \Psecio\Parse\Test $test      The test to evaluate
      * @param string             $code      The PHP code to parse and evaulate
      * @param mixed              $expected  The expected result of the $test
+     * @param string             $message   Message to be displayed on failure
      */
-    protected function evalTest($test, $code, $expected)
+    public function assertParseTestResult(Test $test, $code, $expected, $message = '')
     {
         // This should evalute things in much the same way as the Scanner.
         $visitor = new ParseTestVisitor($test);
@@ -69,6 +94,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
         $statements = $this->parser->parse('<?php ' . $code);
         $traverser->traverse($statements);
 
-        $this->assertEquals($expected, $visitor->result);
+        $constraint = new \PHPUnit_Framework_Constraint_IsEqual($expected, 0, 10, false, false);
+        self::assertThat($visitor->result, $constraint, $message);
     }
 }
