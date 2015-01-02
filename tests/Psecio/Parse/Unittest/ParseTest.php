@@ -1,10 +1,8 @@
 <?php
 
-namespace tests\Psecio\Parse;
+namespace Psecio\Parse\Unittest;
 
 use \Psecio\Parse\Test;
-
-require 'ParseTestVisitor.php';
 
 /**
  * Base test for implementing full-parse based unit tests

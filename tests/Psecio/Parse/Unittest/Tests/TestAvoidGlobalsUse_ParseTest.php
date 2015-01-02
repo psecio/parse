@@ -1,8 +1,11 @@
 <?php
 
-namespace Psecio\Parse\Tests;
+namespace Psecio\Parse\Unittest\Tests;
 
-class TestAvoidGlobalsUse_ParseTest extends \tests\Psecio\Parse\ParseTest
+use \Psecio\Parse\Unittest\ParseTest;
+use Psecio\Parse\Tests\TestAvoidGlobalsUse;
+
+class TestAvoidGlobalsUse_ParseTest extends ParseTest
 {
     public function parseSampleProvider()
     {

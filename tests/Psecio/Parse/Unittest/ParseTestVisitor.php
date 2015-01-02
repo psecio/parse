@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Psecio\Parse;
+namespace Psecio\Parse\Unittest;
 
 use \Psecio\Parse\Test;
 use \Psecio\Parse\Node;
