@@ -2,24 +2,29 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Avoid hard-coding sensitive values (ex. "username", "password", etc.)
  */
-class TestAvoidHardcodedSensitiveValues extends \Psecio\Parse\Test
+class TestAvoidHardcodedSensitiveValues implements TestInterface
 {
-    protected $sensitiveNames = array(
-        'username', 'password', 'user', 'pass'
-    );
-    protected $description = 'Avoid hard-coding sensitive values (ex. "username", "password", etc.)';
+    use Helper\NameTrait, Helper\IsExpressionTrait;
 
-    public function evaluate($node, $file = null)
+    private static $sensitiveNames = ['username', 'password', 'user', 'pass'];
+
+    public function getDescription()
     {
-        if ($node->isExpression('Assign') === true) {
-            $node = $node->getNode();
-            $varName = $node->var->name;
+        return 'Avoid hard-coding sensitive values (ex. "username", "password", etc.)';
+    }
 
+    public function evaluate(Node $node, File $file)
+    {
+        if ($this->isExpression($node, 'Assign') === true) {
             // If it's in our list, see if it's just being assigned a value
-            if (in_array($node->var->name, $this->sensitiveNames)) {
+            if (in_array($node->var->name, self::$sensitiveNames)) {
                 if ($node->expr instanceof \PhpParser\Node\Scalar\String) {
                     return false;
                 }

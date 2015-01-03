@@ -2,26 +2,32 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
- * The ereg functions have been deprecated as of PHP 5.3.0
- * Don't use them!
+ * The ereg functions have been deprecated as of PHP 5.3.0. Don't use them!
  */
-class TestNoEregFunctions extends \Psecio\Parse\Test
+class TestNoEregFunctions implements TestInterface
 {
-	private $functions = array(
-		'ereg', 'eregi', 'ereg_replace', 'eregi_replace'
-	);
+    use Helper\NameTrait;
 
-	protected $description = 'Remove any use of ereg functions, deprecated and removed. Use preg_*';
+    private static $functions = ['ereg', 'eregi', 'ereg_replace', 'eregi_replace'];
 
-	public function evaluate($node, $file = null)
-	{
-		$node = $node->getNode();
-		$nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
+    public function getDescription()
+    {
+        return 'Remove any use of ereg functions, deprecated and removed. Use preg_*';
+    }
 
-		if (get_class($node) == "PhpParser\\Node\\Expr\\FuncCall" && in_array(strtolower($nodeName), $this->functions)) {
-			return false;
-		}
-		return true;
-	}
+    public function evaluate(Node $node, File $file)
+    {
+        $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
+
+        if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array(strtolower($nodeName), self::$functions)) {
+            return false;
+        }
+
+        return true;
+    }
 }

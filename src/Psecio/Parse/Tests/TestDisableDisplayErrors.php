@@ -2,16 +2,25 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * The "display_errors" setting should not be enabled manually
  */
-class TestDisableDisplayErrors extends \Psecio\Parse\Test
+class TestDisableDisplayErrors implements TestInterface
 {
-    protected $description = 'The "display_errors" setting should not be enabled manually';
+    use Helper\NameTrait, Helper\IsFunctionTrait;
 
-    public function evaluate($node, $file = null)
+    public function getDescription()
     {
-        if ($node->isFunction('ini_set') === true) {
+        return 'The "display_errors" setting should not be enabled manually';
+    }
+
+    public function evaluate(Node $node, File $file)
+    {
+        if ($this->isFunction($node, 'ini_set') === true) {
             // see if the setting is "display_errors" && if they're enabling it
             if ($node->args[0]->value->value == 'display_errors') {
                 $value = $node->args[1]->value;

@@ -2,35 +2,39 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Logical operators should be avoided
  */
-class TestLogicalOperatorsFound extends \Psecio\Parse\Test
+class TestLogicalOperatorsFound implements TestInterface
 {
-	private $operators = array(
-		'and',
-		'or',
-		'xor'
-	);
+    use Helper\NameTrait;
 
-	protected $description = 'Avoid the use of logical operations (XOR, OR, etc) in favor of operators like && and ||';
+    private static $operators = ['and', 'or', 'xor'];
 
-	public function evaluate($node, $file = null)
-	{
-		$node = $node->getNode();
-		if ($node instanceof \PhpParser\Node\Expr\BinaryOp\NotIdentical) {
-			// See what's on the line
-			$attr = $node->getAttributes();
-			$lines = $file->getLines($attr['startLine']);
+    public function getDescription()
+    {
+        return 'Avoid the use of logical operations (XOR, OR, etc) in favor of operators like && and ||';
+    }
 
-			foreach ($lines as $line) {
-				foreach ($this->operators as $operator) {
-					if (stristr($line, $operator) !== false) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
+    public function evaluate(Node $node, File $file)
+    {
+        if ($node instanceof \PhpParser\Node\Expr\BinaryOp\NotIdentical) {
+            // See what's on the line
+            $attr = $node->getAttributes();
+            $lines = $file->getLines($attr['startLine']);
+
+            foreach ($lines as $line) {
+                foreach (self::$operators as $operator) {
+                    if (stristr($line, $operator) !== false) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

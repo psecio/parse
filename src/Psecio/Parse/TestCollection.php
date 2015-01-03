@@ -2,34 +2,31 @@
 
 namespace Psecio\Parse;
 
-class TestCollection implements \Countable, \Iterator
+use Countable;
+use IteratorAggregate;
+use ArrayIterator;
+
+class TestCollection implements Countable, IteratorAggregate
 {
     /**
-     * @var Test[] Test collection
+     * @var TestInterface[] Test collection
      */
-    private $tests = array();
-
-    /**
-     * @var integer Current position (used in Iterator)
-     */
-    private $position = 0;
+    private $tests = [];
 
     /**
      * Load tests into collection
      *
-     * @param array $testSet
+     * @param TestInterface[] $tests
      */
-    public function __construct(array $testSet)
+    public function __construct(array $tests = array())
     {
-    	foreach ($testSet as $test) {
-    		$testName = "\\Psecio\\Parse\\Tests\\".$test['name'];
-    		$this->add(new $testName());
-    	}
+        foreach ($tests as $test) {
+            $this->add($test);
+        }
     }
 
-    // For Countable interface
     /**
-     * Return a count of the current data
+     * Return a count of the current test set
      *
      * @return integer Count result
      */
@@ -38,74 +35,37 @@ class TestCollection implements \Countable, \Iterator
         return count($this->tests);
     }
 
-    // For Iterator
     /**
-     * Return the current item in the set
+     * Get iterator for test set
      *
-     * @return mixed Current data item
+     * @return ArrayIterator
      */
-    public function current()
+    public function getIterator()
     {
-        return $this->tests[$this->position];
-    }
-
-    /**
-     * Return the current key (position) value
-     *
-     * @return integer Position value
-     */
-    public function key()
-    {
-        return $this->position;
-    }
-
-    /**
-     * Get the next position value
-     *
-     * @return integer Next position
-     */
-    public function next()
-    {
-        return ++$this->position;
-    }
-
-    /**
-     * Rewind to the beginning of the set (position = 0)
-     */
-    public function rewind()
-    {
-        $this->position = 0;
-    }
-
-    /**
-     * See if the requested position exists in the data
-     *
-     * @return boolean Exists/doesn't exist
-     */
-    public function valid()
-    {
-        return isset($this->tests[$this->position]);
+        return new ArrayIterator($this->tests);
     }
 
     /**
      * Add an test to collection
      *
-     * @param Test $test
+     * @param  TestInterface $test
+     * @return void
      */
-    public function add(Test $test)
+    public function add(TestInterface $test)
     {
-        $this->tests[] = $test;
+        $this->tests[$test->getName()] = $test;
     }
 
     /**
-     * Remove an item from the collection by index ID
+     * Remove an item from the collection
      *
-     * @param integer $dataId Item ID
+     * @param  string $name Name of test to remove
+     * @return void
      */
-    public function remove($dataId)
+    public function remove($name)
     {
-        if (array_key_exists($dataId, $this->tests)) {
-            unset($this->tests[$dataId]);
+        if (array_key_exists($name, $this->tests)) {
+            unset($this->tests[$name]);
         }
     }
 
@@ -116,6 +76,6 @@ class TestCollection implements \Countable, \Iterator
      */
     public function toArray()
     {
-		return $this->tests;
+        return $this->tests;
     }
 }

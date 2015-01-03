@@ -2,142 +2,111 @@
 
 namespace Psecio\Parse;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use PhpParser\Parser;
 use PhpParser\Lexer\Emulative as Lexer;
+use PhpParser\NodeTraverser;
+use PhpParser\Node;
 
 /**
- * Core engine: iterates over source files and applies registered tests
+ * Core engine, iterates over source files and evaluates tests
  */
-class Scanner
+class Scanner implements Event\Events
 {
+    /**
+     * @var EventDispatcherInterface Registered event dispatcher
+     */
+    private $dispatcher;
+
     /**
      * @var Parser PhpParser instance
      */
     private $parser;
 
     /**
+     * @var NodeTraverser Traverser
+     */
+    private $traverser;
+
+    /**
+     * @var CallbackVisitor Node visitor
+     */
+    private $visitor;
+
+    /**
      * Optionally inject parser
      *
+     * @param EventDispatcherInterface $dispatcher
+     * @param CallbackVisitor $visitor
      * @param Parser|null $parser
+     * @param NodeTraverser|null $traverser
      */
-    public function __construct(Parser $parser = null)
-    {
+    public function __construct(
+        EventDispatcherInterface $dispatcher,
+        CallbackVisitor $visitor,
+        Parser $parser = null,
+        NodeTraverser $traverser = null
+    ) {
+        $this->dispatcher = $dispatcher;
+        $this->visitor = $visitor;
         $this->parser = $parser ?: new Parser(new Lexer);
+        $this->traverser = $traverser ?: new NodeTraverser;
+        $this->visitor->onTestFail([$this, 'onTestFail']);
+        $this->traverser->addVisitor($this->visitor);
     }
 
     /**
-     * Get the current tests set and return a collection
+     * Test fail callback
      *
-     * @param  string   $testPath Test path (file system location)
-     * @param  string[] $testList Test name list (inclusion)
-     * @param  string[] $excludeList Test name list (exclusion)
-     * @return TestCollection instance
+     * @param  TestInterface $test
+     * @param  Node $node
+     * @param  File $file
+     * @return void
      */
-    public function getTests($testPath, array $testList = array(), array $excludeList = array())
+    public function onTestFail(TestInterface $test, Node $node, File $file)
     {
-        $testIterator = new \DirectoryIterator(__DIR__.'/Tests');
-        $testSet = array();
-
-        foreach ($testIterator as $file) {
-            if (!$file->isDot()) {
-                $basename = $file->getBasename('.php');
-
-                // Skip based on the include and exclude lists
-                if (!empty($testList) && !in_array($basename, $testList)) {
-                    continue;
-                }
-                if (!empty($excludeList) && in_array($basename, $excludeList)) {
-                    continue;
-                }
-
-                $testSet[] = array(
-                    'path' => $file->getPathName(),
-                    'name' => str_replace('.php', '', $file->getFileName())
-                );
-            }
-        }
-
-        return new TestCollection($testSet);
+        $this->dispatcher->dispatch(self::FILE_ISSUE, new Event\IssueEvent($test, $node, $file));
     }
 
     /**
      * Execute the scan
      *
-     * @param  string[] $paths Paths to scan
-     * @param  string[] $testList List of tests to execute [optional]
-     * @return File[]   Set of files with any matches attached
+     * @param  FileIterator $fileIterator Iterator with files to scan
+     * @return void
      */
-    public function execute(array $paths, array $testList = array(), array $excludeList = array())
+    public function scan(FileIterator $fileIterator)
     {
-        $tests = $this->getTests(__DIR__.'/Tests', $testList, $excludeList);
+        $this->dispatcher->dispatch(self::SCAN_START);
 
-        $files = [];
-
-        foreach ($paths as $path) {
-            $files = array_merge(
-                $files,
-                $this->scanPath($path, $tests)
-            );
-        }
-
-        return $files;
-    }
-
-    /**
-     * Scan a specific path
-     *
-     * @param  string         $path Path to scan
-     * @param  TestCollection $tests
-     * @return File[]         Set of files with any matches attached
-     */
-    private function scanPath($path, TestCollection $tests)
-    {
-        $directory = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
-        $iterator = new \RecursiveIteratorIterator($directory);
-        $files = array();
-
-        foreach ($iterator as $info) {
-            echo '.';
-
-            $pathname = $info->getPathname();
-
-            // Having .phps is a really bad thing....throw an exception if it's found
-            if (strtolower(substr($pathname, -4)) == 'phps') {
-                throw new \Exception('You have a .phps file - REMOVE NOW: '.$pathname);
-            }
-            if (strtolower(substr($pathname, -3)) !== 'php') {
+        foreach ($fileIterator as $file) {
+            if ($file->isPathMatch('/\.phps$/i')) {
+                $this->dispatcher->dispatch(
+                    self::FILE_ERROR,
+                    new Event\MessageEvent('You have a .phps file - REMOVE NOW', $file)
+                );
+            } elseif (!$file->isPathMatch('/\.php$/i')) {
+                $this->dispatcher->dispatch(
+                    self::DEBUG,
+                    new Event\MessageEvent("Skipping " . $file->getPath(), $file)
+                );
                 continue;
             }
 
-            #$logger->addInfo('Scanning file: '.$pathname);
+            $this->dispatcher->dispatch(self::FILE_OPEN, new Event\FileEvent($file));
 
-            $file = new File($pathname);
-            $visitor = new \Psecio\Parse\NodeVisitor($tests, $file);
-            $traverser = new \PhpParser\NodeTraverser;
-            $traverser->addVisitor($visitor);
-
-            // We need to recurse through the nodes and run our tests on each node
             try {
-                $stmts = $this->parser->parse($file->getContents());
-                $stmts = $traverser->traverse($stmts);
-
-                $results = $visitor->getResults();
-                $file->setMatches($results);
-
-                /*if (count($results) > 0) {
-                    $logger->addInfo(
-                        'Matches found',
-                        array('path' => $pathname, 'count' => count($results))
-                    );
-                }*/
-
+                $this->visitor->setFile($file);
+                $this->traverser->traverse($this->parser->parse($file->getContents()));
             } catch (\PhpParser\Error $e) {
-                echo 'Parse Error: '.$e->getMessage();
-            };
+                $this->dispatcher->dispatch(
+                    self::FILE_ERROR,
+                    new Event\MessageEvent($e->getMessage(), $file)
+                );
+            }
 
-            $files[] = $file;
+            $this->dispatcher->dispatch(self::FILE_CLOSE);
         }
 
-        return $files;
+        $this->dispatcher->dispatch(self::SCAN_COMPLETE);
     }
 }
