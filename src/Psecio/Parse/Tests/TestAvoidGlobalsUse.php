@@ -2,19 +2,24 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Don't use $GLOBALS, know where your data is coming from
  */
-class TestAvoidGlobalsUse extends \Psecio\Parse\Test
+class TestAvoidGlobalsUse implements TestInterface
 {
-	protected $description = 'The use of $GLOBALS should be avoided.';
+    use Helper\NameTrait;
 
-	public function evaluate($node, $file = null)
-	{
-		$node = $node->getNode();
-		if ($node instanceof \PhpParser\Node\Expr\Variable && $node->name == 'GLOBALS') {
-			return false;
-		}
-		return true;
-	}
+    public function getDescription()
+    {
+        return 'The use of $GLOBALS should be avoided.';
+    }
+
+    public function evaluate(Node $node, File $file)
+    {
+        return !($node instanceof \PhpParser\Node\Expr\Variable && $node->name == 'GLOBALS');
+    }
 }

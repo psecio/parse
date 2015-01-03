@@ -2,44 +2,41 @@
 
 namespace Psecio\Parse;
 
+use SplFileInfo;
+
+/**
+ * Wrapper around an SplFileInfo object
+ */
 class File
 {
     /**
-     * Path to file for object
-     * @var string
+     * @var SplFileInfo Info about this file
      */
-    private $path;
+    private $splFileInfo;
 
     /**
-     * File contents
-     * @var string
+     * @var string File contents
      */
     private $contents;
 
     /**
-     * Matches found for path evaluation
-     * @var array
-     */
-    private $matches = array();
-
-    /**
-     * Init the object and set the path
+     * Set the current instance file info
      *
-     * @param string $path Path to file
+     * @param SplFileInfo $splFileInfo
      */
-    public function __construct($path)
+    public function __construct(SplFileInfo $splFileInfo)
     {
-        $this->setPath($path);
+        $this->splFileInfo = $splFileInfo;
     }
 
     /**
-     * Set the current instance file path
+     * Get file info
      *
-     * @param string $path File path
+     * @return SplFileInfo
      */
-    public function setPath($path)
+    public function getSplFileInfo()
     {
-        $this->path = $path;
+        return $this->splFileInfo;
     }
 
     /**
@@ -49,7 +46,18 @@ class File
      */
     public function getPath()
     {
-        return $this->path;
+        return $this->getSplFileInfo()->getPathname();
+    }
+
+    /**
+     * Test if path matches a regular expression
+     *
+     * @param  string $regexp
+     * @return bool
+     */
+    public function isPathMatch($regexp)
+    {
+        return !!preg_match($regexp, $this->getPath());
     }
 
     /**
@@ -78,8 +86,8 @@ class File
     /**
      * Pull out the given lines from the current file contents
      *
-     * @param integer $startLine Start line
-     * @param integer $endLine End line [optional]
+     * @param  integer $startLine Start line
+     * @param  integer $endLine End line [optional]
      * @return array Set of matching lines
      */
     public function getLines($startLine, $endLine = null)
@@ -87,24 +95,11 @@ class File
         if ($endLine === null) {
             $endLine = $startLine + 1;
         }
-        $count = $endLine - $startLine;
-        $content = explode("\n", $this->getContents());
 
-        return array_slice($content, $startLine-1, $count);
-    }
-
-    /**
-     * Get the full list of matches on File instance
-     *
-     * @return array Matches set
-     */
-    public function getMatches()
-    {
-        return $this->matches;
-    }
-
-    public function setMatches(array $matches)
-    {
-        $this->matches = $matches;
+        return array_slice(
+            explode("\n", $this->getContents()),
+            $startLine-1,
+            $endLine - $startLine
+        );
     }
 }

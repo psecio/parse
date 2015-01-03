@@ -2,33 +2,41 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * For the extract function, if either:
- * 	- the second param is not set (overwrite by default)
+ *  - the second param is not set (overwrite by default)
  *  = the second param is set but is EXTR_OVERWRITE
  * fail...
  */
-class TestExtractNotOverwrite extends \Psecio\Parse\Test
+class TestExtractNotOverwrite implements TestInterface
 {
-	protected $description = 'By default `extract` overwrites variables in the local scope with values given.';
+    use Helper\NameTrait, Helper\IsFunctionTrait;
 
-	public function evaluate($node, $file = null)
-	{
-		if ($node->isFunction('extract') === true) {
+    public function getDescription()
+    {
+        return 'By default `extract` overwrites variables in the local scope with values given.';
+    }
 
-			// Check to be sure it has two arguments
-			if (count($node->args) < 2) {
-				return false;
-			}
+    public function evaluate(Node $node, File $file)
+    {
+        if ($this->isFunction($node, 'extract') === true) {
+            // Check to be sure it has two arguments
+            if (count($node->args) < 2) {
+                return false;
+            }
 
-			$name = (!isset($node->args[1]->value->name->parts[0]))
-				? $node->args[1]->value->name : $node->args[1]->value->name->parts[0];
+            $name = (!isset($node->args[1]->value->name->parts[0]))
+                ? $node->args[1]->value->name : $node->args[1]->value->name->parts[0];
 
-			// So we have two parameters...see if #2 is not equal to EXTR_OVERWRITE
-			if ($name === 'EXTR_OVERWRITE') {
-				return false;
-			}
-		}
-		return true;
-	}
+            // So we have two parameters...see if #2 is not equal to EXTR_OVERWRITE
+            if ($name === 'EXTR_OVERWRITE') {
+                return false;
+            }
+        }
+        return true;
+    }
 }

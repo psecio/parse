@@ -5,10 +5,9 @@ namespace Psecio\Parse\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Psecio\Parse\Scanner;
-use Psecio\Parse\Test;
+use Psecio\Parse\TestInterface;
 use Psecio\Parse\TestCollection;
+use Psecio\Parse\TestFactory;
 
 /**
  * Command for listing current checks and their summaries
@@ -23,11 +22,8 @@ class ListTestsCommand extends Command
         $this
             ->setName('list-tests')
             ->setDescription('List the current checks and their summaries')
-            ->setHelp(<<<EOF
-The <info>%command.name%</info> command displays the current checks and their summaries:
-
-  <info>php %command.full_name%</info>
-EOF
+            ->setHelp(
+                "List current checks and their summaries:\n\n  <info>%command.full_name%</info>\n"
             );
     }
 
@@ -42,15 +38,14 @@ EOF
     {
         $output->write("<comment>Searching for tests:</comment>");
 
-        $scanner = new Scanner(null);
-        $tests = $scanner->getTests(__DIR__.'/Tests');
+        $testCollection = (new TestFactory)->createTestCollection();
 
-        $output->writeln(" " . count($tests) . " found");
+        $output->writeln(" " . count($testCollection) . " found");
         $output->writeln("<comment>Listing:</comment>");
 
-        $colWidth = $this->getTestNameColWidth($tests);
+        $colWidth = $this->getTestNameColWidth($testCollection);
 
-        foreach ($tests as $test) {
+        foreach ($testCollection as $test) {
             $output->write(" <info>" . str_pad($test->getName(), $colWidth) . "</info> ");
             $output->writeln($test->getDescription());
         }
@@ -59,17 +54,17 @@ EOF
     /**
      * Get length of the longest test name in collection
      *
-     * @param  TestCollection $tests
+     * @param  TestCollection $testCollection
      * @return int
      */
-    public function getTestNameColWidth(TestCollection $tests)
+    public function getTestNameColWidth(TestCollection $testCollection)
     {
         return max(
             array_map(
-                function (Test $test) {
+                function (TestInterface $test) {
                     return strlen($test->getName());
                 },
-                $tests->toArray()
+                $testCollection->toArray()
             )
         );
     }

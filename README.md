@@ -63,14 +63,27 @@ To use the scanner, you can execute it from the command line:
 bin/parse scan /path/to/myproject
 ```
 
-### Output
-
-Currently cleartext and xml output formats are available (cleartext is used
-by default). Set format with the `--output` option.
+For more detailed information see the `help` and `list` commands.
 
 ```shell
-bin/parse scan /path/to/myproject --output=xml
-bin/parse scan /path/to/myproject --output=txt
+bin/parse help
+bin/parse list
+```
+
+### Output formats
+
+Currently cleartext and xml output formats are available (cleartext is used
+by default). Set format with the `--format` option.
+
+```shell
+bin/parse scan /path/to/myproject --format=xml
+bin/parse scan /path/to/myproject --format=txt
+```
+
+The default format supports setting the verbosity using the `-v` or `-vv` switch.
+
+```shell
+bin/parse scan /path/to/myproject -vv
 ```
 
 ### Listing the checks

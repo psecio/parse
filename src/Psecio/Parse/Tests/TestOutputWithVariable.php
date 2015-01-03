@@ -2,35 +2,40 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Check for output functions that use a variable in the output
  */
-class TestOutputWithVariable extends \Psecio\Parse\Test
+class TestOutputWithVariable implements TestInterface
 {
-	private $outputFunctions = array(
-		'print_r', 'printf', 'vprintf', 'sprintf'
-	);
+    use Helper\NameTrait;
 
-	protected $description = 'Avoid the use of an output method (echo, print, etc) directly with a variable';
+    private static $outputFunctions = ['print_r', 'printf', 'vprintf', 'sprintf'];
 
-	public function evaluate($node, $file = null)
-	{
-		$node = $node->getNode();
+    public function getDescription()
+    {
+        return 'Avoid the use of an output method (echo, print, etc) directly with a variable';
+    }
 
-		// See if our echo or print (constructs) uses concat
-		if ($node instanceof \PhpParser\Node\Stmt\Echo_ || $node instanceof PhpParser\Node\Expr\Print_) {
-			if (isset($node->exprs[0]) && $node->exprs[0] instanceof PhpParser\Node\Expr\BinaryOp\Concat) {
-				return false;
-			}
-		}
+    public function evaluate(Node $node, File $file)
+    {
+        // See if our echo or print (constructs) uses concat
+        if ($node instanceof \PhpParser\Node\Stmt\Echo_ || $node instanceof PhpParser\Node\Expr\Print_) {
+            if (isset($node->exprs[0]) && $node->exprs[0] instanceof PhpParser\Node\Expr\BinaryOp\Concat) {
+                return false;
+            }
+        }
 
-		// See if our other output functions use concat
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array($node->name, $this->outputFunctions)) {
-			if (isset($node->args[0]) && $node->args[0]->value instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {
-				return false;
-			}
-		}
+        // See if our other output functions use concat
+        if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array($node->name, self::$outputFunctions)) {
+            if (isset($node->args[0]) && $node->args[0]->value instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

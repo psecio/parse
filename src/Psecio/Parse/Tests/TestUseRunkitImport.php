@@ -2,18 +2,24 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Using runkit_import overwrites values by default - do not use
  */
-class TestUseRunkitImport extends \Psecio\Parse\Test
+class TestUseRunkitImport implements TestInterface
 {
-	protected $description = 'Using the `runkit_import` function overwrites functions/classes by default.';
+    use Helper\NameTrait, Helper\IsFunctionTrait;
 
-	public function evaluate($node, $file = null)
-	{
-		if ($node->isFunction('runkit_import') === true) {
-			return false;
-		}
-		return true;
-	}
+    public function getDescription()
+    {
+        return 'Using the `runkit_import` function overwrites functions/classes by default.';
+    }
+
+    public function evaluate(Node $node, File $file)
+    {
+        return !$this->isFunction($node, 'runkit_import');
+    }
 }

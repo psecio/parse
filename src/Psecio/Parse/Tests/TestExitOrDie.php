@@ -2,18 +2,24 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Exit or die usage should be avoided
  */
-class TestExitOrDie extends \Psecio\Parse\Test
+class TestExitOrDie implements TestInterface
 {
-	protected $description = 'Avoid the use of `exit` or `die` (could lead to injection issues (direct output)';
+    use Helper\NameTrait, Helper\IsExpressionTrait;
 
-	public function evaluate($node, $file = null)
-	{
-		if ($node->isExpression('Exit')) {
-			return false;
-		}
-		return true;
-	}
+    public function getDescription()
+    {
+        return 'Avoid the use of `exit` or `die` (could lead to injection issues (direct output)';
+    }
+
+    public function evaluate(Node $node, File $file)
+    {
+        return !$this->isExpression($node, 'Exit');
+    }
 }
