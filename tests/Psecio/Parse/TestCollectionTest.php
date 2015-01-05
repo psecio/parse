@@ -2,124 +2,79 @@
 
 namespace Psecio\Parse;
 
-require_once 'TestStub.php';
+use Mockery as m;
 
 class TestCollectionTest extends \PHPUnit_Framework_TestCase
 {
-	private $collection;
-	private $tests = array(
-		array(
-			'path' => 'foobar',
-			'name' => 'TestStub'
-		)
-	);
-	private $logger = null;
+    /**
+     * @covers \Psecio\Parse\TestCollection::__construct
+     * @covers \Psecio\Parse\TestCollection::toArray
+     */
+    public function testToArray()
+    {
+        $test = m::mock('\Psecio\Parse\TestInterface')
+            ->shouldReceive('getName')
+            ->andReturn('TestName')
+            ->mock();
 
-	public function setUp()
-	{
-		$tests = array();
-		$logger = null;
-		$this->collection = new TestCollection($tests, $logger);
-	}
-	public function tearDown()
-	{
-		unset($this->collection);
-	}
+        $this->assertSame(
+            (new TestCollection([$test]))->toArray(),
+            ['TestName' => $test],
+            'toArray() should return the correct array'
+        );
+    }
 
-	/**
-	 * Init the collection and verify
-	 *
-	 * @covers \Psecio\Parse\TestCollection::__construct
-	 * @covers \Psecio\Parse\TestCollection::count
-	 */
-	public function testInitCollection()
-	{
-		$collection = new TestCollection($this->tests, $this->logger);
-		$tests = $collection->toArray();
+    /**
+     * @covers \Psecio\Parse\TestCollection::count
+     * @covers \Psecio\Parse\TestCollection::add
+     * @covers \Psecio\Parse\TestCollection::remove
+     */
+    public function testCountable()
+    {
+        $collection = new TestCollection;
 
-		$this->assertTrue($tests[0] instanceof \Psecio\Parse\Tests\TestStub);
-	}
+        $this->assertCount(
+            0,
+            $collection,
+            'An empty collection should count to 0'
+        );
 
-	/**
-	 * Test that the toArray method returns the right results
-	 *
-	 * @covers \Psecio\Parse\TestCollection::__construct
-	 * @covers \Psecio\Parse\TestCollection::count
-	 * @covers \Psecio\Parse\TestCollection::toArray
-	 */
-	public function testCollectionToArray()
-	{
-		$collection = new TestCollection($this->tests, $this->logger);
-		$tests = $collection->toArray();
+        $collection->add(
+            m::mock('\Psecio\Parse\TestInterface')
+                ->shouldReceive('getName')
+                ->andReturn('TestName')
+                ->mock()
+        );
 
-		$results = array(
-			new \Psecio\Parse\Tests\TestStub(null)
-		);
+        $this->assertCount(
+            1,
+            $collection,
+            '1 added item should be reflected in count'
+        );
 
-		$this->assertTrue(is_array($tests));
-		$this->assertCount(1, $tests);
-		$this->assertEquals(1, count($collection));
-		$this->assertEquals($tests, $results);
-	}
+        $collection->remove('TestName');
 
-	/**
-	 * Test adding a new item to the collection
-	 *
-	 * @covers \Psecio\Parse\TestCollection::add
-	 */
-	public function testAddToCollection()
-	{
-		$collection = new TestCollection($this->tests, $this->logger);
+        $this->assertCount(
+            0,
+            $collection,
+            '1 removed item should be reflected in count'
+        );
+    }
 
-		$newTest = new \Psecio\Parse\Tests\TestStub(null);
-		$collection->add($newTest);
+    /**
+     * @covers \Psecio\Parse\TestCollection::getIterator
+     */
+    public function testIterator()
+    {
+        $test = m::mock('\Psecio\Parse\TestInterface')
+            ->shouldReceive('getName')
+            ->andReturn('TestName')
+            ->mock();
 
-		$this->assertCount(2, $collection->toArray());
-	}
-
-	/**
-	 * Test the removal of a test from the collection
-	 *
-	 * @covers \Psecio\Parse\TestCollection::add
-	 * @covers \Psecio\Parse\TestCollection::remove
-	 */
-	public function testRemoveFromCollection()
-	{
-		$collection = new TestCollection($this->tests, $this->logger);
-
-		$newTest = new \Psecio\Parse\Tests\TestStub(null);
-		$collection->add($newTest);
-
-		$this->assertCount(2, $collection->toArray());
-		$collection->remove(1);
-
-		$this->assertCount(1, $collection->toArray());
-	}
-
-	/**
-	 * Test to ensure that the iteration of the collection works correctly
-	 *
-	 * @covers \Psecio\Parse\TestCollection::current
-	 * @covers \Psecio\Parse\TestCollection::next
-	 * @covers \Psecio\Parse\TestCollection::rewind
-	 * @covers \Psecio\Parse\TestCollection::valid
-	 * @covers \Psecio\Parse\TestCollection::key
-	 */
-	public function testIterateAllCollection()
-	{
-		$tests = array(
-			array('path' => 'foobar', 'name' => 'TestStub'),
-			array('path' => 'foobar', 'name' => 'TestStub'),
-			array('path' => 'foobar', 'name' => 'TestStub')
-		);
-		$collection = new TestCollection($tests, $this->logger);
-
-		$count = 0;
-		foreach ($collection as $test) {
-			if ($test instanceof \Psecio\Parse\Tests\TestStub) {
-				$count++;
-			}
-		}
-		$this->assertEquals($count, 3);
-	}
+        $this->assertSame(
+            iterator_to_array(new TestCollection([$test])),
+            ['TestName' => $test],
+            'iteration of the collection should work correctly'
+        );
+    }
 }

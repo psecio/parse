@@ -2,92 +2,78 @@
 
 namespace Psecio\Parse;
 
+use SplFileInfo;
+
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-	private $file;
-	private $path;
+    public function testGetPath()
+    {
+        $this->assertEquals(
+            __FILE__,
+            (new File(new SplFileInfo(__FILE__)))->getPath(),
+            'The same path that is set should be returned'
+        );
+    }
 
-	public function setUp()
-	{
-		$this->path = __DIR__.'/sample-file.php';
-		$this->file = new File($this->path);
-	}
-	public function tearDown()
-	{
-		unset($this->file);
-	}
+    public function testIsPathMatch()
+    {
+        $this->assertTrue(
+            (new File(new SplFileInfo(__FILE__)))->isPathMatch('/.php$/'),
+            'Test should pass as the path of __FILE__ ends with .php'
+        );
+    }
 
-	/**
-	 * Test the getting/setting of the file path
-	 */
-	public function testGetSetPath()
-	{
-		$this->assertEquals(
-			$this->path,
-			$this->file->getPath()
-		);
-	}
+    public function testGetContent()
+    {
+        $this->assertRegExp(
+            '/public function testGetContent()/',
+            (new File(new SplFileInfo(__FILE__)))->getContents(),
+            'The contents from this file should be fetched correctly'
+        );
+    }
 
-	/**
-	 * Test that the content from the file is fetched correctly
-	 */
-	public function testGetContent()
-	{
-		$this->assertEquals(
-			"<?php echo 'sample-file.php'; ?>",
-			$this->file->getContents()
-		);
-	}
+    public function testSetContent()
+    {
+        $newContent = 'this is a test';
 
-	/**
-	 * Test the setting of different content
-	 */
-	public function testSetContent()
-	{
-		$newContent = 'this is a test';
-		$this->file->setContents($newContent);
+        $file = new File(new SplFileInfo(__FILE__));
+        $file->setContents($newContent);
 
-		$this->assertEquals(
-			$this->file->getContents(),
-			$newContent
-		);
-	}
+        $this->assertEquals(
+            $file->getContents(),
+            $newContent,
+            'Setting new content should override filesystem content'
+        );
+    }
 
-	/**
-	 * Test the "get lines" funcitonality
-	 */
-	public function testGetLines()
-	{
-		$newContent = "this is\na test with\nnewlines\nhere";
-		$this->file->setContents($newContent);
+    /**
+     * Test the "get lines" funcitonality
+     */
+    public function testGetLines()
+    {
+        $newContent = "this is\na test with\nnewlines\nhere";
 
-		// A single line w/o optional param
-		$lines = $this->file->getLines(2);
+        $file = new File(new SplFileInfo(__FILE__));
+        $file->setContents($newContent);
 
-		$this->assertTrue(is_array($lines) && !empty($lines));
-		$this->assertEquals(
-			$lines,
-			array('a test with')
-		);
+        // A single line w/o optional param
+        $lines = $file->getLines(2);
 
-		// Multiple lines with second param
-		$this->assertEquals(
-			$this->file->getLines(2, 5),
-			array('a test with', 'newlines', 'here')
-		);
-	}
+        $this->assertTrue(
+            is_array($lines) && !empty($lines)
+        );
 
-	/**
-	 * Test the getter/setter for matches on the file
-	 */
-	public function testGetSetMatches()
-	{
-		$matches = array('foo', 'bar');
-		$this->file->setMatches($matches);
+        $this->assertSame(
+            $lines,
+            array('a test with'),
+            'Using getLines with one param should yield a single line'
+        );
 
-		$this->assertEquals(
-			$this->file->getMatches(),
-			$matches
-		);
-	}
+        // Multiple lines with second param
+        $this->assertEquals(
+            $file->getLines(2, 5),
+            array('a test with', 'newlines', 'here'),
+            'Using getLines with two param should yield multiple lines'
+        );
+    }
 }

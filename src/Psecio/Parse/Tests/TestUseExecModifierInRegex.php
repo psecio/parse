@@ -2,28 +2,35 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Ensure that the regular expression handling doesn't use the /e modifier
  */
-class TestUseExecModifierInRegex extends \Psecio\Parse\Test
+class TestUseExecModifierInRegex implements TestInterface
 {
-	private $functions = array(
-		'preg_match', 'preg_match_all'
-	);
+    use Helper\NameTrait;
 
-	protected $description = 'Do not use the eval modifier in regular expressions (\e)';
+    private static $functions = ['preg_match', 'preg_match_all'];
 
-	public function evaluate($node, $file = null)
-	{
-		$node = $node->getNode();
-		$nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
+    public function getDescription()
+    {
+        return 'Do not use the eval modifier in regular expressions (\e)';
+    }
 
-		if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array(strtolower($nodeName), $this->functions)) {
-			$regex = (string)$node->args[0]->value->value;
-			if (strstr($regex, '/e') !== false) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public function evaluate(Node $node, File $file)
+    {
+        $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
+
+        if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array(strtolower($nodeName), self::$functions)) {
+            $regex = (string)$node->args[0]->value->value;
+            if (strstr($regex, '/e') !== false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

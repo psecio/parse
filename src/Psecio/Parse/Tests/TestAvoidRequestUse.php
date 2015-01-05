@@ -2,19 +2,24 @@
 
 namespace Psecio\Parse\Tests;
 
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+use Psecio\Parse\File;
+
 /**
  * Don't use $_REQUEST, know where your data is coming from
  */
-class TestAvoidRequestUse extends \Psecio\Parse\Test
+class TestAvoidRequestUse implements TestInterface
 {
-	protected $description = 'Avoid the use of $_REQUEST (know where your data comes fron)';
+    use Helper\NameTrait;
 
-	public function evaluate($node, $file = null)
-	{
-		$node = $node->getNode();
-		if ($node instanceof \PhpParser\Node\Expr\Variable && $node->name == '_REQUEST') {
-			return false;
-		}
-		return true;
-	}
+    public function getDescription()
+    {
+        return 'Avoid the use of $_REQUEST (know where your data comes fron)';
+    }
+
+    public function evaluate(Node $node, File $file)
+    {
+        return !($node instanceof \PhpParser\Node\Expr\Variable && $node->name == '_REQUEST');
+    }
 }

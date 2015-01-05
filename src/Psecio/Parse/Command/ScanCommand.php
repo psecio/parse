@@ -7,22 +7,60 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Psecio\Parse\Subscriber\ConsoleStandard;
+use Psecio\Parse\Subscriber\ConsoleVerbose;
+use Psecio\Parse\Subscriber\ConsoleDebug;
+use Psecio\Parse\Subscriber\ConsoleReport;
+use Psecio\Parse\Subscriber\Xml;
+use Psecio\Parse\TestFactory;
+use Psecio\Parse\Scanner;
+use Psecio\Parse\CallbackVisitor;
+use Psecio\Parse\FileIterator;
+use Exception;
 
+/**
+ * The main command, scan paths for possible security issues
+ */
 class ScanCommand extends Command
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function configure()
     {
-        $this->setName('scan')
-            ->setDescription('Scan the given location for possible security issues')
-            ->setDefinition(array(
-                new InputArgument('target', InputArgument::REQUIRED, 'Path to the file/directory to scan'),
-                new InputOption('output', 'output', InputOption::VALUE_OPTIONAL, 'Output method (txt or xml)', 'txt'),
-                new InputOption('debug', 'debug', InputOption::VALUE_NONE, 'Show debug output'),
-                new InputOption('tests', 'tests', InputOption::VALUE_REQUIRED, 'Test(s) to execute', ''),
-                new InputOption('exclude', 'exclude', InputOption::VALUE_REQUIRED, 'Test(s) to exclude', ''),
-            ))
+        $this
+            ->setName('scan')
+            ->setDescription('Scans paths for possible security issues')
+            ->addArgument(
+                'path',
+                InputArgument::OPTIONAL|InputArgument::IS_ARRAY,
+                'Path to scan.',
+                [getcwd()]
+            )
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output format (txt or xml).',
+                'txt'
+            )
+            ->addOption(
+                'include-tests',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma separated list of tests to include in the test suite.',
+                ''
+            )
+            ->addOption(
+                'exclude-tests',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma separated list of tests to exclude from the test suite.',
+                ''
+            )
             ->setHelp(
-                'Scan the given location for possible security issues'
+                "Scan paths for possible security issues:\n\n  <info>%command.full_name% /path/to/src</info>\n"
             );
     }
 
@@ -31,34 +69,40 @@ class ScanCommand extends Command
      *
      * @param  InputInterface $input Input object
      * @param  OutputInterface $output Output object
-     * @throws \Exception
+     * @throws Exception If output format is not valid
      * @return null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $scanner = new \Psecio\Parse\Scanner($input->getArgument('target'));
+        $dispatcher = new EventDispatcher;
 
-        $results = $scanner->execute(
-            $input->getOption('debug'),
-            array_filter(explode(',', $input->getOption('tests'))),
-            array_filter(explode(',', $input->getOption('exclude')))
-        );
-
-        if ($input->getOption('debug')) {
-            // print_r($results);
-        }
-
-        switch (strtolower($input->getOption('output'))) {
+        switch (strtolower($input->getOption('format'))) {
             case 'txt':
-                $txt = new \Psecio\Parse\Output\Console();
-                $output->write($txt->generate($results));
+                if ($output->isVeryVerbose()) {
+                    $dispatcher->addSubscriber(new ConsoleDebug($output));
+                } elseif ($output->isVerbose()) {
+                    $dispatcher->addSubscriber(new ConsoleVerbose($output));
+                } else {
+                    $dispatcher->addSubscriber(new ConsoleStandard($output));
+                }
+                $dispatcher->addSubscriber(new ConsoleReport($output));
                 break;
             case 'xml':
-                $xml = new \Psecio\Parse\Output\Xml();
-                $output->write($xml->generate($results));
+                $dispatcher->addSubscriber(new Xml($output));
                 break;
             default:
-                throw new \Exception("Unknown output method '{$input->getOption('output')}'");
+                throw new Exception("Unknown output format '{$input->getOption('format')}'");
         }
+
+        $testFactory = new TestFactory(
+            array_filter(explode(',', $input->getOption('include-tests'))),
+            array_filter(explode(',', $input->getOption('exclude-tests')))
+        );
+
+        $scanner = new Scanner($dispatcher, new CallbackVisitor($testFactory->createTestCollection()));
+
+        $scanner->scan(
+            new FileIterator($input->getArgument('path'))
+        );
     }
 }

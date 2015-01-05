@@ -1,105 +1,97 @@
 <?php
 
 namespace Psecio\Parse;
-use \Mockery;
+
+use Mockery as m;
 
 class TestSessionRegenFalseTest extends \PHPUnit_Framework_TestCase
 {
-	public function tearDown()
-	{
-		// Mockery must be shut down
-		Mockery::close();
-	}
+    public function testNotAFunction()
+    {
+        $this->assertTrue(
+            (new Tests\TestSessionRegenFalse(null))->evaluate(
+                m::mock('\PhpParser\Node'),
+                m::mock('\Psecio\Parse\File')
+            ),
+            "\\PhpParer\\Node does not represent a function hence test should pass"
+        );
+    }
 
-	/** If the node isn't a function or not the correct function, can't fail the test. */
-	public function test_notFunction_true()
-	{
-		$node = $this->makeNode(false);
-		$res = $this->evalTest($node);
-		$this->assertTrue($res);
-	}
+    public function testNoArgument()
+    {
+        $node = m::mock('\PhpParser\Node\Expr\FuncCall');
+        $node->name = 'session_regenerate_id';
+        $node->args = [];
 
-	/** If it's the correct function, and there are no arguments, the test should fail */
-	public function test_functionNoArgs_false()
-	{
-		$node = $this->makeNode(true);
-		$node->args = array();
+        $this->assertFalse(
+            (new Tests\TestSessionRegenFalse(null))->evaluate(
+                $node,
+                m::mock('\Psecio\Parse\File')
+            ),
+            "If it's the correct function, and there are no arguments, the test should fail"
+        );
+    }
 
-		$res = $this->evalTest($node);
-		$this->assertFalse($res);
-	}
+    public function testInvalidArgument()
+    {
+        $node = m::mock('\PhpParser\Node\Expr\FuncCall');
+        $node->name = 'session_regenerate_id';
+        $node->args = [(object)['value' => $this->makeNamedNode('false')]];
 
-	/** If it's the correct function and the argument is false, the test should fail. */
-	public function test_functionFalseArg_false()
-	{
-		$node = $this->makeNode(true);
-		$arg = (object)array('value' => $this->makeNamedNode('false'));
-		$node->args = array($arg);
-		$this->assertFalse($this->evalTest($node));
-	}
+        $this->assertFalse(
+            (new Tests\TestSessionRegenFalse(null))->evaluate(
+                $node,
+                m::mock('\Psecio\Parse\File')
+            ),
+            "If it's the correct function and the argument is false, the test should fail"
+        );
+    }
 
-	/** If it's the correct function and the argument is true, the test should succeed. */
-	public function test_functionTrueArg_true()
-	{
-		$node = $this->makeNode(true);
-		$arg = (object)array('value' => $this->makeNamedNode('true'));
-		$node->args = array($arg);
-		$this->assertTrue($this->evalTest($node));
-	}
+    public function testValidArgument()
+    {
+        $node = m::mock('\PhpParser\Node\Expr\FuncCall');
+        $node->name = 'session_regenerate_id';
+        $node->args = [(object)['value' => $this->makeNamedNode('true')]];
 
-	/** If it's the correct function and the argument is non-boolean, the test should fail. */
-	public function test_functionNonBoolArg_false()
-	{
-		$node = $this->makeNode(true);
-		$arg = (object)array('value' => $this->makeNamedNode('notBool'));
-		$node->args = array($arg);
-		$this->assertFalse($this->evalTest($node));
-	}
+        $this->assertTrue(
+            (new Tests\TestSessionRegenFalse(null))->evaluate(
+                $node,
+                m::mock('\Psecio\Parse\File')
+            ),
+            "If it's the correct function and the argument is true, the test should succeed"
+        );
+    }
 
-	/**
-	 * Make a (mocked) node for testing against TestSessionRegenFalse()
-	 *
-	 * @param bool $isFuncReturns  Value that $node->isFunction('session_regenerate_id') should return
-	 *
-	 * @return Node (mocked) that returns $isFuncReturns when isFunction() is called
-	 */
-	protected function makeNode($isFuncReturns)
-	{
-		$node = Mockery::mock('Node')
-			->shouldReceive('isFunction')
-			->with('session_regenerate_id')
-			->andReturn($isFuncReturns);
-		return $node->mock();
-	}
+    public function testArgumentNotBoolean()
+    {
+        $node = m::mock('\PhpParser\Node\Expr\FuncCall');
+        $node->name = 'session_regenerate_id';
+        $node->args = [(object)['value' => $this->makeNamedNode('notBool')]];
 
-	/**
-	 * Make a (mocked) node object that has a name property that is a \PhpParse\Node\Name with a value of $value
-	 *
-	 * @param mixed $value	What to set the name string value to
-	 *
-	 * @return object  An object with an appropriate name property
-	 */
-	protected function makeNamedNode($value)
-	{
-		$name =	 Mockery::mock('\PhpParser\Node\Name');
-		$name->shouldReceive('__toString')
-			->zeroOrMoreTimes()
-			->andReturn($value)
-			->mock();
-		$node = (object)array('name' => $name);
-		return $node;
-	}
+        $this->assertFalse(
+            (new Tests\TestSessionRegenFalse(null))->evaluate(
+                $node,
+                m::mock('\Psecio\Parse\File')
+            ),
+            "If it's the correct function and the argument is non-boolean, the test should fail"
+        );
+    }
 
-	/**
-	 * Evaluate the TestSessionRegenFalse() test
-	 *
-	 * @param Node $node  The node to evaluate
-	 *
-	 * @return bool	 The result of calling Tests\TestSessionRegenFalse::evaluate($node)
-	 */
-	protected function evalTest($node)
-	{
-		$t = new Tests\TestSessionRegenFalse(null);
-		return $t->evaluate($node);
-	}
+    /**
+     * Make a (mocked) node object that has a name property that is a \PhpParse\Node\Name with a value of $value
+     *
+     * @param  string $name What to set the name string value to
+     * @return \PhpParser\Node With appropriate name property
+     */
+    protected function makeNamedNode($name)
+    {
+        $node = m::mock('\PhpParser\Node');
+        $node->name = m::mock('\PhpParser\Node\Name')
+            ->shouldReceive('__toString')
+            ->zeroOrMoreTimes()
+            ->andReturn($name)
+            ->mock();
+
+        return $node;
+    }
 }
