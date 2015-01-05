@@ -29,6 +29,11 @@
             "Psecio": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-0": {
+            "Psecio": "tests/"
+        }
+    },
     "config": {
         "bin-dir": "bin"
     },
