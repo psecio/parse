@@ -12,7 +12,7 @@ use PhpParser\NodeTraverser;
  */
 abstract class ParseTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var \PhpParser\Parser  The parser to use to parse samples */
+    /** @var Parser  The parser to use to parse samples */
     protected $parser;
 
     public function setUp()
@@ -20,6 +20,15 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
         // Set up the parser the same way the Scanner does.
         $this->parser = new Parser(new Lexer);
     }
+
+    /**
+     * Method to create the test to evaluate
+     *
+     * This should return an instantiated object of the class that is being evaluated
+     *
+     * @return TestInterface  An object of the type being tested
+     */
+    abstract protected function buildTest();
 
     /**
      * PHPUnit provider to provide samples and results
@@ -37,23 +46,51 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      *
      * @return array  Lists of samples to test against
      */
-    abstract public function parseSampleProvider();
-
-    /**
-     * Method to create the Test to evaluate
-     *
-     * This should return an instantiated object of the class that is being evaluated
-     *
-     * @return \Psecio\Parse\Test  An object of the type being tested
-     */
-    abstract protected function buildTest();
-
-    /**
-     * @dataProvider parseSampleProvider
-     */
-    public function test_parseSample($code, $result)
+    public function parseSampleProvider()
     {
-        $this->assertParseTestResult($this->buildTest(), $code, $result);
+        return [];
+    }
+
+    /**
+     * Run the tests supplied by {@see parseSampleProvider()}
+     */
+    public function test_parseSample()
+    {
+        foreach ($this->parseSampleProvider() as $index => $args) {
+            list($code, $result) = $args;
+            $this->assertParseTest(
+                $result,
+                $code,
+                sprintf('Sample #%d from %s::parseSampleProvider failed.', $index, get_class($this))
+            );
+        }
+    }
+
+    /**
+     * Assert that running $test against $code results in $expected
+     *
+     * Note taht $message does not replace the message from the assertion,
+     * only augments it.
+     *
+     * @param string  $code      The PHP code to parse and evaulate
+     * @param mixed   $expected  The expected result of the $test
+     * @param string  $message   Message to be displayed on failure
+     */
+    public function assertParseTest($expected, $code, $message = '')
+    {
+        $message = sprintf("%sThe parser scan should have %s the test.\nTested code was:\n%s",
+                           empty($message) ? '' : ($message . "\n"),
+                           $expected ? 'passed' : 'failed',
+                           $this->formatCodeForMessage($code));
+
+        $actual = $this->scan($code);
+
+        if ($actual != $expected) {
+            $parsed = $this->parser->parse('<?php ' . $code);
+            var_dump($parsed);
+        }
+
+        $this->assertSame($expected, $actual, $message);
     }
 
     /**
@@ -64,7 +101,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      */
     public function assertParseTestFalse($code, $message = '')
     {
-        $this->assertParseTestResult($this->buildTest(), $code, false, $message);
+        $this->assertParseTest(false, $code, $message);
     }
 
     /**
@@ -75,27 +112,38 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      */
     public function assertParseTestTrue($code, $message = '')
     {
-        $this->assertParseTestResult($this->buildTest(), $code, true, $message);
+        $this->assertParseTest(true, $code, $message);
     }
 
     /**
-     * Assert that running $test against $code results in $expected
+     * Format a code string so it displays nicely in an assertion message
      *
-     * @param \Psecio\Parse\Test $test      The test to evaluate
-     * @param string             $code      The PHP code to parse and evaulate
-     * @param mixed              $expected  The expected result of the $test
-     * @param string             $message   Message to be displayed on failure
+     * Prefixes each line of the code with " > ".
+     *
+     * @param string $code  The code to format
+     *
+     * @return string  The formatted code
      */
-    public function assertParseTestResult(TestInterface $test, $code, $expected, $message = '')
+    protected function formatCodeForMessage($code)
     {
-        // This should evalute things in much the same way as the Scanner.
-        $visitor = new ParseTestVisitor($test);
+        $linePrefix = " > ";
+        return $linePrefix . str_replace("\n", "\n" . $linePrefix, trim($code));
+    }
+
+    /**
+     * Scan PHP code and return the result
+     *
+     * @param string $code  The code to scan
+     *
+     * @return bool  The results visiting all the nodes from the parsed $code
+     */
+    protected function scan($code)
+    {
+        $visitor = new ParseTestVisitor($this->buildTest());
         $traverser = new NodeTraverser;
         $traverser->addVisitor($visitor);
-        $statements = $this->parser->parse('<?php ' . $code);
-        $traverser->traverse($statements);
+        $traverser->traverse($this->parser->parse('<?php ' . $code));
 
-        $constraint = new \PHPUnit_Framework_Constraint_IsEqual($expected, 0, 10, false, false);
-        self::assertThat($visitor->result, $constraint, $message);
+        return $visitor->result;
     }
 }
