@@ -85,11 +85,6 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
 
         $actual = $this->scan($code);
 
-        if ($actual != $expected) {
-            $parsed = $this->parser->parse('<?php ' . $code);
-            var_dump($parsed);
-        }
-
         $this->assertSame($expected, $actual, $message);
     }
 
