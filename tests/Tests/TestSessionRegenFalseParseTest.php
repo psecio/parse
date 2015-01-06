@@ -1,11 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Unittest\Tests;
+namespace Psecio\Parse\Tests;
 
-use \Psecio\Parse\Unittest\ParseTest;
-use \Psecio\Parse\Tests\TestSessionRegenFalse;
+use Psecio\Parse\ParseTest;
 
-class TestSessionRegenFalse_ParseTest extends ParseTest
+class TestSessionRegenFalseParseTest extends ParseTest
 {
     public function parseSampleProvider()
     {

@@ -29,6 +29,11 @@
             "Psecio": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Psecio\\Parse\\": "tests/"
+        }
+    },
     "config": {
         "bin-dir": "bin"
     },
