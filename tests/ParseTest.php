@@ -1,8 +1,11 @@
 <?php
 
-namespace Psecio\Parse\Unittest;
+namespace Psecio\Parse;
 
-use \Psecio\Parse\TestInterface;
+use Psecio\Parse\TestInterface;
+use PhpParser\Parser;
+use PhpParser\Lexer\Emulative as Lexer;
+use PhpParser\NodeTraverser;
 
 /**
  * Base test for implementing full-parse based unit tests
@@ -15,7 +18,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Set up the parser the same way the Scanner does.
-        $this->parser = new \PhpParser\Parser(new \PhpParser\Lexer\Emulative);
+        $this->parser = new Parser(new Lexer);
     }
 
     /**
@@ -87,7 +90,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
     {
         // This should evalute things in much the same way as the Scanner.
         $visitor = new ParseTestVisitor($test);
-        $traverser = new \PhpParser\NodeTraverser;
+        $traverser = new NodeTraverser;
         $traverser->addVisitor($visitor);
         $statements = $this->parser->parse('<?php ' . $code);
         $traverser->traverse($statements);

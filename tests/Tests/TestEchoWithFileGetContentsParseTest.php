@@ -1,11 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Unittest\Tests;
+namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\Unittest\ParseTest;
-use Psecio\Parse\Tests\TestEchoWithFileGetContents;
+use Psecio\Parse\ParseTest;
 
-class TestEchoWithFileGetContents_ParseTest extends ParseTest
+class TestEchoWithFileGetContentsParseTest extends ParseTest
 {
     public function parseSampleProvider()
     {

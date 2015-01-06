@@ -30,8 +30,8 @@
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "Psecio": "tests/"
+        "psr-4": {
+            "Psecio\\Parse\\": "tests/"
         }
     },
     "config": {

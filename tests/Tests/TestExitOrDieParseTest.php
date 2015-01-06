@@ -1,11 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Unittest\Tests;
+namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\Unittest\ParseTest;
-use Psecio\Parse\Tests\TestExitOrDie;
+use Psecio\Parse\ParseTest;
 
-class TestExitOrDie_ParseTest extends ParseTest
+class TestExitOrDieParseTest extends ParseTest
 {
     public function parseSampleProvider()
     {
