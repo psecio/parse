@@ -22,6 +22,17 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testFilenamePath()
+    {
+        $this->assertTrue(
+            array_key_exists(
+                __DIR__.'/FileIteratorTest.php',
+                iterator_to_array(new FileIterator([__FILE__]))
+            ),
+            __FILE__ . ' should be found in iterator'
+        );
+    }
+
     public function testCountable()
     {
         $this->assertTrue(

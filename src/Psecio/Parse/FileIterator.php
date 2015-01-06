@@ -8,6 +8,7 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use FilesystemIterator;
 use ArrayIterator;
+use SplFileInfo;
 
 /**
  * Responsible for locating and iterating over File objects
@@ -27,7 +28,11 @@ class FileIterator implements IteratorAggregate, Countable
     public function __construct(array $paths = array())
     {
         foreach ($paths as $path) {
-            $this->appendDir($path);
+            if (is_dir($path)) {
+                $this->appendDir($path);
+            } elseif (is_file($path)) {
+                $this->appendFile($path);
+            }
         }
     }
 
@@ -35,7 +40,7 @@ class FileIterator implements IteratorAggregate, Countable
      * Recursicely append files in directory
      *
      * @param  string $directory Pathname of directory
-     * @return void
+     * @return null
      */
     public function appendDir($directory)
     {
@@ -46,8 +51,20 @@ class FileIterator implements IteratorAggregate, Countable
             )
         );
         foreach ($iterator as $splFileInfo) {
-            $this->files[$splFileInfo->getPathname()] = new File($splFileInfo);
+            $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
         }
+    }
+
+    /**
+     * Append file to iterator
+     *
+     * @param  string $filename
+     * @return null
+     */
+    public function appendFile($filename)
+    {
+        $splFileInfo = new SplFileInfo($filename);
+        $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
     }
 
     /**
