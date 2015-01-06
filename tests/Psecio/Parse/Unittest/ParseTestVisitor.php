@@ -2,8 +2,9 @@
 
 namespace Psecio\Parse\Unittest;
 
-use \Psecio\Parse\Test;
-use \Psecio\Parse\Node;
+use Psecio\Parse\TestInterface;
+use PhpParser\Node;
+Use Mockery as m;
 
 /**
  * Visitor to run a single test against nodes, accumulating results into a single bool
@@ -13,15 +14,16 @@ class ParseTestVisitor extends \PhpParser\NodeVisitorAbstract
     private $test;
     public $result;
 
-    public function __construct(Test $test)
+    public function __construct(TestInterface $test)
     {
         $this->test = $test;
         $this->result = true;
     }
 
-    public function enterNode(\PhpParser\Node $node)
+    public function enterNode(Node $node)
     {
-        if ($this->test->evaluate(new Node($node), null) === false) {
+        $file = m::mock('\Psecio\Parse\File');
+        if ($this->test->evaluate($node, $file) === false) {
             $this->result = false;
         }
     }

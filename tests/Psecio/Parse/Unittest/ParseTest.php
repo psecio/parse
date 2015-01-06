@@ -2,7 +2,7 @@
 
 namespace Psecio\Parse\Unittest;
 
-use \Psecio\Parse\Test;
+use \Psecio\Parse\TestInterface;
 
 /**
  * Base test for implementing full-parse based unit tests
@@ -83,7 +83,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      * @param mixed              $expected  The expected result of the $test
      * @param string             $message   Message to be displayed on failure
      */
-    public function assertParseTestResult(Test $test, $code, $expected, $message = '')
+    public function assertParseTestResult(TestInterface $test, $code, $expected, $message = '')
     {
         // This should evalute things in much the same way as the Scanner.
         $visitor = new ParseTestVisitor($test);
