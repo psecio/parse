@@ -11,15 +11,37 @@ Use Mockery as m;
  */
 class ParseTestVisitor extends \PhpParser\NodeVisitorAbstract
 {
+    /** @var TestInterface $test  The test to run */
     private $test;
+
+    /**
+     * Test result accumulator
+     *
+     * If any test result is false, $result is false. Essentially it ands all
+     * all results together.
+     *
+     * @var bool $result
+     */
     public $result;
 
+    /**
+     * Create a vsitor
+     *
+     * Initializes {@see $result} to be true.
+     *
+     * @param TestInterface $test  The test to run
+     */
     public function __construct(TestInterface $test)
     {
         $this->test = $test;
         $this->result = true;
     }
 
+    /**
+     * Evaluate a node
+     *
+     * @param Node $node  The node to evaluate
+     */
     public function enterNode(Node $node)
     {
         $file = m::mock('\Psecio\Parse\File');
