@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Psecio\Parse\Subscriber\ExitCodeCatcher;
 use Psecio\Parse\Subscriber\ConsoleStandard;
 use Psecio\Parse\Subscriber\ConsoleVerbose;
 use Psecio\Parse\Subscriber\ConsoleDebug;
@@ -75,6 +76,8 @@ class ScanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dispatcher = new EventDispatcher;
+        $exitCode = new ExitCodeCatcher;
+        $dispatcher->addSubscriber($exitCode);
 
         switch (strtolower($input->getOption('format'))) {
             case 'txt':
@@ -104,5 +107,7 @@ class ScanCommand extends Command
         $scanner->scan(
             new FileIterator($input->getArgument('path'))
         );
+
+        return $exitCode->getExitCode();
     }
 }
