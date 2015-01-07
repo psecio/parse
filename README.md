@@ -18,25 +18,17 @@ If it finds any, it adds that match to the file and reports it in the results.
 
 Installation
 ------------
-Install the tool as a development dependency using [composer](https://getcomposer.org/):
+Install as a development dependency in your project using [composer](https://getcomposer.org/):
 
-```shell
-composer require --dev psecio/parse
-```
+    composer require --dev psecio/parse
 
 The path to the installed executable may vary depending on your
-[bin-dir](https://getcomposer.org/doc/04-schema.md#config) setting in `composer.json`.
-With the default setting execute parse using:
-
-```shell
-vendor/bin/parse scan path/to/source
-```
+[bin-dir](https://getcomposer.org/doc/04-schema.md#config) setting. With the
+default value parse is located at `vendor/bin/parse`.
 
 For a system-wide installation use:
 
-```shell
-composer global require psecio/parse
-```
+    composer global require psecio/parse
 
 Make sure you have `~/.composer/vendor/bin/` in your path.
 
@@ -46,42 +38,32 @@ Usage
 > **NOTE:** In earlier versions the `--target` option was used to specify the
 > project path, this is no longer supported. Instead use the syntax below.
 
-To use the scanner, you can execute it from the command line:
+To use the scanner execute it from the command line:
 
-```shell
-bin/parse scan /path/to/myproject
-```
+    bin/parse scan /path/to/myproject
 
 For more detailed information see the `help` and `list` commands.
 
-```shell
-bin/parse help
-bin/parse list
-```
+    bin/parse help
+    bin/parse list
 
 ### Output formats
 
 Currently cleartext and xml output formats are available (cleartext is used
 by default). Set format with the `--format` option.
 
-```shell
-bin/parse scan /path/to/myproject --format=xml
-bin/parse scan /path/to/myproject --format=txt
-```
+    bin/parse scan /path/to/myproject --format=xml
+    bin/parse scan /path/to/myproject --format=txt
 
 The default format supports setting the verbosity using the `-v` or `-vv` switch.
 
-```shell
-bin/parse scan /path/to/myproject -vv
-```
+    bin/parse scan /path/to/myproject -vv
 
 ### Listing the checks
 
 You can also get a listing of the current checks being done with the `list-tests` command:
 
-```shell
-bin/parse list-tests
-```
+    bin/parse list-tests
 
 
 The Details
