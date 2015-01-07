@@ -4,7 +4,7 @@ namespace Psecio\Parse;
 
 class FileIteratorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testIterator()
+    public function testDirectoryPath()
     {
         // Create array of files in Subscriber and Tests subdirs
         $files = iterator_to_array(
@@ -31,6 +31,12 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
             ),
             __FILE__ . ' should be found in iterator'
         );
+    }
+
+    public function testExceptionOnInvalidPath()
+    {
+        $this->setExpectedException('RuntimeException');
+        new FileIterator(['this/really/does/not/exist/at/all']);
     }
 
     public function testCountable()

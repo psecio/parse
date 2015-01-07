@@ -9,16 +9,17 @@ use RecursiveDirectoryIterator;
 use FilesystemIterator;
 use ArrayIterator;
 use SplFileInfo;
+use RuntimeException;
 
 /**
- * Responsible for locating and iterating over File objects
+ * Responsible for iterating over filesystem paths
  */
 class FileIterator implements IteratorAggregate, Countable
 {
     /**
      * @var File[] Array of File objects using paths as keys
      */
-    private $files;
+    private $files = [];
 
     /**
      * Append paths to iterator
@@ -30,9 +31,9 @@ class FileIterator implements IteratorAggregate, Countable
         foreach ($paths as $path) {
             if (is_dir($path)) {
                 $this->appendDir($path);
-            } elseif (is_file($path)) {
-                $this->appendFile($path);
+                continue;
             }
+            $this->appendFile($path);
         }
     }
 
@@ -60,10 +61,16 @@ class FileIterator implements IteratorAggregate, Countable
      *
      * @param  string $filename
      * @return null
+     * @throws RuntimeException If filename does not exist
      */
     public function appendFile($filename)
     {
         $splFileInfo = new SplFileInfo($filename);
+
+        if (!$splFileInfo->isReadable()) {
+            throw new RuntimeException("Failed to open $filename: No such file or directory");
+        }
+
         $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
     }
 
