@@ -17,6 +17,6 @@ class TestExitOrDieParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestExitOrDie(false);
+        return new TestExitOrDie();
     }
 }

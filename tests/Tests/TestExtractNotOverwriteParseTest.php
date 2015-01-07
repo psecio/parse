@@ -22,6 +22,6 @@ class TestExtractNotOverwriteParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestExtractNotOverwrite(false);
+        return new TestExtractNotOverwrite();
     }
 }

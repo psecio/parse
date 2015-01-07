@@ -15,6 +15,6 @@ class TestImportRequestVariablesParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestImportRequestVariables(false);
+        return new TestImportRequestVariables();
     }
 }

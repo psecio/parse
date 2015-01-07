@@ -16,6 +16,6 @@ class TestAvoidGlobalsUseParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestAvoidGlobalsUse(false);
+        return new TestAvoidGlobalsUse();
     }
 }

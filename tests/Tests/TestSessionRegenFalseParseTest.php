@@ -19,6 +19,6 @@ class TestSessionRegenFalseParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestSessionRegenFalse(false);
+        return new TestSessionRegenFalse();
     }
 }

@@ -20,6 +20,6 @@ class TestNoEregFunctionsParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestNoEregFunctions(false);
+        return new TestNoEregFunctions();
     }
 }

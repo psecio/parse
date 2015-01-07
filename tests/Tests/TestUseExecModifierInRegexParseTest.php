@@ -18,6 +18,6 @@ class TestUseExecModifierInRegexParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestUseExecModifierInRegex(false);
+        return new TestUseExecModifierInRegex();
     }
 }

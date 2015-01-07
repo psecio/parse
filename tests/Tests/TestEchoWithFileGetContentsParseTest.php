@@ -17,6 +17,6 @@ class TestEchoWithFileGetContentsParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestEchoWithFileGetContents(false);
+        return new TestEchoWithFileGetContents();
     }
 }

@@ -17,6 +17,6 @@ class TestAvoidRequestUseParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestAvoidRequestUse(false);
+        return new TestAvoidRequestUse();
     }
 }

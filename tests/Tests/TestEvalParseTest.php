@@ -17,6 +17,6 @@ class TestEvalParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestEval(false);
+        return new TestEval();
     }
 }

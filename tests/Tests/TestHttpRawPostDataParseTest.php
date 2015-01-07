@@ -15,6 +15,6 @@ class TestHttpRawPostDataParseTest extends ParseTest
 
     protected function buildTest()
     {
-        return new TestHttpRawPostData(false);
+        return new TestHttpRawPostData();
     }
 }
