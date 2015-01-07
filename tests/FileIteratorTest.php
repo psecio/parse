@@ -20,7 +20,7 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    public function testIterator()
+    public function testDirectoryPath()
     {
         // Create array of files in Subscriber and Tests subdirs
         $files = iterator_to_array(new FileIterator($this->fullDirs));
@@ -33,6 +33,23 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
                                          "$fileName should be found in $dirName subdirectory");
             }
         }
+    }
+
+    public function testFilenamePath()
+    {
+        $this->assertTrue(
+            array_key_exists(
+                __DIR__.'/FileIteratorTest.php',
+                iterator_to_array(new FileIterator([__FILE__]))
+            ),
+            __FILE__ . ' should be found in iterator'
+        );
+    }
+
+    public function testExceptionOnInvalidPath()
+    {
+        $this->setExpectedException('RuntimeException');
+        new FileIterator(['this/really/does/not/exist/at/all']);
     }
 
     public function testCountable()
