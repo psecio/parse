@@ -3,8 +3,9 @@ Parse: A PHP Security Scanner
 
 > **PLEASE NOTE:** This tool is still in a very early stage. The work continues...
 
-## The Basics
 
+The Basics
+----------
 The *Parse* scanner is a static scanning tool to review your PHP code for potential security-related
 issues. A static scanner means that the code is not executed and tested via a web interface (that's
 dynamic testing). Instead, the scanner looks through your code and checks for certain markers and notifies
@@ -14,46 +15,34 @@ For example, you really shouldn't be using [eval](http://php.net/eval) in your c
 help it. When the scanner runs, it will parse down each of your files and look for any `eval()` calls.
 If it finds any, it adds that match to the file and reports it in the results.
 
-## Installation
 
-You can install the tool using Composer:
+Installation
+------------
+Install the tool as a development dependency using [composer](https://getcomposer.org/):
 
 ```shell
-composer require psecio/parse
+composer require --dev psecio/parse
 ```
 
-## The Details
+The path to the installed executable may vary depending on your
+[bin-dir](https://getcomposer.org/doc/04-schema.md#config) setting in `composer.json`.
+With the default setting execute parse using:
 
-Here's the current list of tests being executed:
+```shell
+vendor/bin/parse scan path/to/source
+```
 
-- Warn when sensitive values are committed (as defined by a variable like "username" set to a string)
-- Warn when `display_errors` is enabled manually
-- Avoid magic constants `__DIR__` or `__FILE__`
-- Avoid the use of `eval()`
-- Avoid the use of `exit` or `die()`
-- Avoid the use of logcial operators (ex. using `and` over `&&`)
-- Avoid the use of the `ereg*` functions (now deprecated)
-- Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
-- Checking output methods (`echo`, `print`, `printf`, `print_r`, `vprintf`, `sprintf`) that use variables in their options
-- Ensuring you're not using `echo` with `file_get_contents`
-- Testing for the system execution functions and shell exec (backticks)
-- Use of `readfile`, `readlink` and `readgzfile`
-- Using `parse_str` or `mb_parse_str` (writes values to the local scope)
-- Throws exception if a `.phps` file is found
-- Using `session_regenerate_id` either without a paramater or using false
-- Avoid use of `$_REQUEST` (know where your data is coming from)
-- Don't use `mysql_real_escape_string`
-- Avoiding use of `import_request_variables`
-- Avoid use of `$GLOBALS`
-- Ensure the use of type checking validating against booleans (`===`)
-- Ensure that the `/e` modifier isn't used in regular expressions (execute)
-- Using concatenation in `header()` calls
-- Avoiding the use of $http_raw_post_data
+For a system-wide installation use:
 
-Plenty more to come... (yup, `@todo`)
+```shell
+composer global require psecio/parse
+```
 
-## Usage
+Make sure you have `~/.composer/vendor/bin/` in your path.
 
+
+Usage
+-----
 > **NOTE:** In earlier versions the `--target` option was used to specify the
 > project path, this is no longer supported. Instead use the syntax below.
 
@@ -94,8 +83,40 @@ You can also get a listing of the current checks being done with the `list-tests
 bin/parse list-tests
 ```
 
-## TODO
 
+The Details
+-----------
+Here's the current list of tests being executed:
+
+- Warn when sensitive values are committed (as defined by a variable like "username" set to a string)
+- Warn when `display_errors` is enabled manually
+- Avoid magic constants `__DIR__` or `__FILE__`
+- Avoid the use of `eval()`
+- Avoid the use of `exit` or `die()`
+- Avoid the use of logcial operators (ex. using `and` over `&&`)
+- Avoid the use of the `ereg*` functions (now deprecated)
+- Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
+- Checking output methods (`echo`, `print`, `printf`, `print_r`, `vprintf`, `sprintf`) that use variables in their options
+- Ensuring you're not using `echo` with `file_get_contents`
+- Testing for the system execution functions and shell exec (backticks)
+- Use of `readfile`, `readlink` and `readgzfile`
+- Using `parse_str` or `mb_parse_str` (writes values to the local scope)
+- Throws exception if a `.phps` file is found
+- Using `session_regenerate_id` either without a paramater or using false
+- Avoid use of `$_REQUEST` (know where your data is coming from)
+- Don't use `mysql_real_escape_string`
+- Avoiding use of `import_request_variables`
+- Avoid use of `$GLOBALS`
+- Ensure the use of type checking validating against booleans (`===`)
+- Ensure that the `/e` modifier isn't used in regular expressions (execute)
+- Using concatenation in `header()` calls
+- Avoiding the use of $http_raw_post_data
+
+Plenty more to come... (yup, `@todo`)
+
+
+TODO
+----
 See the current issues list for `@todo` items...
 
 Parse is covered under the MIT license.
