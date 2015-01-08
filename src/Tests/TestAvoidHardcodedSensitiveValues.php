@@ -22,15 +22,19 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 
     public function evaluate(Node $node, File $file)
     {
-        if ($this->isExpression($node, 'Assign') === true) {
-            // If it's in our list, see if it's just being assigned a value
-            if (in_array(strtolower($node->var->name), self::$sensitiveNames)) {
-                if ($node->expr instanceof \PhpParser\Node\Scalar\String) {
-                    return false;
-                }
-            }
+        // Fail on straight $var = 'value', where $var is in $sensitiveNames
+
+        if (!$this->isExpression($node, 'Assign')) {
+            // Not an assignment
+            return true;
         }
 
-        return true;
+        if (!in_array(strtolower($node->var->name), self::$sensitiveNames)) {
+            // Not in our list
+            return true;
+        }
+
+        // Fail if assigning to a scalar, succeed otherwise
+        return !($node->expr instanceof \PhpParser\Node\Scalar\String);
     }
 }
