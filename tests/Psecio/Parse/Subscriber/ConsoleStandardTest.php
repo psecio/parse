@@ -25,22 +25,22 @@ class ConsoleStandardTest extends \PHPUnit_Framework_TestCase
         $console->onScanStart();
 
         // Writes a dot as a file is scanned
-        $console->onFileOpen();
+        $console->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
         $console->onFileClose();
 
         // Writes an E as an error occurs
         // Also triggers a new line as the line witdth is set to 2
-        $console->onFileOpen();
-        $console->onFileError();
+        $console->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
+        $console->onFileError(m::mock('\Psecio\Parse\Event\MessageEvent'));
         $console->onFileClose();
 
         // Writes an I as an issue occurs
-        $console->onFileOpen();
-        $console->onFileIssue();
+        $console->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
+        $console->onFileIssue(m::mock('\Psecio\Parse\Event\IssueEvent'));
         $console->onFileClose();
 
         // Writes nothing
-        $console->onDebug();
+        $console->onDebug(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
         // Writes two new lines
         $console->onScanComplete();
