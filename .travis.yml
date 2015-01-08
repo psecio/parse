@@ -7,7 +7,7 @@ php:
   - 5.4
 
 install:
-  - composer install --dev
+  - composer install --dev --prefer-source
 
 script:
   - bin/phpunit
