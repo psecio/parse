@@ -1,6 +1,9 @@
 Parse: A PHP Security Scanner
 =============================
 
+[![Packagist Version](https://img.shields.io/packagist/v/psecio/parse.svg?style=flat-square)](https://packagist.org/packages/psecio/parse)
+[![Build Status](https://img.shields.io/travis/psecio/parse/master.svg?style=flat-square)](https://travis-ci.org/psecio/parse)
+
 > **PLEASE NOTE:** This tool is still in a very early stage. The work continues...
 
 
