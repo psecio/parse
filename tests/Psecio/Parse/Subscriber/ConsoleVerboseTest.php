@@ -54,7 +54,7 @@ class ConsoleVerboseTest extends \PHPUnit_Framework_TestCase
         $console->onFileClose();
 
         // Writes nothing
-        $console->onDebug();
+        $console->onDebug(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
         // Writes extra new line
         $console->onScanComplete();
