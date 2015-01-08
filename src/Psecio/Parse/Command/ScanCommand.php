@@ -42,7 +42,7 @@ class ScanCommand extends Command
             ->addOption(
                 'format',
                 null,
-                InputOption::VALUE_OPTIONAL,
+                InputOption::VALUE_REQUIRED,
                 'Output format (txt or xml).',
                 'txt'
             )
