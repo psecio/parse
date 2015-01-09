@@ -25,8 +25,13 @@
         "akamon/mockery-callable-mock": "~1.0"
     },
     "autoload": {
-        "psr-0": {
-            "Psecio": "src/"
+        "psr-4": {
+            "Psecio\\Parse\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Psecio\\Parse\\": "tests/"
         }
     },
     "config": {
