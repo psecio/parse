@@ -27,31 +27,11 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
         unlink(self::$filename);
     }
 
-    /**
-     * @param  array  $input   Input data using when executing command
-     * @param  array  $options Options used then executing command
-     * @return string The generated output
-     */
-    private function executeCommand(array $input, array $options = array())
-    {
-        $application = new Application;
-        $application->add(new ScanCommand);
-        $tester = new CommandTester($application->find('scan'));
-        $tester->execute($input, $options);
-        return $tester->getDisplay();
-    }
-
     public function testConsoleOutput()
     {
         $this->assertRegExp(
             '/Parse: A PHP Security Scanner/',
-            $this->executeCommand(
-                [
-                    'command' => 'scan',
-                    'path' => [self::$filename],
-                    '--format' => 'txt'
-                ]
-            ),
+            $this->executeCommand(['--format' => 'txt']),
             'Using --format=txt should generate output'
         );
     }
@@ -60,13 +40,7 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertRegExp(
             '/\[PARSE\]/',
-            $this->executeCommand(
-                [
-                    'command' => 'scan',
-                    'path' => [self::$filename]
-                ],
-                ['verbosity' => OutputInterface::VERBOSITY_VERBOSE]
-            ),
+            $this->executeCommand([], ['verbosity' => OutputInterface::VERBOSITY_VERBOSE]),
             'Using -v should generate verbose output'
         );
     }
@@ -75,13 +49,7 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertRegExp(
             '/\[DEBUG\]/',
-            $this->executeCommand(
-                [
-                    'command' => 'scan',
-                    'path' => [self::$filename]
-                ],
-                ['verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE]
-            ),
+            $this->executeCommand([], ['verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE]),
             'Using -vv should generate debug output'
         );
     }
@@ -90,13 +58,7 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertRegExp(
             '/^<\?xml version="1.0" encoding="UTF-8"\?>/',
-            $this->executeCommand(
-                [
-                    'command' => 'scan',
-                    'path' => [self::$filename],
-                    '--format' => 'xml'
-                ]
-            ),
+            $this->executeCommand(['--format' => 'xml']),
             'Using --format=xml should generate a valid xml doctype'
         );
     }
@@ -104,12 +66,18 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     public function testExceptionOnUnknownFormat()
     {
         $this->setExpectedException('RuntimeException');
-        $this->executeCommand(
-            [
-                'command' => 'scan',
-                'path' => [self::$filename],
-                '--format' => 'this-format-does-not-exist'
-            ]
-        );
+        $this->executeCommand(['--format' => 'this-format-does-not-exist']);
+    }
+
+    private function executeCommand(array $input, array $options = array())
+    {
+        $application = new Application;
+        $application->add(new ScanCommand);
+        $tester = new CommandTester($application->find('scan'));
+        $input['command'] = 'scan';
+        $input['path'] = [self::$filename];
+        $tester->execute($input, $options);
+
+        return $tester->getDisplay();
     }
 }
