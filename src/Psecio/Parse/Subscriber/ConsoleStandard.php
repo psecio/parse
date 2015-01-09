@@ -5,6 +5,9 @@ namespace Psecio\Parse\Subscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Psecio\Parse\Event\Events;
+use Psecio\Parse\Event\FileEvent;
+use Psecio\Parse\Event\IssueEvent;
+use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Standard console event subscriber
@@ -94,9 +97,10 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Set status to valid on file open
      *
+     * @param  FileEvent $event
      * @return void
      */
-    public function onFileOpen()
+    public function onFileOpen(FileEvent $event)
     {
         $this->fileCount++;
         $this->status = '.';
@@ -118,9 +122,10 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Set file status to I on file issue
      *
+     * @param  IssueEvent $event
      * @return void
      */
-    public function onFileIssue()
+    public function onFileIssue(IssueEvent $event)
     {
         $this->status = '<error>I</error>';
     }
@@ -128,9 +133,10 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Set file status to E on file error
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onFileError()
+    public function onFileError(MessageEvent $event)
     {
         $this->status = '<error>E</error>';
     }
@@ -138,9 +144,10 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Ignore debug events
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onDebug()
+    public function onDebug(MessageEvent $event)
     {
     }
 
