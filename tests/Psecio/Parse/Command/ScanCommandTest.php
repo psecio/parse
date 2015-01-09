@@ -11,78 +11,92 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ScanCommandTest extends \PHPUnit_Framework_TestCase
 {
-    private $application;
-    private $command;
-    private $commandTester;
+    /**
+     * @var string Name of empty php file used in scanning
+     */
+    private static $filename;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        $this->application = new Application;
-        $this->application->add(new ScanCommand);
-        $this->command = $this->application->find('scan');
-        $this->commandTester = new CommandTester($this->command);
+        self::$filename = sys_get_temp_dir() . '/' . uniqid('psecio-parse') . '.php';
+        touch(self::$filename);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        unlink(self::$filename);
+    }
+
+    /**
+     * @param  array  $input   Input data using when executing command
+     * @param  array  $options Options used then executing command
+     * @return string The generated output
+     */
+    private function executeCommand(array $input, array $options = array())
+    {
+        $application = new Application;
+        $application->add(new ScanCommand);
+        $tester = new CommandTester($application->find('scan'));
+        $tester->execute($input, $options);
+        return $tester->getDisplay();
     }
 
     public function testConsoleOutput()
     {
-        $this->commandTester->execute([
-            'command' => $this->command->getName(),
-            'path' => [__DIR__],
-            '--format' => 'txt'
-        ]);
         $this->assertRegExp(
             '/Parse: A PHP Security Scanner/',
-            $this->commandTester->getDisplay(),
+            $this->executeCommand(
+                [
+                    'command' => 'scan',
+                    'path' => [self::$filename],
+                    '--format' => 'txt'
+                ]
+            ),
             'Using --format=txt should generate output'
         );
     }
 
     public function testVerboseOutput()
     {
-        $this->commandTester->execute(
-            [
-                'command' => $this->command->getName(),
-                'path' => [__DIR__]
-            ],
-            [
-                'verbosity' => OutputInterface::VERBOSITY_VERBOSE
-            ]
-        );
         $this->assertRegExp(
             '/\[PARSE\]/',
-            $this->commandTester->getDisplay(),
+            $this->executeCommand(
+                [
+                    'command' => 'scan',
+                    'path' => [self::$filename]
+                ],
+                ['verbosity' => OutputInterface::VERBOSITY_VERBOSE]
+            ),
             'Using -v should generate verbose output'
         );
     }
 
     public function testVeryVerboseOutput()
     {
-        $this->commandTester->execute(
-            [
-                'command' => $this->command->getName(),
-                'path' => [__DIR__]
-            ],
-            [
-                'verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE
-            ]
-        );
         $this->assertRegExp(
             '/\[DEBUG\]/',
-            $this->commandTester->getDisplay(),
-            'Using -v should generate verbose output'
+            $this->executeCommand(
+                [
+                    'command' => 'scan',
+                    'path' => [self::$filename]
+                ],
+                ['verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE]
+            ),
+            'Using -vv should generate debug output'
         );
     }
 
     public function testXmlOutput()
     {
-        $this->commandTester->execute([
-            'command' => $this->command->getName(),
-            'path' => [__DIR__],
-            '--format' => 'xml'
-        ]);
         $this->assertRegExp(
             '/^<\?xml version="1.0" encoding="UTF-8"\?>/',
-            $this->commandTester->getDisplay(),
+            $this->executeCommand(
+                [
+                    'command' => 'scan',
+                    'path' => [self::$filename],
+                    '--format' => 'xml'
+                ]
+            ),
             'Using --format=xml should generate a valid xml doctype'
         );
     }
@@ -90,10 +104,12 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     public function testExceptionOnUnknownFormat()
     {
         $this->setExpectedException('RuntimeException');
-        $this->commandTester->execute([
-            'command' => $this->command->getName(),
-            'path' => [__DIR__],
-            '--format' => 'this-format-does-not-exist'
-        ]);
+        $this->executeCommand(
+            [
+                'command' => 'scan',
+                'path' => [self::$filename],
+                '--format' => 'this-format-does-not-exist'
+            ]
+        );
     }
 }
