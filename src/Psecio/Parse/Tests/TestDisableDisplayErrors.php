@@ -5,13 +5,19 @@ namespace Psecio\Parse\Tests;
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
 use Psecio\Parse\File;
+use PhpParser\Node\Arg;
 
 /**
  * The "display_errors" setting should not be enabled manually
  */
 class TestDisableDisplayErrors implements TestInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\IsFunctionTrait, Helper\isBoolLiteralTrait;
+
+    /**
+     * @var array List of allowed display_errors settings
+     */
+    private $allowed = [0, '0', false, 'false', 'off', 'stderr'];
 
     public function getDescription()
     {
@@ -20,22 +26,17 @@ class TestDisableDisplayErrors implements TestInterface
 
     public function evaluate(Node $node, File $file)
     {
-        if ($this->isFunction($node, 'ini_set') === true) {
-            // see if the setting is "display_errors" && if they're enabling it
-            if ($node->args[0]->value->value == 'display_errors') {
-                $value = $node->args[1]->value;
-
-                if ($value instanceof \PhpParser\Node\Expr\ConstFetch) {
-                    $value = $value->name->parts[0];
-                } else {
-                    $value = $node->args[1]->value->value;
-                }
-
-                if ($value == 1 || $value == true) {
-                    return false;
-                }
-            }
+        if ($this->isFunction($node, 'ini_set') && $this->readArg($node->args[0]) === 'display_errors') {
+            return in_array($this->readArg($node->args[1]), $this->allowed, true);
         }
         return true;
+    }
+
+    private function readArg(Arg $arg)
+    {
+        if ($this->isBoolLiteral($arg->value)) {
+            return (string)$arg->value->name;
+        }
+        return $arg->value->value;
     }
 }
