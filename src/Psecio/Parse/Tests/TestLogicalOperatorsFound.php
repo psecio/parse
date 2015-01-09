@@ -7,9 +7,10 @@ use PhpParser\Node;
 use Psecio\Parse\File;
 use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
 use PhpParser\Node\Expr\BinaryOp\LogicalOr;
+use PhpParser\Node\Expr\BinaryOp\LogicalXor;
 
 /**
- * The logical operators OR and AND should be avoided as they have lower precedence than || and &&
+ * The logical operators AND, OR and XOR should be avoided as they have lower precedence the assignment operator
  */
 class TestLogicalOperatorsFound implements TestInterface
 {
@@ -17,12 +18,12 @@ class TestLogicalOperatorsFound implements TestInterface
 
     public function getDescription()
     {
-        return "Avoid the use of OR and AND in favor of || and && as they may cause subtle bugs due to precedence";
+        return 'Avoid using AND, OR and XOR (in favor of || and &&) as they may cause subtle precedence bugs';
     }
 
     public function evaluate(Node $node, File $file)
     {
-        if ($node instanceof LogicalAnd || $node instanceof LogicalOr) {
+        if ($node instanceof LogicalAnd || $node instanceof LogicalOr || $node instanceof LogicalXor) {
             return false;
         }
         return true;
