@@ -9,11 +9,11 @@ class TestExitOrDieParseTest extends ParseTest
     public function parseSampleProvider()
     {
         return [
-            /* // Bare exit should be ok. */
+            // Bare exit should be ok.
             ['exit;', true],
             ['die;', true],
 
-            /* // Exit with error code should be ok. */
+            // Exit with error code should be ok.
             ['exit(1);', true],
             ['die(1);', true],
 
