@@ -4,6 +4,7 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
+use PhpParser\Node\Scalar\LNumber;
 use Psecio\Parse\File;
 
 /**
@@ -15,11 +16,13 @@ class TestExitOrDie implements TestInterface
 
     public function getDescription()
     {
-        return 'Avoid the use of `exit` or `die` (could lead to injection issues (direct output)';
+        return 'Avoid the use of `exit` or `die` with strings as it could lead to injection issues (direct output)';
     }
 
     public function evaluate(Node $node, File $file)
     {
-        return !$this->isExpression($node, 'Exit');
+        return (!$this->isExpression($node, 'Exit') ||
+                is_null($node->expr) ||
+                ($node->expr instanceof LNumber));
     }
 }
