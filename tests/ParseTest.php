@@ -66,6 +66,14 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testDescription()
+    {
+        $this->assertInternalType(
+            'string',
+            $this->buildTest()->getDescription()
+        );
+    }
+
     /**
      * Assert that running $test against $code results in $expected
      *
