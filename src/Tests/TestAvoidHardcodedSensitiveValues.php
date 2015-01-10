@@ -13,7 +13,7 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 {
     use Helper\NameTrait, Helper\IsExpressionTrait;
 
-    private static $sensitiveNames = ['username', 'password', 'user', 'pass', 'pwd'];
+    private $sensitiveNames = ['username', 'password', 'user', 'pass', 'pwd'];
 
     public function getDescription()
     {
@@ -24,17 +24,12 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
     {
         // Fail on straight $var = 'value', where $var is in $sensitiveNames
 
-        if (!$this->isExpression($node, 'Assign')) {
-            // Not an assignment
-            return true;
-        }
+        if ($this->isExpression($node, 'Assign') &&
+            in_array(strtolower($node->var->name), $this->sensitiveNames)) {
 
-        if (!in_array(strtolower($node->var->name), self::$sensitiveNames)) {
-            // Not in our list
-            return true;
+            // Fail if assigning a scalar, succeed otherwise
+            return !($node->expr instanceof \PhpParser\Node\Scalar\String);
         }
-
-        // Fail if assigning to a scalar, succeed otherwise
-        return !($node->expr instanceof \PhpParser\Node\Scalar\String);
+        return true;
     }
 }
