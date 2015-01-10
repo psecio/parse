@@ -35,12 +35,6 @@ class TestAvoidHardcodedSensitiveValues_ParseTest extends ParseTest
             ];
     }
 
-    public function test_description()
-    {
-        $test = $this->buildTest();
-        $this->assertStringMatchesFormat('%s', $test->getDescription());
-    }
-
     protected function buildTest()
     {
         return new TestAvoidHardcodedSensitiveValues();
