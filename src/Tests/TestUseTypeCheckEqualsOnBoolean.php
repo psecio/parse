@@ -5,10 +5,10 @@ namespace Psecio\Parse\Tests;
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
 use Psecio\Parse\File;
+use PhpParser\Node\Expr\BinaryOp\Equal;
 
 /**
- * If we're evaluating against a boolean (true|false)
- * ensure we're using type checking, ===
+ * If we're evaluating against a boolean (true|false) ensure we're using type checking (===)
  */
 class TestUseTypeCheckEqualsOnBoolean implements TestInterface
 {
@@ -21,14 +21,9 @@ class TestUseTypeCheckEqualsOnBoolean implements TestInterface
 
     public function evaluate(Node $node, File $file)
     {
-        if ($node instanceof \PhpParser\Node\Expr\BinaryOp\Equal) {
-            // Check to see if either the "right" or "left" are booleans
+        if ($node instanceof Equal) {
             if ($this->isBoolLiteral($node->left) || $this->isBoolLiteral($node->right)) {
-                $attrs = $node->getAttributes();
-                $lines = $file->getLines($attrs['startLine']);
-                if (strstr($lines[0], '===') === false) {
-                    return false;
-                }
+                return false;
             }
         }
         return true;
