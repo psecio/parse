@@ -59,6 +59,12 @@ class FileTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertSame(
+            ["line 3"],
+            $file->fetchLines(3, 3),
+            'Specifying the same line twice should grab that line'
+        );
+
+        $this->assertSame(
             ["line 1", "line 2"],
             $file->fetchNode(
                 m::mock('PhpParser\Node')
