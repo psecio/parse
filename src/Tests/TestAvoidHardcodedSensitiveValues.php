@@ -31,7 +31,6 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
     public function evaluate(Node $node, File $file)
     {
         // Fail on straight $var = 'value', where $var is in $sensitiveNames
-
         return !($this->isExpression($node, 'Assign') &&
                  $this->isSensitiveName($node->var->name) &&
                  ($node->expr instanceof \PhpParser\Node\Scalar\String));
@@ -39,8 +38,11 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 
     public function isSensitiveName($name)
     {
+        if (!is_string($name)) {
+            return false;
+        }
         $name = strtolower($name);
-        return in_array(strtolower($name), $this->sensitiveNames) ||
+        return in_array($name, $this->sensitiveNames) ||
             $this->inRegexList($name, $this->sensitiveRegexList);
     }
 

@@ -65,6 +65,8 @@ class TestAvoidHardcodedSensitiveValues_ParseTest extends ParseTest
             ['$other_secret = lookup("secret");', true],
             ['$other_secret = $somethingElse;', true],
             ['$super_secret_secret = "really secret";', false],
+            ['${$user} = "something";', true],
+            ['$this->{$key} = "value";', true],
             ];
     }
 
