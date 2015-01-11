@@ -13,7 +13,15 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 {
     use Helper\NameTrait, Helper\IsExpressionTrait;
 
-    private $sensitiveNames = ['username', 'password', 'user', 'pass', 'pwd'];
+    private $sensitiveNames = [
+        'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
+        'awskey', 'aws_key',
+        ];
+
+    // These will have the delimiters added and be run case-insensitive
+    private $sensitiveRegexList = [
+        '([\w]+_?)?secret',
+        ];
 
     public function getDescription()
     {
@@ -24,12 +32,26 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
     {
         // Fail on straight $var = 'value', where $var is in $sensitiveNames
 
-        if ($this->isExpression($node, 'Assign') &&
-            in_array(strtolower($node->var->name), $this->sensitiveNames)) {
+        return !($this->isExpression($node, 'Assign') &&
+                 $this->isSensitiveName($node->var->name) &&
+                 ($node->expr instanceof \PhpParser\Node\Scalar\String));
+    }
 
-            // Fail if assigning a scalar, succeed otherwise
-            return !($node->expr instanceof \PhpParser\Node\Scalar\String);
+    public function isSensitiveName($name)
+    {
+        $name = strtolower($name);
+        return in_array(strtolower($name), $this->sensitiveNames) ||
+            $this->inRegexList($name, $this->sensitiveRegexList);
+    }
+
+    protected function inRegexList($str, $regexList)
+    {
+        foreach ($regexList as $regex) {
+            if (preg_match("/$regex/i", $str)) {
+                return true;
+            }
         }
-        return true;
+
+        return false;
     }
 }
