@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * For the extract function, if either:
@@ -21,7 +20,7 @@ class TestExtractNotOverwrite implements TestInterface
         return 'By default `extract` overwrites variables in the local scope with values given.';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'extract') === true) {
             // Check to be sure it has two arguments

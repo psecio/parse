@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * The ereg functions have been deprecated as of PHP 5.3.0. Don't use them!
@@ -20,7 +19,7 @@ class TestNoEregFunctions implements TestInterface
         return 'Remove any use of ereg functions, deprecated and removed. Use preg_*';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
 
