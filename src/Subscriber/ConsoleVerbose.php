@@ -49,11 +49,10 @@ class ConsoleVerbose extends ConsoleStandard
      */
     public function onFileIssue(IssueEvent $event)
     {
-        $attrs = $event->getNode()->getAttributes();
         $this->write(
             "<error>[ISSUE] [%s] On line %d in %s</error>\n",
             $event->getTest()->getName(),
-            $attrs['startLine'],
+            $event->getNode()->getLine(),
             $event->getFile()->getPath()
         );
     }

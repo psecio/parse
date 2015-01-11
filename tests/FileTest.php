@@ -3,15 +3,22 @@
 namespace Psecio\Parse;
 
 use SplFileInfo;
+use Mockery as m;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
+    public function testExceptionOnInvalidPath()
+    {
+        $this->setExpectedException('RuntimeException');
+        new File(new SplFileInfo('this/really/does/not/exist/at/all'));
+    }
+
     public function testGetPath()
     {
         $this->assertEquals(
             __FILE__,
             (new File(new SplFileInfo(__FILE__)))->getPath(),
-            'The same path that is set should be returned'
+            'The correct path should be returned'
         );
     }
 
@@ -32,48 +39,37 @@ class FileTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSetContent()
+    public function testFetchLines()
     {
-        $newContent = 'this is a test';
+        $filename = tempnam(sys_get_temp_dir(), 'psecio-parse-');
+        file_put_contents($filename, "line 1\nline 2\nline 3\nline 4");
 
-        $file = new File(new SplFileInfo(__FILE__));
-        $file->setContents($newContent);
+        $file = new File(new SplFileInfo($filename));
 
-        $this->assertEquals(
-            $file->getContents(),
-            $newContent,
-            'Setting new content should override filesystem content'
-        );
-    }
-
-    /**
-     * Test the "get lines" funcitonality
-     */
-    public function testGetLines()
-    {
-        $newContent = "this is\na test with\nnewlines\nhere";
-
-        $file = new File(new SplFileInfo(__FILE__));
-        $file->setContents($newContent);
-
-        // A single line w/o optional param
-        $lines = $file->getLines(2);
-
-        $this->assertTrue(
-            is_array($lines) && !empty($lines)
+        $this->assertSame(
+            ["line 2"],
+            $file->fetchLines(2),
+            'A single argument to fetchLines should fetch only one line'
         );
 
         $this->assertSame(
-            $lines,
-            array('a test with'),
-            'Using getLines with one param should yield a single line'
+            ["line 2", "line 3", "line 4"],
+            $file->fetchLines(2, 4),
+            'Two arguments to fetchLines should fetch the complete series of lines'
         );
 
-        // Multiple lines with second param
-        $this->assertEquals(
-            $file->getLines(2, 5),
-            array('a test with', 'newlines', 'here'),
-            'Using getLines with two param should yield multiple lines'
+        $this->assertSame(
+            ["line 1", "line 2"],
+            $file->fetchNode(
+                m::mock('PhpParser\Node')
+                    ->shouldReceive('getAttributes')
+                    ->once()
+                    ->andReturn(['startLine' => 1, 'endLine' => 2])
+                    ->mock()
+            ),
+            'fetchNode should fetch based on node attributes'
         );
+
+        unlink($filename);
     }
 }
