@@ -38,6 +38,6 @@
         "bin-dir": "bin"
     },
     "bin": [
-        "bin/parse"
+        "bin/psecio-parse"
     ]
 }
