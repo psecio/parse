@@ -30,8 +30,7 @@ class ScanCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('scan')
+        $this->setName('scan')
             ->setDescription('Scans paths for possible security issues')
             ->addArgument(
                 'path',
@@ -47,17 +46,17 @@ class ScanCommand extends Command
                 'txt'
             )
             ->addOption(
-                'include-tests',
+                'include-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of tests to include in the test suite.',
+                'Comma separated list of rules to include when scanning.',
                 ''
             )
             ->addOption(
-                'exclude-tests',
+                'exclude-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of tests to exclude from the test suite.',
+                'Comma separated list of rules to exclude when scanning.',
                 ''
             )
             ->setHelp(
@@ -98,8 +97,8 @@ class ScanCommand extends Command
         }
 
         $ruleFactory = new RuleFactory(
-            array_filter(explode(',', $input->getOption('include-tests'))),
-            array_filter(explode(',', $input->getOption('exclude-tests')))
+            array_filter(explode(',', $input->getOption('include-rules'))),
+            array_filter(explode(',', $input->getOption('exclude-rules')))
         );
 
         $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
