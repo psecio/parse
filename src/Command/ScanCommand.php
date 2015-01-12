@@ -14,7 +14,7 @@ use Psecio\Parse\Subscriber\ConsoleVerbose;
 use Psecio\Parse\Subscriber\ConsoleDebug;
 use Psecio\Parse\Subscriber\ConsoleReport;
 use Psecio\Parse\Subscriber\Xml;
-use Psecio\Parse\TestFactory;
+use Psecio\Parse\RuleFactory;
 use Psecio\Parse\Scanner;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\FileIterator;
@@ -97,12 +97,12 @@ class ScanCommand extends Command
                 throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");
         }
 
-        $testFactory = new TestFactory(
+        $ruleFactory = new RuleFactory(
             array_filter(explode(',', $input->getOption('include-tests'))),
             array_filter(explode(',', $input->getOption('exclude-tests')))
         );
 
-        $scanner = new Scanner($dispatcher, new CallbackVisitor($testFactory->createTestCollection()));
+        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
 
         $scanner->scan(
             new FileIterator($input->getArgument('path'))

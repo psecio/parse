@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Psecio\Parse\TestInterface;
 use Psecio\Parse\TestCollection;
-use Psecio\Parse\TestFactory;
+use Psecio\Parse\RuleFactory;
 
 /**
  * Command for listing current checks and their summaries
@@ -38,7 +38,7 @@ class ListTestsCommand extends Command
     {
         $output->write("<comment>Searching for tests:</comment>");
 
-        $testCollection = (new TestFactory)->createTestCollection();
+        $testCollection = (new RuleFactory)->createRuleCollection();
 
         $output->writeln(" " . count($testCollection) . " found");
         $output->writeln("<comment>Listing:</comment>");
