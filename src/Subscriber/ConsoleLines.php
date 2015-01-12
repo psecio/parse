@@ -9,7 +9,7 @@ use Psecio\Parse\Event\MessageEvent;
 /**
  * Display descriptive lines to visualize scan progression
  */
-class ConsoleVerbose extends ConsoleDots
+class ConsoleLines extends ConsoleDots
 {
     /**
      * Add line break on scan complete

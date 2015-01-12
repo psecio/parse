@@ -4,7 +4,7 @@ namespace Psecio\Parse\Subscriber;
 
 use Mockery as m;
 
-class ConsoleVerboseTest extends \PHPUnit_Framework_TestCase
+class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
 {
     public function testOutput()
     {
@@ -34,7 +34,7 @@ class ConsoleVerboseTest extends \PHPUnit_Framework_TestCase
         $issueEvent->shouldReceive('getTest->getName')->andReturn('Test');
         $issueEvent->shouldReceive('getFile->getPath')->andReturn('path');
 
-        $console = new ConsoleVerbose($output);
+        $console = new ConsoleLines($output);
 
         // Should write header
         $console->onScanStart();
