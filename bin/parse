@@ -1,17 +1,7 @@
-#!/usr/bin/env php
-<?php
+#!/bin/bash
 
-date_default_timezone_set('UTC');
+echo NOTE: The parse command is deprecated since version 0.6 and will be removed
+echo Use psecio-parse instead
+echo
 
-set_time_limit(0);
-
-(@include_once __DIR__ . '/../vendor/autoload.php') || @include_once __DIR__ . '/../../../autoload.php';
-
-use Symfony\Component\Console\Application;
-use Psecio\Parse\Command\ScanCommand;
-use Psecio\Parse\Command\ListTestsCommand;
-
-$app = new Application('Parse Scan', 'dev');
-$app->add(new ScanCommand);
-$app->add(new ListTestsCommand);
-$app->run();
+`dirname $0`/psecio-parse "$@"
