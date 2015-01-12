@@ -67,9 +67,7 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
     protected function matchSearchList($name, $list)
     {
         foreach ($list as $match) {
-            if ($name === $match
-                || $this->startsWith($name, $match)
-                || $this->endsWith($name, $match)) {
+            if ($this->startsWith($name, $match) || $this->endsWith($name, $match)) {
                 return true;
             }
         }
