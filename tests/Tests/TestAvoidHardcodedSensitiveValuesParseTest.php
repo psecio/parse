@@ -78,6 +78,8 @@ class TestAvoidHardcodedSensitiveValues_ParseTest extends ParseTest
             ['$super_secret_secret = "really secret";', false],
             ['${$user} = "something";', true],
             ['$this->{$key} = "value";', true],
+            ['const USER = "username";', false],
+            ['define("user", "username");', false],
             ];
     }
 

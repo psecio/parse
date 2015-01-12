@@ -11,7 +11,7 @@ use Psecio\Parse\File;
  */
 class TestAvoidHardcodedSensitiveValues implements TestInterface
 {
-    use Helper\NameTrait, Helper\IsExpressionTrait;
+    use Helper\NameTrait, Helper\IsExpressionTrait, Helper\IsFunctionTrait;
 
     private $sensitiveNames = [
         'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
@@ -25,10 +25,34 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 
     public function evaluate(Node $node, File $file)
     {
+        list($name, $value) = $this->getNameAndValue($node);
+        if ($name === false) {
+            return true;
+        }
+
         // Fail on straight $var = 'value', where $var is in $sensitiveNames
-        return !($this->isExpression($node, 'Assign') &&
-                 $this->isSensitiveName($node->var->name) &&
-                 ($node->expr instanceof \PhpParser\Node\Scalar\String));
+        return !($this->isSensitiveName($name) &&
+                 $value instanceof \PhpParser\Node\Scalar\String);
+    }
+
+    protected function getNameAndValue($node)
+    {
+        if ($this->isExpression($node, 'Assign')) {
+            return [$node->var->name, $node->expr];
+        }
+
+        if ($node instanceof \PhpParser\Node\Const_) {
+            return [$node->name, $node->value];
+        }
+
+        if ($this->isFunction($node, 'define')) { //$node instanceof \PhpParser\Node\Name && $node->parts[0] == 'define') {
+            $name = $node->args[0]->value->value;
+            $value = $node->args[1]->value;
+
+            return [$name, $value];
+        }
+
+        return [false, false];
     }
 
     public function isSensitiveName($name)
