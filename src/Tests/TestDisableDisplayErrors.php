@@ -12,7 +12,7 @@ use PhpParser\Node\Arg;
  */
 class TestDisableDisplayErrors implements TestInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait, Helper\isBoolLiteralTrait;
+    use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
 
     /**
      * @var array List of allowed display_errors settings
