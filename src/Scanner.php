@@ -79,6 +79,8 @@ class Scanner implements Event\Events
         $this->dispatcher->dispatch(self::SCAN_START);
 
         foreach ($fileIterator as $file) {
+            $this->dispatcher->dispatch(self::FILE_OPEN, new Event\FileEvent($file));
+
             if ($file->isPathMatch('/\.phps$/i')) {
                 $this->dispatcher->dispatch(
                     self::FILE_ERROR,
@@ -89,10 +91,9 @@ class Scanner implements Event\Events
                     self::DEBUG,
                     new Event\MessageEvent("Skipping " . $file->getPath(), $file)
                 );
+                $this->dispatcher->dispatch(self::FILE_CLOSE);
                 continue;
             }
-
-            $this->dispatcher->dispatch(self::FILE_OPEN, new Event\FileEvent($file));
 
             try {
                 $this->visitor->setFile($file);
