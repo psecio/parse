@@ -62,7 +62,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Reset values on scan start
      *
-     * @return void
+     * @return null
      */
     public function onScanStart()
     {
@@ -74,7 +74,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Write report on scan complete
      *
-     * @return void
+     * @return null
      */
     public function onScanComplete()
     {
@@ -84,7 +84,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Increment files scanned counter
      *
-     * @return void
+     * @return null
      */
     public function onFileOpen()
     {
@@ -95,7 +95,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * Save issue event
      *
      * @param  IssueEvent $event
-     * @return void
+     * @return null
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -106,7 +106,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * Save error event
      *
      * @param  MessageEvent $event
-     * @return void
+     * @return null
      */
     public function onFileError(MessageEvent $event)
     {
@@ -157,12 +157,10 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getFailureReport()
     {
-        return $this->getIssueReport()
-            . "\n--\n\n"
-            . $this->getErrorReport()
-            . "\n<error>FAILURES!</error>\n"
+        return $this->getErrorReport()
+            . $this->getIssueReport()
             . sprintf(
-                "<error>Scanned: %d, Errors: %d, Issues: %d.</error>",
+                "<error>FAILURES!</error>\n<error>Scanned: %d, Errors: %d, Issues: %d.</error>",
                 $this->fileCount,
                 count($this->errors),
                 count($this->issues)
@@ -176,16 +174,20 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getIssueReport()
     {
-        $str = $this->pluralize(
-            "There was %d issue\n",
-            "There were %d issues\n",
-            count($this->issues)
-        );
+        $str = '';
+
+        if ($this->issues) {
+            $str .= $this->pluralize(
+                "There was %d issue\n\n",
+                "There were %d issues\n\n",
+                count($this->issues)
+            );
+        }
 
         foreach ($this->issues as $index => $issueEvent) {
             $attrs = $issueEvent->getNode()->getAttributes();
             $str .= sprintf(
-                "\n%d) %s:%d\n%s\n> %s\n",
+                "<comment>%d) %s on line %d</comment>\n%s\n<error>> %s</error>\n\n",
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
                 $attrs['startLine'],
@@ -204,15 +206,19 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getErrorReport()
     {
-        $str = $this->pluralize(
-            "There was %d error\n",
-            "There were %d errors\n",
-            count($this->errors)
-        );
+        $str = '';
+
+        if ($this->errors) {
+            $str .= $this->pluralize(
+                "There was %d error\n\n",
+                "There were %d errors\n\n",
+                count($this->errors)
+            );
+        }
 
         foreach ($this->errors as $index => $errorEvent) {
             $str .= sprintf(
-                "\n%d) %s\n%s\n",
+                "<comment>%d) %s</comment>\n<error>%s</error>\n\n",
                 $index + 1,
                 $errorEvent->getFile()->getPath(),
                 $errorEvent->getMessage()
