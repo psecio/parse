@@ -9,43 +9,43 @@ class RuleFactoryTest extends \PHPUnit_Framework_TestCase
         $rules = (new RuleFactory)->createRuleCollection()->toArray();
 
         $this->assertTrue(
-            array_key_exists('TestEval', $rules),
-            'Collection should include the TestEval rule'
+            array_key_exists('EvalFunction', $rules),
+            'Collection should include the EvalFunction rule'
         );
 
         $this->assertTrue(
-            array_key_exists('TestExitOrDie', $rules),
-            'Collection should include the TestExitOrDie rule'
+            array_key_exists('ExitOrDie', $rules),
+            'Collection should include the ExitOrDie rule'
         );
     }
 
     public function testIncludeFilter()
     {
-        $rules = (new RuleFactory(['TestEval']))->createRuleCollection()->toArray();
+        $rules = (new RuleFactory(['EvalFunction']))->createRuleCollection()->toArray();
 
         $this->assertTrue(
-            array_key_exists('TestEval', $rules),
-            'Filtered collection should include the TestEval rule'
+            array_key_exists('EvalFunction', $rules),
+            'Filtered collection should include the EvalFunction rule'
         );
 
         $this->assertFalse(
-            array_key_exists('TestExitOrDie', $rules),
-            'Filtered collection should NOT include the TestExitOrDie rule'
+            array_key_exists('ExitOrDie', $rules),
+            'Filtered collection should NOT include the ExitOrDie rule'
         );
     }
 
     public function testExcludeFilter()
     {
-        $rules = (new RuleFactory([], ['TestEval']))->createRuleCollection()->toArray();
+        $rules = (new RuleFactory([], ['EvalFunction']))->createRuleCollection()->toArray();
 
         $this->assertFalse(
-            array_key_exists('TestEval', $rules),
-            'Filtered collection should NOT include the TestEval rule'
+            array_key_exists('EvalFunction', $rules),
+            'Filtered collection should NOT include the EvalFunction rule'
         );
 
         $this->assertTrue(
-            array_key_exists('TestExitOrDie', $rules),
-            'Filtered collection should include the TestExitOrDie rule'
+            array_key_exists('ExitOrDie', $rules),
+            'Filtered collection should include the ExitOrDie rule'
         );
     }
 }
