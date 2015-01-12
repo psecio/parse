@@ -15,12 +15,7 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 
     private $sensitiveNames = [
         'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
-        'awskey', 'aws_key',
-        ];
-
-    // These will have the delimiters added and be run case-insensitive
-    private $sensitiveRegexList = [
-        '([\w]+_?)?secret',
+        'awskey', 'aws_key', 'secret',
         ];
 
     public function getDescription()
@@ -42,18 +37,27 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
             return false;
         }
         $name = strtolower($name);
-        return in_array($name, $this->sensitiveNames) ||
-            $this->inRegexList($name, $this->sensitiveRegexList);
+        return $this->matchSearchList($name, $this->sensitiveNames);
     }
 
-    protected function inRegexList($str, $regexList)
+    protected function matchSearchList($name, $list)
     {
-        foreach ($regexList as $regex) {
-            if (preg_match("/$regex/i", $str)) {
+        foreach ($list as $match) {
+            if ($name === $match
+                || $this->startsWith($name, $match)
+                || $this->endsWith($name, $match)) {
                 return true;
             }
         }
+    }
 
-        return false;
+    protected function startsWith($haystack, $needle)
+    {
+        return strpos($haystack, $needle) === 0;
+    }
+
+    protected function endsWith($haystack, $needle)
+    {
+        return strrpos($haystack, $needle) === (strlen($haystack) - strlen($needle));
     }
 }
