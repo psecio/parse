@@ -65,7 +65,7 @@ class CallbackVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         foreach ($this->testCollection as $test) {
-            if ($test->evaluate($node, $this->file) === false) {
+            if (!$test->isValid($node)) {
                 call_user_func($this->callback, $test, $node, $this->file);
             }
         }

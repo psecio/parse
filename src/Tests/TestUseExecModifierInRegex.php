@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Ensure that the regular expression handling doesn't use the /e modifier
@@ -20,7 +19,7 @@ class TestUseExecModifierInRegex implements TestInterface
         return 'Do not use the eval modifier in regular expressions (\e)';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
 

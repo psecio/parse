@@ -10,19 +10,18 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     public function testCallback()
     {
         $node = m::mock('\PhpParser\Node');
-        $file = m::mock('\Psecio\Parse\File');
 
         $falseTest = m::mock('Test')
-            ->shouldReceive('evaluate')
+            ->shouldReceive('isValid')
             ->once()
-            ->with($node, $file)
+            ->with($node)
             ->andReturn(false)
             ->mock();
 
         $trueTest = m::mock('Test')
-            ->shouldReceive('evaluate')
+            ->shouldReceive('isValid')
             ->once()
-            ->with($node, $file)
+            ->with($node)
             ->andReturn(true)
             ->mock();
 
@@ -33,12 +32,14 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
 
         $visitor = new CallbackVisitor($testCollection);
 
+        $file = m::mock('\Psecio\Parse\File');
+        $visitor->setFile($file);
+
         // Callback is called ONCE with failing test
         $callback = new MockeryCallableMock();
         $callback->shouldBeCalled()->with($falseTest, $node, $file)->once();
         $visitor->onTestFail($callback);
 
-        $visitor->setFile($file);
         $visitor->enterNode($node);
     }
 }

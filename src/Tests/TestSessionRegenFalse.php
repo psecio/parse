@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Don't use session_regenerate_id without setting the param to true
@@ -18,7 +17,7 @@ class TestSessionRegenFalse implements TestInterface
         return 'If session_regenerate_id is used, must use second paramater and set to true.';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'session_regenerate_id') === true) {
             // If the argument isn't even set...

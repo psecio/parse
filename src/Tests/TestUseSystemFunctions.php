@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Using system functions is risky...
@@ -20,7 +19,7 @@ class TestUseSystemFunctions implements TestInterface
         return 'Use of system functions, especially with user input, is not recommended.';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($this->isFunction($node)) {
             $name = (is_object($node->name)) ? $node->name->parts[0] : $node->name;

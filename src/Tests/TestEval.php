@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Don't use eval. Ever.
@@ -18,7 +17,7 @@ class TestEval implements TestInterface
         return "Don't use eval. Ever.";
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         return !$this->isExpression($node, 'Eval');
     }

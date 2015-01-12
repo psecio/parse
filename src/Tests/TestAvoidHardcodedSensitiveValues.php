@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Avoid hard-coding sensitive values (ex. "username", "password", etc.)
@@ -23,7 +22,7 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
         return 'Avoid hard-coding sensitive values (ex. "username", "password", etc.)';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         list($name, $value) = $this->getNameAndValue($node);
         if ($name === false) {

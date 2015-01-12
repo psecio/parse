@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 use PhpParser\Node\Arg;
 
 /**
@@ -24,7 +23,7 @@ class TestDisableDisplayErrors implements TestInterface
         return 'The "display_errors" setting should not be enabled manually';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'ini_set') && $this->readArg($node->args[0]) === 'display_errors') {
             return in_array($this->readArg($node->args[1]), $this->allowed, true);
