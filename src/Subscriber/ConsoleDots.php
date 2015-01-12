@@ -80,18 +80,16 @@ class ConsoleDots implements EventSubscriberInterface, Events
      */
     public function onScanStart()
     {
-        $this->write("Parse: A PHP Security Scanner\n\n");
         $this->fileCount = 0;
     }
 
     /**
-     * Add line break on scan complete
+     * Ignore scan complete
      *
      * @return null
      */
     public function onScanComplete()
     {
-        $this->write("\n\n");
     }
 
     /**

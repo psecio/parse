@@ -11,13 +11,11 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
         $output = m::mock('\Symfony\Component\Console\Output\OutputInterface');
 
         // The order of the calls to write should match the order of the events fired on $console
-        $output->shouldReceive('write')->ordered()->once()->with("Parse: A PHP Security Scanner\n\n");
         $output->shouldReceive('write')->ordered()->once()->with("[PARSE] /path/to/file\n");
         $output->shouldReceive('write')->ordered()->once()->with("[PARSE] /path/to/file\n");
         $output->shouldReceive('write')->ordered()->once()->with("<error>[ERROR] message in /path/to/file</error>\n");
         $output->shouldReceive('write')->ordered()->once()->with("[PARSE] /path/to/file\n");
         $output->shouldReceive('write')->ordered()->once()->with("<error>[ISSUE] [Test] On line 1 in path</error>\n");
-        $output->shouldReceive('write')->ordered()->once()->with("\n");
 
         // Data for [PARSE] lines
         $fileEvent = m::mock('\Psecio\Parse\Event\FileEvent');
@@ -36,7 +34,6 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
 
         $console = new ConsoleLines($output);
 
-        // Should write header
         $console->onScanStart();
 
         // File open writes [PARSE] line
@@ -56,7 +53,6 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
         // Writes nothing
         $console->onDebug(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
-        // Writes extra new line
         $console->onScanComplete();
     }
 }

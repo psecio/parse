@@ -133,7 +133,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getReport()
     {
-        return $this->errors || $this->issues ? $this->getFailureReport() : $this->getPassReport();
+        return "\n\n" . ($this->errors || $this->issues ? $this->getFailureReport() : $this->getPassReport());
     }
 
     /**

@@ -27,12 +27,21 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
         unlink(self::$filename);
     }
 
-    public function testConsoleOutput()
+    public function testDottedOutput()
     {
         $this->assertRegExp(
-            '/Parse: A PHP Security Scanner/',
+            '/\./',
             $this->executeCommand(['--format' => 'txt']),
             'Using --format=txt should generate output'
+        );
+    }
+
+    public function testProgressOutput()
+    {
+        $this->assertRegExp(
+            '/\[\=+\]/',
+            $this->executeCommand(['--format' => 'progress']),
+            'Using --format=progress should use the progressbar'
         );
     }
 

@@ -4,7 +4,6 @@ namespace Psecio\Parse\Subscriber;
 
 use Psecio\Parse\Event\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
@@ -13,29 +12,30 @@ use Symfony\Component\Console\Helper\ProgressBar;
 class ConsoleProgressBar implements EventSubscriberInterface, Events
 {
     /**
-     * @var OutputInterface Registered output
+     * The progress bar format used of the number if steps is known
      */
-    private $output;
+    const FORMAT_STEPS_KNOWN = '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%';
 
     /**
-     * @var ProgressBar The progress bra
+     * The progress bar format used of the number if steps is not known
+     */
+    const FORMAT_STEPS_UNKNOWN = '%current% [%bar%] %elapsed:6s% %memory:6s%';
+
+    /**
+     * @var ProgressBar The progress bar
      */
     private $progressBar;
 
     /**
-     * Register output interface
+     * Inject progress bar
      *
-     * @param OutputInterface $output
-     * @param integer $fileCount Total number of files to scan
+     * @param ProgressBar $progressBar
      */
-    public function __construct(OutputInterface $output, ProgressBar $progressBar = null)
+    public function __construct(ProgressBar $progressBar)
     {
-        $this->output = $output;
-        $this->progressBar = $progressBar ?: new ProgressBar($output);
+        $this->progressBar = $progressBar;
         $this->progressBar->setFormat(
-            $this->progressBar->getMaxSteps()
-            ? '%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%'
-            : '%current% [%bar%] %elapsed:6s% %memory:6s%'
+            $this->progressBar->getMaxSteps() ? self::FORMAT_STEPS_KNOWN : self::FORMAT_STEPS_UNKNOWN
         );
     }
 
@@ -54,13 +54,12 @@ class ConsoleProgressBar implements EventSubscriberInterface, Events
     }
 
     /**
-     * Write header on scan start
+     * Reset progress bar on scan start
      *
      * @return null
      */
     public function onScanStart()
     {
-        $this->output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
         $this->progressBar->start();
     }
 
@@ -72,7 +71,6 @@ class ConsoleProgressBar implements EventSubscriberInterface, Events
     public function onScanComplete()
     {
         $this->progressBar->finish();
-        $this->output->writeln("\n");
     }
 
     /**

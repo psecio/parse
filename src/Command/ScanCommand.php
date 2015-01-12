@@ -78,30 +78,38 @@ class ScanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dispatcher = new EventDispatcher;
+
         $exitCode = new ExitCodeCatcher;
         $dispatcher->addSubscriber($exitCode);
 
         $fileIterator = new FileIterator($input->getArgument('path'));
 
-        switch (strtolower($input->getOption('format'))) {
+        $format = strtolower($input->getOption('format'));
+        switch ($format) {
             case 'txt':
+            case 'progress':
+                $output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
                 if ($output->isVeryVerbose()) {
-                    $dispatcher->addSubscriber(new ConsoleDebug($output));
+                    $dispatcher->addSubscriber(
+                        new ConsoleDebug($output)
+                    );
                 } elseif ($output->isVerbose()) {
-                    $dispatcher->addSubscriber(new ConsoleLines($output));
+                    $dispatcher->addSubscriber(
+                        new ConsoleLines($output)
+                    );
+                } elseif ('progress' == $format) {
+                    $dispatcher->addSubscriber(
+                        new ConsoleProgressBar(new ProgressBar($output, count($fileIterator)))
+                    );
                 } else {
-                    $dispatcher->addSubscriber(new ConsoleDots($output));
+                    $dispatcher->addSubscriber(
+                        new ConsoleDots($output)
+                    );
                 }
                 $dispatcher->addSubscriber(new ConsoleReport($output));
                 break;
             case 'xml':
                 $dispatcher->addSubscriber(new Xml($output));
-                break;
-            case 'progress':
-                $dispatcher->addSubscriber(
-                    new ConsoleProgressBar($output, new ProgressBar($output, count($fileIterator)))
-                );
-                $dispatcher->addSubscriber(new ConsoleReport($output));
                 break;
             default:
                 throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");

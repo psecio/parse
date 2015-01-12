@@ -12,16 +12,6 @@ use Psecio\Parse\Event\MessageEvent;
 class ConsoleLines extends ConsoleDots
 {
     /**
-     * Add line break on scan complete
-     *
-     * @return null
-     */
-    public function onScanComplete()
-    {
-        $this->write("\n");
-    }
-
-    /**
      * Write path on file open
      *
      * @param  FileEvent $event
