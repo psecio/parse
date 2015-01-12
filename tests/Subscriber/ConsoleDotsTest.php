@@ -4,7 +4,7 @@ namespace Psecio\Parse\Subscriber;
 
 use Mockery as m;
 
-class ConsoleStandardTest extends \PHPUnit_Framework_TestCase
+class ConsoleDotsTest extends \PHPUnit_Framework_TestCase
 {
     public function testOutput()
     {
@@ -18,7 +18,7 @@ class ConsoleStandardTest extends \PHPUnit_Framework_TestCase
         $output->shouldReceive('write')->ordered()->once()->with("<error>I</error>");
         $output->shouldReceive('write')->ordered()->once()->with("\n\n");
 
-        $console = new ConsoleStandard($output);
+        $console = new ConsoleDots($output);
         $console->setLineLength(2);
 
         // Should write header
@@ -50,7 +50,7 @@ class ConsoleStandardTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInternalType(
             'array',
-            ConsoleStandard::getSubscribedEvents()
+            ConsoleDots::getSubscribedEvents()
         );
     }
 }

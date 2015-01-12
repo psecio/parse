@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
-use Psecio\Parse\Subscriber\ConsoleStandard;
+use Psecio\Parse\Subscriber\ConsoleDots;
 use Psecio\Parse\Subscriber\ConsoleProgressBar;
 use Psecio\Parse\Subscriber\ConsoleVerbose;
 use Psecio\Parse\Subscriber\ConsoleDebug;
@@ -90,7 +90,7 @@ class ScanCommand extends Command
                 } elseif ($output->isVerbose()) {
                     $dispatcher->addSubscriber(new ConsoleVerbose($output));
                 } else {
-                    $dispatcher->addSubscriber(new ConsoleStandard($output));
+                    $dispatcher->addSubscriber(new ConsoleDots($output));
                 }
                 $dispatcher->addSubscriber(new ConsoleReport($output));
                 break;

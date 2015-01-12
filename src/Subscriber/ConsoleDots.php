@@ -10,9 +10,9 @@ use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
- * Standard console event subscriber
+ * Display phpunit style dots to visualize scan progression
  */
-class ConsoleStandard implements EventSubscriberInterface, Events
+class ConsoleDots implements EventSubscriberInterface, Events
 {
     /**
      * @var OutputInterface Registered output
