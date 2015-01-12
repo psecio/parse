@@ -24,12 +24,12 @@ class ConsoleReport implements EventSubscriberInterface, Events
     private $fileCount;
 
     /**
-     * @var array List of test failures
+     * @var array List of failures
      */
     private $issues;
 
     /**
-     * @var array List of scan errors
+     * @var array List of errors
      */
     private $errors;
 
@@ -62,7 +62,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Reset values on scan start
      *
-     * @return void
+     * @return null
      */
     public function onScanStart()
     {
@@ -74,7 +74,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Write report on scan complete
      *
-     * @return void
+     * @return null
      */
     public function onScanComplete()
     {
@@ -84,7 +84,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Increment files scanned counter
      *
-     * @return void
+     * @return null
      */
     public function onFileOpen()
     {
@@ -95,7 +95,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * Save issue event
      *
      * @param  IssueEvent $event
-     * @return void
+     * @return null
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -106,7 +106,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * Save error event
      *
      * @param  MessageEvent $event
-     * @return void
+     * @return null
      */
     public function onFileError(MessageEvent $event)
     {
@@ -137,7 +137,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     }
 
     /**
-     * Get report for all tests pass
+     * Get info on scanned files
      *
      * @return string
      */
@@ -151,7 +151,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     }
 
     /**
-     * Get failure report
+     * Get info on errors and issues
      *
      * @return string
      */

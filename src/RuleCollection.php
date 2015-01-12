@@ -52,7 +52,7 @@ class RuleCollection implements Countable, IteratorAggregate
      * Add an rule to collection
      *
      * @param  RuleInterface $rule
-     * @return void
+     * @return null
      */
     public function add(RuleInterface $rule)
     {
@@ -63,7 +63,7 @@ class RuleCollection implements Countable, IteratorAggregate
      * Remove an item from the collection
      *
      * @param  string $name Name of rule to remove
-     * @return void
+     * @return null
      */
     public function remove($name)
     {

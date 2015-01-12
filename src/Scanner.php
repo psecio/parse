@@ -61,7 +61,7 @@ class Scanner implements Event\Events
      * @param  RuleInterface $rule
      * @param  Node $node
      * @param  File $file
-     * @return void
+     * @return null
      */
     public function onNodeFailure(RuleInterface $rule, Node $node, File $file)
     {
@@ -72,7 +72,7 @@ class Scanner implements Event\Events
      * Execute the scan
      *
      * @param  FileIterator $fileIterator Iterator with files to scan
-     * @return void
+     * @return null
      */
     public function scan(FileIterator $fileIterator)
     {

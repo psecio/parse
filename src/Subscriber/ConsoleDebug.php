@@ -17,7 +17,7 @@ class ConsoleDebug extends ConsoleVerbose
     /**
      * Save timestamp at scan start
      *
-     * @return void
+     * @return null
      */
     public function onScanStart()
     {
@@ -29,7 +29,7 @@ class ConsoleDebug extends ConsoleVerbose
     /**
      * Write time elapsed at scan complete
      *
-     * @return void
+     * @return null
      */
     public function onScanComplete()
     {
@@ -44,7 +44,7 @@ class ConsoleDebug extends ConsoleVerbose
      * Write debug message
      *
      * @param  MessageEvent $event
-     * @return void
+     * @return null
      */
     public function onDebug(MessageEvent $event)
     {

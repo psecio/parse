@@ -52,7 +52,7 @@ class Xml implements EventSubscriberInterface, Events
     /**
      * Create document at scan start
      *
-     * @return void
+     * @return null
      */
     public function onScanStart()
     {
@@ -66,7 +66,7 @@ class Xml implements EventSubscriberInterface, Events
     /**
      * Output document at scan complete
      *
-     * @return void
+     * @return null
      */
     public function onScanComplete()
     {
@@ -82,7 +82,7 @@ class Xml implements EventSubscriberInterface, Events
      * Write issue to document
      *
      * @param  IssueEvent $event
-     * @return void
+     * @return null
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -101,7 +101,7 @@ class Xml implements EventSubscriberInterface, Events
      * Write error to document
      *
      * @param  MessageEvent $event
-     * @return void
+     * @return null
      */
     public function onFileError(MessageEvent $event)
     {

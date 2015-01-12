@@ -14,7 +14,7 @@ class ConsoleVerbose extends ConsoleStandard
     /**
      * Add line break on scan complete
      *
-     * @return void
+     * @return null
      */
     public function onScanComplete()
     {
@@ -25,7 +25,7 @@ class ConsoleVerbose extends ConsoleStandard
      * Write path on file open
      *
      * @param  FileEvent $event
-     * @return void
+     * @return null
      */
     public function onFileOpen(FileEvent $event)
     {
@@ -35,7 +35,7 @@ class ConsoleVerbose extends ConsoleStandard
     /**
      * Ignore file close
      *
-     * @return void
+     * @return null
      */
     public function onFileClose()
     {
@@ -45,7 +45,7 @@ class ConsoleVerbose extends ConsoleStandard
      * Write issue as one line
      *
      * @param  IssueEvent $event
-     * @return void
+     * @return null
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -61,7 +61,7 @@ class ConsoleVerbose extends ConsoleStandard
      * Write error as one line
      *
      * @param  MessageEvent $event
-     * @return void
+     * @return null
      */
     public function onFileError(MessageEvent $event)
     {
