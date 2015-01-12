@@ -51,7 +51,7 @@ class Scanner implements Event\Events
         $this->visitor = $visitor;
         $this->parser = $parser ?: new Parser(new Lexer);
         $this->traverser = $traverser ?: new NodeTraverser;
-        $this->visitor->onTestFail([$this, 'onTestFail']);
+        $this->visitor->onNodeFailure([$this, 'onNodeFailure']);
         $this->traverser->addVisitor($this->visitor);
     }
 
@@ -63,7 +63,7 @@ class Scanner implements Event\Events
      * @param  File $file
      * @return void
      */
-    public function onTestFail(TestInterface $test, Node $node, File $file)
+    public function onNodeFailure(TestInterface $test, Node $node, File $file)
     {
         $this->dispatcher->dispatch(self::FILE_ISSUE, new Event\IssueEvent($test, $node, $file));
     }

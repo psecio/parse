@@ -20,7 +20,7 @@ class ListTestsCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(['command' => $command->getName()]);
 
         $this->assertRegExp(
-            '/Searching for tests/',
+            '/Searching for rules/',
             $commandTester->getDisplay(),
             'The list-tests command should produce output'
         );

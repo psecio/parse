@@ -6,7 +6,7 @@ use ArrayIterator;
 use DirectoryIterator;
 
 /**
- * Responsible for creating a TestCollection with the bundled set of rules
+ * Responsible for creating a RuleCollection with the bundled set of rules
  */
 class RuleFactory
 {
@@ -35,11 +35,11 @@ class RuleFactory
     /**
      * Create collection of rules
      *
-     * @return TestCollection
+     * @return RuleCollection
      */
     public function createRuleCollection()
     {
-        return new TestCollection($this->rules);
+        return new RuleCollection($this->rules);
     }
 
     /**

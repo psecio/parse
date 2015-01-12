@@ -4,34 +4,34 @@ namespace Psecio\Parse;
 
 use Mockery as m;
 
-class TestCollectionTest extends \PHPUnit_Framework_TestCase
+class RuleCollectionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers \Psecio\Parse\TestCollection::__construct
-     * @covers \Psecio\Parse\TestCollection::toArray
+     * @covers \Psecio\Parse\RuleCollection::__construct
+     * @covers \Psecio\Parse\RuleCollection::toArray
      */
     public function testToArray()
     {
-        $test = m::mock('\Psecio\Parse\TestInterface')
+        $rule = m::mock('\Psecio\Parse\TestInterface')
             ->shouldReceive('getName')
-            ->andReturn('TestName')
+            ->andReturn('RuleName')
             ->mock();
 
         $this->assertSame(
-            (new TestCollection([$test]))->toArray(),
-            ['TestName' => $test],
+            (new RuleCollection([$rule]))->toArray(),
+            ['RuleName' => $rule],
             'toArray() should return the correct array'
         );
     }
 
     /**
-     * @covers \Psecio\Parse\TestCollection::count
-     * @covers \Psecio\Parse\TestCollection::add
-     * @covers \Psecio\Parse\TestCollection::remove
+     * @covers \Psecio\Parse\RuleCollection::count
+     * @covers \Psecio\Parse\RuleCollection::add
+     * @covers \Psecio\Parse\RuleCollection::remove
      */
     public function testCountable()
     {
-        $collection = new TestCollection;
+        $collection = new RuleCollection;
 
         $this->assertCount(
             0,
@@ -42,7 +42,7 @@ class TestCollectionTest extends \PHPUnit_Framework_TestCase
         $collection->add(
             m::mock('\Psecio\Parse\TestInterface')
                 ->shouldReceive('getName')
-                ->andReturn('TestName')
+                ->andReturn('RuleName')
                 ->mock()
         );
 
@@ -52,7 +52,7 @@ class TestCollectionTest extends \PHPUnit_Framework_TestCase
             '1 added item should be reflected in count'
         );
 
-        $collection->remove('TestName');
+        $collection->remove('RuleName');
 
         $this->assertCount(
             0,
@@ -62,18 +62,18 @@ class TestCollectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Psecio\Parse\TestCollection::getIterator
+     * @covers \Psecio\Parse\RuleCollection::getIterator
      */
     public function testIterator()
     {
-        $test = m::mock('\Psecio\Parse\TestInterface')
+        $rule = m::mock('\Psecio\Parse\TestInterface')
             ->shouldReceive('getName')
-            ->andReturn('TestName')
+            ->andReturn('RuleName')
             ->mock();
 
         $this->assertSame(
-            iterator_to_array(new TestCollection([$test])),
-            ['TestName' => $test],
+            iterator_to_array(new RuleCollection([$rule])),
+            ['RuleName' => $rule],
             'iteration of the collection should work correctly'
         );
     }

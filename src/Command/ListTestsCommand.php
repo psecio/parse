@@ -6,7 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Psecio\Parse\TestInterface;
-use Psecio\Parse\TestCollection;
+use Psecio\Parse\RuleCollection;
 use Psecio\Parse\RuleFactory;
 
 /**
@@ -36,35 +36,35 @@ class ListTestsCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write("<comment>Searching for tests:</comment>");
+        $output->write("<comment>Searching for rules:</comment>");
 
-        $testCollection = (new RuleFactory)->createRuleCollection();
+        $ruleCollection = (new RuleFactory)->createRuleCollection();
 
-        $output->writeln(" " . count($testCollection) . " found");
+        $output->writeln(" " . count($ruleCollection) . " found");
         $output->writeln("<comment>Listing:</comment>");
 
-        $colWidth = $this->getTestNameColWidth($testCollection);
+        $colWidth = $this->getNameColWidth($ruleCollection);
 
-        foreach ($testCollection as $test) {
-            $output->write(" <info>" . str_pad($test->getName(), $colWidth) . "</info> ");
-            $output->writeln($test->getDescription());
+        foreach ($ruleCollection as $rule) {
+            $output->write(" <info>" . str_pad($rule->getName(), $colWidth) . "</info> ");
+            $output->writeln($rule->getDescription());
         }
     }
 
     /**
-     * Get length of the longest test name in collection
+     * Get length of the longest name in collection
      *
-     * @param  TestCollection $testCollection
+     * @param  RuleCollection $ruleCollection
      * @return int
      */
-    public function getTestNameColWidth(TestCollection $testCollection)
+    private function getNameColWidth(RuleCollection $ruleCollection)
     {
         return max(
             array_map(
-                function (TestInterface $test) {
-                    return strlen($test->getName());
+                function (TestInterface $rule) {
+                    return strlen($rule->getName());
                 },
-                $testCollection->toArray()
+                $ruleCollection->toArray()
             )
         );
     }
