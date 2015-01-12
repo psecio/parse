@@ -25,7 +25,7 @@ class RuleFactory
     {
         $this->rules = $this->includeFilter(
             $this->excludeFilter(
-                $this->getBundledRules(__DIR__ . '/Tests'),
+                $this->getBundledRules(__DIR__ . '/Rule'),
                 $exclude
             ),
             $include
@@ -56,7 +56,7 @@ class RuleFactory
             if ($splFileInfo->isDot() || $splFileInfo->isDir()) {
                 continue;
             }
-            $className = "\\Psecio\\Parse\\Tests\\{$splFileInfo->getBasename('.php')}";
+            $className = "\\Psecio\\Parse\\Rule\\{$splFileInfo->getBasename('.php')}";
             $rules[] = new $className;
         }
 
