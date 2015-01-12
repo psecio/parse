@@ -8,8 +8,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
 use Psecio\Parse\Subscriber\ConsoleStandard;
+use Psecio\Parse\Subscriber\ConsoleProgressBar;
 use Psecio\Parse\Subscriber\ConsoleVerbose;
 use Psecio\Parse\Subscriber\ConsoleDebug;
 use Psecio\Parse\Subscriber\ConsoleReport;
@@ -79,6 +81,8 @@ class ScanCommand extends Command
         $exitCode = new ExitCodeCatcher;
         $dispatcher->addSubscriber($exitCode);
 
+        $fileIterator = new FileIterator($input->getArgument('path'));
+
         switch (strtolower($input->getOption('format'))) {
             case 'txt':
                 if ($output->isVeryVerbose()) {
@@ -93,6 +97,12 @@ class ScanCommand extends Command
             case 'xml':
                 $dispatcher->addSubscriber(new Xml($output));
                 break;
+            case 'progress':
+                $dispatcher->addSubscriber(
+                    new ConsoleProgressBar($output, new ProgressBar($output, count($fileIterator)))
+                );
+                $dispatcher->addSubscriber(new ConsoleReport($output));
+                break;
             default:
                 throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");
         }
@@ -103,10 +113,7 @@ class ScanCommand extends Command
         );
 
         $scanner = new Scanner($dispatcher, new CallbackVisitor($testFactory->createTestCollection()));
-
-        $scanner->scan(
-            new FileIterator($input->getArgument('path'))
-        );
+        $scanner->scan($fileIterator);
 
         return $exitCode->getExitCode();
     }
