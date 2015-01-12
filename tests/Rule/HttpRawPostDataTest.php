@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class HttpRawPostDataTest extends ParseTest
+class HttpRawPostDataTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

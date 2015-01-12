@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class ParseStrTest extends ParseTest
+class ParseStrTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

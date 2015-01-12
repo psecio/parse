@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class RegexWithExecModifierTest extends ParseTest
+class RegexWithExecModifierTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

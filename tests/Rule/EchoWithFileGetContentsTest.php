@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class EchoWithFileGetContentsTest extends ParseTest
+class EchoWithFileGetContentsTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

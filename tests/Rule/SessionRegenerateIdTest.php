@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class SessionRegenerateIdTest extends ParseTest
+class SessionRegenerateIdTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

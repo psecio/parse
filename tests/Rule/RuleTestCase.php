@@ -1,6 +1,6 @@
 <?php
 
-namespace Psecio\Parse;
+namespace Psecio\Parse\Rule;
 
 use Psecio\Parse\RuleInterface;
 use PhpParser\Parser;
@@ -10,14 +10,18 @@ use PhpParser\NodeTraverser;
 /**
  * Base test for implementing full-parse based unit tests
  */
-abstract class ParseTest extends \PHPUnit_Framework_TestCase
+abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
 {
-    /** @var Parser  The parser to use to parse samples */
+    /**
+     * @var Parser The parser to use to parse samples
+     */
     protected $parser;
 
+    /**
+     * Set up the parser the same way the Scanner does
+     */
     public function setUp()
     {
-        // Set up the parser the same way the Scanner does.
         $this->parser = new Parser(new Lexer);
     }
 
@@ -26,7 +30,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      *
      * This should return an instantiated object of the class that is being evaluated
      *
-     * @return RuleInterface  An object of the type being tested
+     * @return RuleInterface An object of the type being tested
      */
     abstract protected function buildTest();
 
@@ -86,10 +90,12 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      */
     public function assertParseTest($expected, $code, $message = '')
     {
-        $message = sprintf("%sThe parser scan should have %s the test.\nTested code was:\n%s",
-                           empty($message) ? '' : ($message . "\n"),
-                           $expected ? 'passed' : 'failed',
-                           $this->formatCodeForMessage($code));
+        $message = sprintf(
+            "%sThe parser scan should have %s the test.\nTested code was:\n%s",
+            empty($message) ? '' : ($message . "\n"),
+            $expected ? 'passed' : 'failed',
+            $this->formatCodeForMessage($code)
+        );
 
         $actual = $this->scan($code);
 
@@ -142,7 +148,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      */
     protected function scan($code)
     {
-        $visitor = new ParseTestVisitor($this->buildTest());
+        $visitor = new RuleTestVisitor($this->buildTest());
         $traverser = new NodeTraverser;
         $traverser->addVisitor($visitor);
         $traverser->traverse($this->parser->parse('<?php ' . $code));

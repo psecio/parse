@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class BooleanIdentityTest extends ParseTest
+class BooleanIdentityTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

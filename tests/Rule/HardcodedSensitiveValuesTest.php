@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class HardcodedSensitiveValuesTest extends ParseTest
+class HardcodedSensitiveValuesTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

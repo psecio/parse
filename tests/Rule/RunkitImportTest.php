@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class RunkitImportTest extends ParseTest
+class RunkitImportTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

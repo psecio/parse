@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class MysqlRealEscapeStringTest extends ParseTest
+class MysqlRealEscapeStringTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {

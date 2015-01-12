@@ -2,9 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\ParseTest;
-
-class ExitOrDieTest extends ParseTest
+class ExitOrDieTest extends RuleTestCase
 {
     public function parseSampleProvider()
     {
