@@ -25,12 +25,4 @@ class ExitCodeCatcherTest extends \PHPUnit_Framework_TestCase
         $exitCode->onFileError();
         $this->assertSame(1, $exitCode->getExitCode());
     }
-
-    public function testSubscription()
-    {
-        $this->assertInternalType(
-            'array',
-            ExitCodeCatcher::getSubscribedEvents()
-        );
-    }
 }

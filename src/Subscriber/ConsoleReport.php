@@ -3,20 +3,15 @@
 namespace Psecio\Parse\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
- * Print report to output at scan complete
+ * Print report at scan complete
  */
-class ConsoleReport implements EventSubscriberInterface, Events
+class ConsoleReport implements EventSubscriberInterface
 {
-    /**
-     * @var OutputInterface Registered output
-     */
-    private $output;
+    use Helper\SubscriberTrait, Helper\OutputTrait;
 
     /**
      * @var integer Number of scanned files
@@ -32,32 +27,6 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * @var array List of scan errors
      */
     private $errors;
-
-    /**
-     * Register output interface
-     *
-     * @param OutputInterface $output
-     */
-    public function __construct(OutputInterface $output)
-    {
-        $this->output = $output;
-    }
-
-    /**
-     * Returns an array of event names this subscriber wants to listen to
-     *
-     * @return array The event names to listen to
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            self::SCAN_START => 'onScanStart',
-            self::SCAN_COMPLETE => 'onScanComplete',
-            self::FILE_OPEN => 'onFileOpen',
-            self::FILE_ISSUE => 'onFileIssue',
-            self::FILE_ERROR => 'onFileError'
-        ];
-    }
 
     /**
      * Reset values on scan start

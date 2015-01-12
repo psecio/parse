@@ -2,15 +2,16 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Psecio\Parse\Event\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Display a progress bar to visualize scan progression
  */
-class ConsoleProgressBar implements EventSubscriberInterface, Events
+class ConsoleProgressBar implements EventSubscriberInterface
 {
+    use Helper\SubscriberTrait;
+
     /**
      * The progress bar format used of the number if steps is known
      */
@@ -37,20 +38,6 @@ class ConsoleProgressBar implements EventSubscriberInterface, Events
         $this->progressBar->setFormat(
             $this->progressBar->getMaxSteps() ? self::FORMAT_STEPS_KNOWN : self::FORMAT_STEPS_UNKNOWN
         );
-    }
-
-    /**
-     * Returns an array of event names this subscriber wants to listen to
-     *
-     * @return array The event names to listen to
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            self::SCAN_START => 'onScanStart',
-            self::SCAN_COMPLETE => 'onScanComplete',
-            self::FILE_CLOSE => 'onFileClose',
-        ];
     }
 
     /**

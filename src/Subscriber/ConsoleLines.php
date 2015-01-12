@@ -2,6 +2,7 @@
 
 namespace Psecio\Parse\Subscriber;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
@@ -9,8 +10,10 @@ use Psecio\Parse\Event\MessageEvent;
 /**
  * Display descriptive lines to visualize scan progression
  */
-class ConsoleLines extends ConsoleDots
+class ConsoleLines implements EventSubscriberInterface
 {
+    use Helper\SubscriberTrait, Helper\OutputTrait;
+
     /**
      * Write path on file open
      *
@@ -20,15 +23,6 @@ class ConsoleLines extends ConsoleDots
     public function onFileOpen(FileEvent $event)
     {
         $this->write("[PARSE] %s\n", $event->getFile()->getPath());
-    }
-
-    /**
-     * Ignore file close
-     *
-     * @return null
-     */
-    public function onFileClose()
-    {
     }
 
     /**

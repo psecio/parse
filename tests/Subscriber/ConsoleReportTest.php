@@ -69,12 +69,4 @@ issue description
 
         $report->onScanComplete();
     }
-
-    public function testSubscription()
-    {
-        $this->assertInternalType(
-            'array',
-            ConsoleReport::getSubscribedEvents()
-        );
-    }
 }

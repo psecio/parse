@@ -3,8 +3,6 @@
 namespace Psecio\Parse\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
@@ -12,12 +10,9 @@ use Psecio\Parse\Event\MessageEvent;
 /**
  * Display phpunit style dots to visualize scan progression
  */
-class ConsoleDots implements EventSubscriberInterface, Events
+class ConsoleDots implements EventSubscriberInterface
 {
-    /**
-     * @var OutputInterface Registered output
-     */
-    private $output;
+    use Helper\SubscriberTrait, Helper\OutputTrait;
 
     /**
      * @var string One charactes status descriptor
@@ -35,16 +30,6 @@ class ConsoleDots implements EventSubscriberInterface, Events
     private $fileCount;
 
     /**
-     * Register output interface
-     *
-     * @param OutputInterface $output
-     */
-    public function __construct(OutputInterface $output)
-    {
-        $this->output = $output;
-    }
-
-    /**
      * Set number of status chars per line
      *
      * @param  integer $lineLength
@@ -56,24 +41,6 @@ class ConsoleDots implements EventSubscriberInterface, Events
     }
 
     /**
-     * Returns an array of event names this subscriber wants to listen to
-     *
-     * @return array The event names to listen to
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            self::SCAN_START => 'onScanStart',
-            self::SCAN_COMPLETE => 'onScanComplete',
-            self::FILE_OPEN => 'onFileOpen',
-            self::FILE_CLOSE => 'onFileClose',
-            self::FILE_ISSUE => 'onFileIssue',
-            self::FILE_ERROR => 'onFileError',
-            self::DEBUG => 'onDebug'
-        ];
-    }
-
-    /**
      * Write header on scan start
      *
      * @return null
@@ -81,15 +48,6 @@ class ConsoleDots implements EventSubscriberInterface, Events
     public function onScanStart()
     {
         $this->fileCount = 0;
-    }
-
-    /**
-     * Ignore scan complete
-     *
-     * @return null
-     */
-    public function onScanComplete()
-    {
     }
 
     /**
@@ -137,27 +95,5 @@ class ConsoleDots implements EventSubscriberInterface, Events
     public function onFileError(MessageEvent $event)
     {
         $this->status = '<error>E</error>';
-    }
-
-    /**
-     * Ignore debug events
-     *
-     * @param  MessageEvent $event
-     * @return null
-     */
-    public function onDebug(MessageEvent $event)
-    {
-    }
-
-    /**
-     * Write to console
-     *
-     * @param  string $format sprintf format string
-     * @param  mixed  ...$arg Any number of sprintf arguments
-     * @return null
-     */
-    protected function write()
-    {
-        $this->output->write(call_user_func_array('sprintf', func_get_args()));
     }
 }

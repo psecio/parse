@@ -41,12 +41,4 @@ class ConsoleDotsTest extends \PHPUnit_Framework_TestCase
 
         $console->onScanComplete();
     }
-
-    public function testSubscription()
-    {
-        $this->assertInternalType(
-            'array',
-            ConsoleDots::getSubscribedEvents()
-        );
-    }
 }
