@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Don't use session_regenerate_id without setting the param to true
  */
-class TestSessionRegenFalse implements TestInterface
+class TestSessionRegenFalse implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
 

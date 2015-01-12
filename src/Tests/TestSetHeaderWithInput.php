@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Ensure that header() calls don't use concatenation directly
  */
-class TestSetHeaderWithInput implements TestInterface
+class TestSetHeaderWithInput implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait;
 

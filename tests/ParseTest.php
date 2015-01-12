@@ -2,7 +2,7 @@
 
 namespace Psecio\Parse;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Parser;
 use PhpParser\Lexer\Emulative as Lexer;
 use PhpParser\NodeTraverser;
@@ -26,7 +26,7 @@ abstract class ParseTest extends \PHPUnit_Framework_TestCase
      *
      * This should return an instantiated object of the class that is being evaluated
      *
-     * @return TestInterface  An object of the type being tested
+     * @return RuleInterface  An object of the type being tested
      */
     abstract protected function buildTest();
 

@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * The ereg functions have been deprecated as of PHP 5.3.0. Don't use them!
  */
-class TestNoEregFunctions implements TestInterface
+class TestNoEregFunctions implements RuleInterface
 {
     use Helper\NameTrait;
 

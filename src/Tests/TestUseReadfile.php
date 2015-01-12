@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Don't use readfile, readlink or readgzfile - they output content directly
  */
-class TestUseReadfile implements TestInterface
+class TestUseReadfile implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait;
 

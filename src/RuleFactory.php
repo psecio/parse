@@ -11,7 +11,7 @@ use DirectoryIterator;
 class RuleFactory
 {
     /**
-     * @var TestInterface[] Current ruleset
+     * @var RuleInterface[] Current ruleset
      */
     private $rules;
 
@@ -46,7 +46,7 @@ class RuleFactory
      * Get rules included in source
      *
      * @param  string $dir Directory to scan
-     * @return TestInterface[]
+     * @return RuleInterface[]
      */
     private function getBundledRules($dir)
     {
@@ -66,15 +66,15 @@ class RuleFactory
     /**
      * Apply include filter
      *
-     * @param  TestInterface[] $rules Current ruleset
+     * @param  RuleInterface[] $rules Current ruleset
      * @param  string[]        $include Names of rules to include in collection
-     * @return TestInterface[] Filtered ruleset
+     * @return RuleInterface[] Filtered ruleset
      */
     private function includeFilter(array $rules, array $include)
     {
         return array_filter(
             $rules,
-            function (TestInterface $rule) use ($include) {
+            function (RuleInterface $rule) use ($include) {
                 return empty($include) || in_array($rule->getName(), $include);
             }
         );
@@ -83,15 +83,15 @@ class RuleFactory
     /**
      * Apply exclude filter
      *
-     * @param  TestInterface[] $rules Current ruleset
+     * @param  RuleInterface[] $rules Current ruleset
      * @param  string[]        $exclude Names of rules to exclude from collection
-     * @return TestInterface[] Filtered ruleset
+     * @return RuleInterface[] Filtered ruleset
      */
     private function excludeFilter(array $rules, array $exclude)
     {
         return array_filter(
             $rules,
-            function (TestInterface $rule) use ($exclude) {
+            function (RuleInterface $rule) use ($exclude) {
                 return !in_array($rule->getName(), $exclude);
             }
         );

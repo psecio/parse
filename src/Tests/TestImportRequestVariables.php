@@ -2,14 +2,14 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Dont use import_request_variables as it puts them into the global scope
  * This function has been DEPRECATED as of PHP 5.3.0 and REMOVED as of PHP 5.4.0.
  */
-class TestImportRequestVariables implements TestInterface
+class TestImportRequestVariables implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait;
 

@@ -2,14 +2,14 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 
 /**
  * If we're evaluating against a boolean (true|false) ensure we're using type checking (===)
  */
-class TestUseTypeCheckEqualsOnBoolean implements TestInterface
+class TestUseTypeCheckEqualsOnBoolean implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsBoolLiteralTrait;
 

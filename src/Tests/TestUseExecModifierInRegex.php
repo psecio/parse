@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Ensure that the regular expression handling doesn't use the /e modifier
  */
-class TestUseExecModifierInRegex implements TestInterface
+class TestUseExecModifierInRegex implements RuleInterface
 {
     use Helper\NameTrait;
 

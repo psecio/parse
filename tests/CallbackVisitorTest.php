@@ -11,14 +11,14 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $node = m::mock('\PhpParser\Node');
 
-        $falseCheck = m::mock('\Psecio\Parse\TestInterface')
+        $falseCheck = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('isValid')
             ->once()
             ->with($node)
             ->andReturn(false)
             ->mock();
 
-        $trueCheck = m::mock('\Psecio\Parse\TestInterface')
+        $trueCheck = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('isValid')
             ->once()
             ->with($node)

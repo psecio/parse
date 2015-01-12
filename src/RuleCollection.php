@@ -12,14 +12,14 @@ use ArrayIterator;
 class RuleCollection implements Countable, IteratorAggregate
 {
     /**
-     * @var TestInterface[] Registered rules
+     * @var RuleInterface[] Registered rules
      */
     private $rules = [];
 
     /**
      * Load rules into collection
      *
-     * @param TestInterface[] $rules
+     * @param RuleInterface[] $rules
      */
     public function __construct(array $rules = array())
     {
@@ -51,10 +51,10 @@ class RuleCollection implements Countable, IteratorAggregate
     /**
      * Add an rule to collection
      *
-     * @param  TestInterface $rule
+     * @param  RuleInterface $rule
      * @return void
      */
-    public function add(TestInterface $rule)
+    public function add(RuleInterface $rule)
     {
         $this->rules[$rule->getName()] = $rule;
     }

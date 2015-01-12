@@ -2,7 +2,7 @@
 
 namespace Psecio\Parse;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use Mockery as m;
 
@@ -11,7 +11,7 @@ use Mockery as m;
  */
 class ParseTestVisitor extends \PhpParser\NodeVisitorAbstract
 {
-    /** @var TestInterface $test  The test to run */
+    /** @var RuleInterface $test  The test to run */
     private $test;
 
     /**
@@ -29,9 +29,9 @@ class ParseTestVisitor extends \PhpParser\NodeVisitorAbstract
      *
      * Initializes {@see $result} to be true.
      *
-     * @param TestInterface $test  The test to run
+     * @param RuleInterface $test  The test to run
      */
-    public function __construct(TestInterface $test)
+    public function __construct(RuleInterface $test)
     {
         $this->test = $test;
         $this->result = true;

@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Be sure you're not using an echo with a file_get_contents
  */
-class TestEchoWithFileGetContents implements TestInterface
+class TestEchoWithFileGetContents implements RuleInterface
 {
     use Helper\NameTrait;
 

@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Don't use $_REQUEST, know where your data is coming from
  */
-class TestAvoidRequestUse implements TestInterface
+class TestAvoidRequestUse implements RuleInterface
 {
     use Helper\NameTrait;
 

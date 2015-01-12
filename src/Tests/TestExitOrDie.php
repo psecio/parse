@@ -2,14 +2,14 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\LNumber;
 
 /**
  * Exit or die usage should be avoided
  */
-class TestExitOrDie implements TestInterface
+class TestExitOrDie implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsExpressionTrait;
 

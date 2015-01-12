@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Don't use http_raw_post_data
  */
-class TestHttpRawPostData implements TestInterface
+class TestHttpRawPostData implements RuleInterface
 {
     use Helper\NameTrait;
 

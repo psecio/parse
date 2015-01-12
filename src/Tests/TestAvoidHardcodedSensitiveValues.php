@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Avoid hard-coding sensitive values (ex. "username", "password", etc.)
  */
-class TestAvoidHardcodedSensitiveValues implements TestInterface
+class TestAvoidHardcodedSensitiveValues implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsExpressionTrait, Helper\IsFunctionTrait;
 

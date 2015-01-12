@@ -5,7 +5,7 @@ namespace Psecio\Parse\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use Psecio\Parse\RuleCollection;
 use Psecio\Parse\RuleFactory;
 
@@ -61,7 +61,7 @@ class ListTestsCommand extends Command
     {
         return max(
             array_map(
-                function (TestInterface $rule) {
+                function (RuleInterface $rule) {
                     return strlen($rule->getName());
                 },
                 $ruleCollection->toArray()

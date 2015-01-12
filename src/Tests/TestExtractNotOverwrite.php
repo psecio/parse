@@ -2,7 +2,7 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
@@ -11,7 +11,7 @@ use PhpParser\Node;
  *  = the second param is set but is EXTR_OVERWRITE
  * fail...
  */
-class TestExtractNotOverwrite implements TestInterface
+class TestExtractNotOverwrite implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait;
 

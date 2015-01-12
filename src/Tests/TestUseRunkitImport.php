@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Using runkit_import overwrites values by default - do not use
  */
-class TestUseRunkitImport implements TestInterface
+class TestUseRunkitImport implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait;
 

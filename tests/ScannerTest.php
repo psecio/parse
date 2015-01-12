@@ -20,7 +20,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         );
 
         $scanner->onNodeFailure(
-            m::mock('\Psecio\Parse\TestInterface'),
+            m::mock('\Psecio\Parse\RuleInterface'),
             m::mock('\PhpParser\Node'),
             m::mock('\Psecio\Parse\File')
         );

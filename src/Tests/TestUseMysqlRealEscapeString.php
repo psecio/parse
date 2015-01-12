@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Don't use the mysql_real_escape_string function, use bound params/prepared statements instead
  */
-class TestUseMysqlRealEscapeString implements TestInterface
+class TestUseMysqlRealEscapeString implements RuleInterface
 {
     use Helper\NameTrait;
 

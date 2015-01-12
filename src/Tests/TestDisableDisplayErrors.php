@@ -2,14 +2,14 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 
 /**
  * The "display_errors" setting should not be enabled manually
  */
-class TestDisableDisplayErrors implements TestInterface
+class TestDisableDisplayErrors implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
 

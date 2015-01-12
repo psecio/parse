@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Using system functions is risky...
  */
-class TestUseSystemFunctions implements TestInterface
+class TestUseSystemFunctions implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsExpressionTrait;
 

@@ -12,7 +12,7 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testToArray()
     {
-        $rule = m::mock('\Psecio\Parse\TestInterface')
+        $rule = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('getName')
             ->andReturn('RuleName')
             ->mock();
@@ -40,7 +40,7 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
         );
 
         $collection->add(
-            m::mock('\Psecio\Parse\TestInterface')
+            m::mock('\Psecio\Parse\RuleInterface')
                 ->shouldReceive('getName')
                 ->andReturn('RuleName')
                 ->mock()
@@ -66,7 +66,7 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testIterator()
     {
-        $rule = m::mock('\Psecio\Parse\TestInterface')
+        $rule = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('getName')
             ->andReturn('RuleName')
             ->mock();

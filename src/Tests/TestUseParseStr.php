@@ -2,14 +2,14 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Don't use mb_parse_str and parse_str as they set the variables
  * into the current scope
  */
-class TestUseParseStr implements TestInterface
+class TestUseParseStr implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait;
 

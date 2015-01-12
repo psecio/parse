@@ -2,13 +2,13 @@
 
 namespace Psecio\Parse\Tests;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
  * Check for output functions that use a variable in the output
  */
-class TestOutputWithVariable implements TestInterface
+class TestOutputWithVariable implements RuleInterface
 {
     use Helper\NameTrait;
 

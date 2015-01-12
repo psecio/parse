@@ -7,17 +7,17 @@ use PhpParser\Node;
 /**
  * Code checks implement this interface
  */
-interface TestInterface
+interface RuleInterface
 {
     /**
-     * Get test name
+     * Get the rule name
      *
      * @return string
      */
     public function getName();
 
     /**
-     * Get test description
+     * Get rule description
      *
      * @return string
      */

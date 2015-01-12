@@ -188,7 +188,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
                 $issueEvent->getNode()->getLine(),
-                $issueEvent->getTest()->getDescription(),
+                $issueEvent->getRule()->getDescription(),
                 implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode()))
             );
         }
