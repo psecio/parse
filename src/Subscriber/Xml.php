@@ -86,14 +86,13 @@ class Xml implements EventSubscriberInterface, Events
      */
     public function onFileIssue(IssueEvent $event)
     {
-        $attrs = $event->getNode()->getAttributes();
         $this->xmlWriter->startElement('issue');
         $this->xmlWriter->writeElement('type', $event->getTest()->getName());
         $this->xmlWriter->writeElement('description', $event->getTest()->getDescription());
         $this->xmlWriter->writeElement('file', $event->getFile()->getPath());
-        $this->xmlWriter->writeElement('line', $attrs['startLine']);
+        $this->xmlWriter->writeElement('line', $event->getNode()->getLine());
         $this->xmlWriter->startElement('source');
-        $this->xmlWriter->writeCData(trim(implode("\n", $event->getFile()->getLines($attrs['startLine']))));
+        $this->xmlWriter->writeCData(implode("\n", $event->getFile()->fetchNode($event->getNode())));
         $this->xmlWriter->endElement();
         $this->xmlWriter->endElement();
     }

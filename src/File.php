@@ -3,6 +3,8 @@
 namespace Psecio\Parse;
 
 use SplFileInfo;
+use RuntimeException;
+use PhpParser\Node;
 
 /**
  * Wrapper around an SplFileInfo object
@@ -15,22 +17,27 @@ class File
     private $splFileInfo;
 
     /**
-     * @var string File contents
+     * @var string[] File contents
      */
-    private $contents;
+    private $lines;
 
     /**
-     * Set the current instance file info
+     * Set the SplFileInfo object
      *
-     * @param SplFileInfo $splFileInfo
+     * @param  SplFileInfo $splFileInfo
+     * @throws RuntimeException If file does not exist
      */
     public function __construct(SplFileInfo $splFileInfo)
     {
+        if (!$splFileInfo->isReadable()) {
+            throw new RuntimeException("Failed to open file {$splFileInfo->getRealPath()}");
+        }
         $this->splFileInfo = $splFileInfo;
+        $this->lines = file($splFileInfo->getRealPath(), FILE_IGNORE_NEW_LINES);
     }
 
     /**
-     * Get file info
+     * Get to SplFileInfo object
      *
      * @return SplFileInfo
      */
@@ -40,9 +47,9 @@ class File
     }
 
     /**
-     * Get the current file path
+     * Get the file path
      *
-     * @return string Current file path
+     * @return string
      */
     public function getPath()
     {
@@ -67,39 +74,35 @@ class File
      */
     public function getContents()
     {
-        if ($this->contents === null) {
-            $this->contents = file_get_contents($this->getPath());
-        }
-        return $this->contents;
+        return implode("\n", $this->lines);
     }
 
     /**
-     * Set the current instance "contents" value
+     * Pull out given lines from file contents
      *
-     * @param string $contents File contents
+     * @param  integer $startLine
+     * @param  integer $endLine
+     * @return string[]
      */
-    public function setContents($contents)
+    public function fetchLines($startLine, $endLine = 0)
     {
-        $this->contents = $contents;
+        $startLine--;
+        $endLine = $endLine ?: $startLine;
+        $length = $endLine - $startLine;
+        $length = $length ?: 1;
+
+        return array_slice($this->lines, $startLine, $length);
     }
 
     /**
-     * Pull out the given lines from the current file contents
+     * Fetch Node line contents
      *
-     * @param  integer $startLine Start line
-     * @param  integer $endLine End line [optional]
-     * @return array Set of matching lines
+     * @param  Node $node
+     * @return string[]
      */
-    public function getLines($startLine, $endLine = null)
+    public function fetchNode(Node $node)
     {
-        if ($endLine === null) {
-            $endLine = $startLine + 1;
-        }
-
-        return array_slice(
-            explode("\n", $this->getContents()),
-            $startLine-1,
-            $endLine - $startLine
-        );
+        $attr = $node->getAttributes();
+        return $this->fetchLines($attr['startLine'], $attr['endLine']);
     }
 }

@@ -43,10 +43,12 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 
         $file = m::mock('\Psecio\Parse\File');
         $file->shouldReceive('getPath')->once()->andReturn('/issue/path');
-        $file->shouldReceive('getLines')->once()->with('1')->andReturn(['php source']);
+        $file->shouldReceive('fetchNode')->once()->andReturn(['php source']);
 
         $issueEvent = m::mock('\Psecio\Parse\Event\IssueEvent');
-        $issueEvent->shouldReceive('getNode->getAttributes')->once()->andReturn(['startLine' => '1']);
+        $issueEvent->shouldReceive('getNode')->atLeast(1)->andReturn(
+            m::mock('PhpParser\Node')->shouldReceive('getLine')->atLeast(1)->andReturn(1)->mock()
+        );
         $issueEvent->shouldReceive('getTest->getName')->once()->andReturn('TestName');
         $issueEvent->shouldReceive('getTest->getDescription')->once()->andReturn('issue description');
         $issueEvent->shouldReceive('getFile')->zeroOrMoreTimes()->andReturn($file);

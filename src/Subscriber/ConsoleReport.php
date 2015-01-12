@@ -183,14 +183,13 @@ class ConsoleReport implements EventSubscriberInterface, Events
         );
 
         foreach ($this->issues as $index => $issueEvent) {
-            $attrs = $issueEvent->getNode()->getAttributes();
             $str .= sprintf(
                 "\n%d) %s:%d\n%s\n> %s\n",
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
-                $attrs['startLine'],
+                $issueEvent->getNode()->getLine(),
                 $issueEvent->getTest()->getDescription(),
-                trim(implode("\n> ", $issueEvent->getFile()->getLines($attrs['startLine'])))
+                implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode()))
             );
         }
 
