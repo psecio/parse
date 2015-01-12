@@ -18,7 +18,7 @@ use Psecio\Parse\TestFactory;
 use Psecio\Parse\Scanner;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\FileIterator;
-use Exception;
+use RuntimeException;
 
 /**
  * The main command, scan paths for possible security issues
@@ -68,9 +68,9 @@ class ScanCommand extends Command
     /**
      * Execute the "scan" command
      *
-     * @param  InputInterface $input Input object
-     * @param  OutputInterface $output Output object
-     * @throws Exception If output format is not valid
+     * @param  InputInterface   $input Input object
+     * @param  OutputInterface  $output Output object
+     * @throws RuntimeException If output format is not valid
      * @return null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -94,7 +94,7 @@ class ScanCommand extends Command
                 $dispatcher->addSubscriber(new Xml($output));
                 break;
             default:
-                throw new Exception("Unknown output format '{$input->getOption('format')}'");
+                throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");
         }
 
         $testFactory = new TestFactory(
