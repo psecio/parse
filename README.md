@@ -65,14 +65,14 @@ The default format supports setting the verbosity using the `-v` or `-vv` switch
 
 ### Listing the checks
 
-You can also get a listing of the current checks being done with the `list-tests` command:
+You can also get a listing of the current checks being done with the `info` command:
 
-    psecio-parse list-tests
+    psecio-parse info
 
 
-The Tests
----------
-Here's the current list of tests being executed:
+The Checks
+----------
+Here's the current list of checks:
 
 - Warn when sensitive values are committed (as defined by a variable like "username" set to a string)
 - Warn when `display_errors` is enabled manually

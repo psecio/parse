@@ -9,9 +9,9 @@ set_time_limit(0);
 
 use Symfony\Component\Console\Application;
 use Psecio\Parse\Command\ScanCommand;
-use Psecio\Parse\Command\ListTestsCommand;
+use Psecio\Parse\Command\InfoCommand;
 
 $app = new Application('Psecio-Parse', 'dev');
 $app->add(new ScanCommand);
-$app->add(new ListTestsCommand);
+$app->add(new InfoCommand);
 $app->run();

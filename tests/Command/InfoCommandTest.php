@@ -6,23 +6,23 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * @covers \Psecio\Parse\Command\ListTestsCommand
+ * @covers \Psecio\Parse\Command\InfoCommand
  */
-class ListTestsCommandTest extends \PHPUnit_Framework_TestCase
+class InfoCommandTest extends \PHPUnit_Framework_TestCase
 {
     public function testExecute()
     {
         $application = new Application;
-        $application->add(new ListTestsCommand);
+        $application->add(new InfoCommand);
 
-        $command = $application->find('list-tests');
+        $command = $application->find('info');
         $commandTester = new CommandTester($command);
         $commandTester->execute(['command' => $command->getName()]);
 
         $this->assertRegExp(
             '/Searching for rules/',
             $commandTester->getDisplay(),
-            'The list-tests command should produce output'
+            'The info command should produce output'
         );
     }
 }
