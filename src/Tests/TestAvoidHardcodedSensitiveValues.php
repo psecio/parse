@@ -10,9 +10,12 @@ use PhpParser\Node;
  */
 class TestAvoidHardcodedSensitiveValues implements TestInterface
 {
-    use Helper\NameTrait, Helper\IsExpressionTrait;
+    use Helper\NameTrait, Helper\IsExpressionTrait, Helper\IsFunctionTrait;
 
-    private static $sensitiveNames = ['username', 'password', 'user', 'pass'];
+    private $sensitiveNames = [
+        'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
+        'awskey', 'aws_key', 'secret',
+        ];
 
     public function getDescription()
     {
@@ -21,15 +24,61 @@ class TestAvoidHardcodedSensitiveValues implements TestInterface
 
     public function isValid(Node $node)
     {
-        if ($this->isExpression($node, 'Assign') === true) {
-            // If it's in our list, see if it's just being assigned a value
-            if (in_array($node->var->name, self::$sensitiveNames)) {
-                if ($node->expr instanceof \PhpParser\Node\Scalar\String) {
-                    return false;
-                }
-            }
+        list($name, $value) = $this->getNameAndValue($node);
+        if ($name === false) {
+            return true;
         }
 
-        return true;
+        // Fail on straight $var = 'value', where $var is in $sensitiveNames
+        return !($this->isSensitiveName($name) &&
+                 $value instanceof \PhpParser\Node\Scalar\String);
+    }
+
+    protected function getNameAndValue($node)
+    {
+        if ($this->isExpression($node, 'Assign')) {
+            return [$node->var->name, $node->expr];
+        }
+
+        if ($node instanceof \PhpParser\Node\Const_) {
+            return [$node->name, $node->value];
+        }
+
+        if ($this->isFunction($node, 'define')) { //$node instanceof \PhpParser\Node\Name && $node->parts[0] == 'define') {
+            $name = $node->args[0]->value->value;
+            $value = $node->args[1]->value;
+
+            return [$name, $value];
+        }
+
+        return [false, false];
+    }
+
+    public function isSensitiveName($name)
+    {
+        if (!is_string($name)) {
+            return false;
+        }
+        $name = strtolower($name);
+        return $this->matchSearchList($name, $this->sensitiveNames);
+    }
+
+    protected function matchSearchList($name, $list)
+    {
+        foreach ($list as $match) {
+            if ($this->startsWith($name, $match) || $this->endsWith($name, $match)) {
+                return true;
+            }
+        }
+    }
+
+    protected function startsWith($haystack, $needle)
+    {
+        return strpos($haystack, $needle) === 0;
+    }
+
+    protected function endsWith($haystack, $needle)
+    {
+        return strrpos($haystack, $needle) === (strlen($haystack) - strlen($needle));
     }
 }
