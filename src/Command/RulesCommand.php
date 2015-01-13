@@ -12,14 +12,14 @@ use Psecio\Parse\RuleFactory;
 /**
  * Command for listing current checks and their summaries
  */
-class InfoCommand extends Command
+class RulesCommand extends Command
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('info')
+        $this->setName('rules')
             ->setDescription('List the current checks and their summaries')
             ->setHelp(
                 "List current checks and their summaries:\n\n  <info>%command.full_name%</info>\n"

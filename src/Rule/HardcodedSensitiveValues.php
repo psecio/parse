@@ -44,7 +44,6 @@ class HardcodedSensitiveValues implements RuleInterface
             return [$node->name, $node->value];
         }
 
-        //$node instanceof \PhpParser\Node\Name && $node->parts[0] == 'define'
         if ($this->isFunction($node, 'define')) {
             $name = $node->args[0]->value->value;
             $value = $node->args[1]->value;

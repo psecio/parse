@@ -65,9 +65,9 @@ The default format supports setting the verbosity using the `-v` or `-vv` switch
 
 ### Listing the checks
 
-You can also get a listing of the current checks being done with the `info` command:
+You can also get a listing of the current checks being done with the `rules` command:
 
-    psecio-parse info
+    psecio-parse rules
 
 
 The Checks
