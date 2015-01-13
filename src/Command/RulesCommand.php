@@ -31,7 +31,7 @@ class RulesCommand extends Command
      *
      * @param  InputInterface  $input  Input object
      * @param  OutputInterface $output Output object
-     * @return null
+     * @return void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {

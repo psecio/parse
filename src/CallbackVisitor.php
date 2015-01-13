@@ -39,7 +39,7 @@ class CallbackVisitor extends NodeVisitorAbstract
      * Register failure callback
      *
      * @param  callable $callback
-     * @return null
+     * @return void
      */
     public function onNodeFailure(callable $callback)
     {
@@ -50,7 +50,7 @@ class CallbackVisitor extends NodeVisitorAbstract
      * Set file under evaluation
      *
      * @param  File $file
-     * @return null
+     * @return void
      */
     public function setFile(File $file)
     {

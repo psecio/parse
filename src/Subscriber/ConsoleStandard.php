@@ -48,7 +48,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
      * Set number of status chars per line
      *
      * @param  integer $lineLength
-     * @return null
+     * @return void
      */
     public function setLineLength($lineLength)
     {
@@ -76,7 +76,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Write header on scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -87,7 +87,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Add line break on scan complete
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -98,7 +98,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
      * Set status to valid on file open
      *
      * @param  FileEvent $event
-     * @return null
+     * @return void
      */
     public function onFileOpen(FileEvent $event)
     {
@@ -109,7 +109,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
     /**
      * Write file status on file close
      *
-     * @return null
+     * @return void
      */
     public function onFileClose()
     {
@@ -123,7 +123,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
      * Set file status to I on file issue
      *
      * @param  IssueEvent $event
-     * @return null
+     * @return void
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -134,7 +134,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
      * Set file status to E on file error
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onFileError(MessageEvent $event)
     {
@@ -145,7 +145,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
      * Ignore debug events
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onDebug(MessageEvent $event)
     {
@@ -156,7 +156,7 @@ class ConsoleStandard implements EventSubscriberInterface, Events
      *
      * @param  string $format sprintf format string
      * @param  mixed  ...$arg Any number of sprintf arguments
-     * @return null
+     * @return void
      */
     protected function write()
     {

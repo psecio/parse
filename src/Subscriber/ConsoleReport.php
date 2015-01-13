@@ -62,7 +62,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Reset values on scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -74,7 +74,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Write report on scan complete
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -84,7 +84,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Increment files scanned counter
      *
-     * @return null
+     * @return void
      */
     public function onFileOpen()
     {
@@ -95,7 +95,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * Save issue event
      *
      * @param  IssueEvent $event
-     * @return null
+     * @return void
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -106,7 +106,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * Save error event
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onFileError(MessageEvent $event)
     {

@@ -70,7 +70,7 @@ class ScanCommand extends Command
      * @param  InputInterface   $input Input object
      * @param  OutputInterface  $output Output object
      * @throws RuntimeException If output format is not valid
-     * @return null
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
