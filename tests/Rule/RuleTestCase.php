@@ -58,7 +58,7 @@ abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Run the tests supplied by {@see parseSampleProvider()}
      */
-    public function test_parseSample()
+    public function testParseSample()
     {
         foreach ($this->parseSampleProvider() as $index => $args) {
             list($code, $result) = $args;

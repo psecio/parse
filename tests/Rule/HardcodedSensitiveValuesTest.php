@@ -78,7 +78,7 @@ class HardcodedSensitiveValuesTest extends RuleTestCase
             ['$this->{$key} = "value";', true],
             ['const USER = "username";', false],
             ['define("user", "username");', false],
-      ];
+        ];
     }
 
     protected function buildTest()

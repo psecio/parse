@@ -12,7 +12,7 @@ class RegexWithExecModifier implements RuleInterface
 {
     use Helper\NameTrait;
 
-    private static $functions = ['preg_match', 'preg_match_all'];
+    private $functions = ['preg_match', 'preg_match_all'];
 
     public function getDescription()
     {
@@ -23,7 +23,7 @@ class RegexWithExecModifier implements RuleInterface
     {
         $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
 
-        if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array(strtolower($nodeName), self::$functions)) {
+        if ($node instanceof \PhpParser\Node\Expr\FuncCall && in_array(strtolower($nodeName), $this->functions)) {
             $regex = (string)$node->args[0]->value->value;
             if (strstr($regex, '/e') !== false) {
                 return false;

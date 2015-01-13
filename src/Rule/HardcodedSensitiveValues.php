@@ -15,7 +15,7 @@ class HardcodedSensitiveValues implements RuleInterface
     private $sensitiveNames = [
         'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
         'awskey', 'aws_key', 'secret',
-        ];
+    ];
 
     public function getDescription()
     {
@@ -44,7 +44,8 @@ class HardcodedSensitiveValues implements RuleInterface
             return [$node->name, $node->value];
         }
 
-        if ($this->isFunction($node, 'define')) { //$node instanceof \PhpParser\Node\Name && $node->parts[0] == 'define') {
+        //$node instanceof \PhpParser\Node\Name && $node->parts[0] == 'define'
+        if ($this->isFunction($node, 'define')) {
             $name = $node->args[0]->value->value;
             $value = $node->args[1]->value;
 

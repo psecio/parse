@@ -12,7 +12,7 @@ class SystemFunctions implements RuleInterface
 {
     use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsExpressionTrait;
 
-    private static $functions = ['exec', 'passthru', 'system'];
+    private $functions = ['exec', 'passthru', 'system'];
 
     public function getDescription()
     {
@@ -23,7 +23,7 @@ class SystemFunctions implements RuleInterface
     {
         if ($this->isFunction($node)) {
             $name = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
-            if (in_array(strtolower($name), self::$functions)) {
+            if (in_array(strtolower($name), $this->functions)) {
                 return false;
             }
         }
