@@ -1,16 +1,17 @@
 <?php
 
-namespace Psecio\Parse\Subscriber\Helper;
+namespace Psecio\Parse\Subscriber;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
- * Helper to simplify event subscription
+ * Empty subscriber, subclass and override desired event methods
  */
-trait SubscriberTrait
+class Subscriber implements EventSubscriberInterface, Events
 {
     /**
      * Returns an array of event names this subscriber wants to listen to
@@ -20,20 +21,20 @@ trait SubscriberTrait
     public static function getSubscribedEvents()
     {
         return [
-            Events::SCAN_START => 'onScanStart',
-            Events::SCAN_COMPLETE => 'onScanComplete',
-            Events::FILE_OPEN => 'onFileOpen',
-            Events::FILE_CLOSE => 'onFileClose',
-            Events::FILE_ISSUE => 'onFileIssue',
-            Events::FILE_ERROR => 'onFileError',
-            Events::DEBUG => 'onDebug'
+            self::SCAN_START => 'onScanStart',
+            self::SCAN_COMPLETE => 'onScanComplete',
+            self::FILE_OPEN => 'onFileOpen',
+            self::FILE_CLOSE => 'onFileClose',
+            self::FILE_ISSUE => 'onFileIssue',
+            self::FILE_ERROR => 'onFileError',
+            self::DEBUG => 'onDebug'
         ];
     }
 
     /**
      * Empty on scan start method
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -42,7 +43,7 @@ trait SubscriberTrait
     /**
      * Empty on scan complete method
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -52,7 +53,7 @@ trait SubscriberTrait
      * Empty on file open method
      *
      * @param  FileEvent $event
-     * @return null
+     * @return void
      */
     public function onFileOpen(FileEvent $event)
     {
@@ -61,7 +62,7 @@ trait SubscriberTrait
     /**
      * Empty on file close method
      *
-     * @return null
+     * @return void
      */
     public function onFileClose()
     {
@@ -71,7 +72,7 @@ trait SubscriberTrait
      * Empty on file issue method
      *
      * @param  IssueEvent $event
-     * @return null
+     * @return void
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -81,7 +82,7 @@ trait SubscriberTrait
      * Empty on file error method
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onFileError(MessageEvent $event)
     {
@@ -91,7 +92,7 @@ trait SubscriberTrait
      * Empty on debug method
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onDebug(MessageEvent $event)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Psecio\Parse\Subscriber\Helper;
+namespace Psecio\Parse\Subscriber;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -29,7 +29,7 @@ trait OutputTrait
      *
      * @param  string $format sprintf format string
      * @param  mixed  ...$arg Any number of sprintf arguments
-     * @return null
+     * @return void
      */
     protected function write()
     {

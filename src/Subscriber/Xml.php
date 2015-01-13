@@ -2,7 +2,6 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use XMLWriter;
 use Psecio\Parse\Event\IssueEvent;
@@ -11,9 +10,9 @@ use Psecio\Parse\Event\MessageEvent;
 /**
  * Xml generating event subscriber
  */
-class Xml implements EventSubscriberInterface
+class Xml extends Subscriber
 {
-    use Helper\SubscriberTrait, Helper\OutputTrait;
+    use OutputTrait;
 
     /**
      * @var XMLWriter Writer used to produce xml
@@ -23,7 +22,7 @@ class Xml implements EventSubscriberInterface
     /**
      * Create document at scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -37,7 +36,7 @@ class Xml implements EventSubscriberInterface
     /**
      * Output document at scan complete
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -53,7 +52,7 @@ class Xml implements EventSubscriberInterface
      * Write issue to document
      *
      * @param  IssueEvent $event
-     * @return null
+     * @return void
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -72,7 +71,7 @@ class Xml implements EventSubscriberInterface
      * Write error to document
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onFileError(MessageEvent $event)
     {

@@ -17,8 +17,8 @@ class ConsoleReportTest extends \PHPUnit_Framework_TestCase
         );
 
         $report->onScanStart();
-        $report->onFileOpen();
-        $report->onFileOpen();
+        $report->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
+        $report->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
         $report->onScanComplete();
     }
 

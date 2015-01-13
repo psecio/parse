@@ -2,16 +2,16 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Print report at scan complete
  */
-class ConsoleReport implements EventSubscriberInterface
+class ConsoleReport extends Subscriber
 {
-    use Helper\SubscriberTrait, Helper\OutputTrait;
+    use OutputTrait;
 
     /**
      * @var integer Number of scanned files
@@ -31,7 +31,7 @@ class ConsoleReport implements EventSubscriberInterface
     /**
      * Reset values on scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -43,7 +43,7 @@ class ConsoleReport implements EventSubscriberInterface
     /**
      * Write report on scan complete
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -53,9 +53,10 @@ class ConsoleReport implements EventSubscriberInterface
     /**
      * Increment files scanned counter
      *
-     * @return null
+     * @param  FileEvent $event
+     * @return void
      */
-    public function onFileOpen()
+    public function onFileOpen(FileEvent $event)
     {
         $this->fileCount++;
     }
@@ -64,7 +65,7 @@ class ConsoleReport implements EventSubscriberInterface
      * Save issue event
      *
      * @param  IssueEvent $event
-     * @return null
+     * @return void
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -75,7 +76,7 @@ class ConsoleReport implements EventSubscriberInterface
      * Save error event
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onFileError(MessageEvent $event)
     {

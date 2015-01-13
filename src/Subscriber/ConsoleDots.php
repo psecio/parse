@@ -2,7 +2,6 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
@@ -10,9 +9,9 @@ use Psecio\Parse\Event\MessageEvent;
 /**
  * Display phpunit style dots to visualize scan progression
  */
-class ConsoleDots implements EventSubscriberInterface
+class ConsoleDots extends Subscriber
 {
-    use Helper\SubscriberTrait, Helper\OutputTrait;
+    use OutputTrait;
 
     /**
      * @var string One charactes status descriptor
@@ -33,7 +32,7 @@ class ConsoleDots implements EventSubscriberInterface
      * Set number of status chars per line
      *
      * @param  integer $lineLength
-     * @return null
+     * @return void
      */
     public function setLineLength($lineLength)
     {
@@ -43,7 +42,7 @@ class ConsoleDots implements EventSubscriberInterface
     /**
      * Write header on scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -54,7 +53,7 @@ class ConsoleDots implements EventSubscriberInterface
      * Set status to valid on file open
      *
      * @param  FileEvent $event
-     * @return null
+     * @return void
      */
     public function onFileOpen(FileEvent $event)
     {
@@ -65,7 +64,7 @@ class ConsoleDots implements EventSubscriberInterface
     /**
      * Write file status on file close
      *
-     * @return null
+     * @return void
      */
     public function onFileClose()
     {
@@ -79,7 +78,7 @@ class ConsoleDots implements EventSubscriberInterface
      * Set file status to I on file issue
      *
      * @param  IssueEvent $event
-     * @return null
+     * @return void
      */
     public function onFileIssue(IssueEvent $event)
     {
@@ -90,7 +89,7 @@ class ConsoleDots implements EventSubscriberInterface
      * Set file status to E on file error
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onFileError(MessageEvent $event)
     {

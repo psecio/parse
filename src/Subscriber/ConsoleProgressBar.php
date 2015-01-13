@@ -2,16 +2,13 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Display a progress bar to visualize scan progression
  */
-class ConsoleProgressBar implements EventSubscriberInterface
+class ConsoleProgressBar extends Subscriber
 {
-    use Helper\SubscriberTrait;
-
     /**
      * The progress bar format used of the number if steps is known
      */
@@ -43,7 +40,7 @@ class ConsoleProgressBar implements EventSubscriberInterface
     /**
      * Reset progress bar on scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -53,7 +50,7 @@ class ConsoleProgressBar implements EventSubscriberInterface
     /**
      * Finish progress bar on scan complete
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -63,7 +60,7 @@ class ConsoleProgressBar implements EventSubscriberInterface
     /**
      * Advance progress bar on file close
      *
-     * @return null
+     * @return void
      */
     public function onFileClose()
     {

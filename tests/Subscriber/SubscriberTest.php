@@ -1,23 +1,22 @@
 <?php
 
-namespace Psecio\Parse\Subscriber\Helper;
+namespace Psecio\Parse\Subscriber;
 
 use Mockery as m;
 
-class SubscriberTraitTest extends \PHPUnit_Framework_TestCase
+class SubscriberTest extends \PHPUnit_Framework_TestCase
 {
     public function testSubscription()
     {
-        $subscriber = $this->createSubscriberMock();
         $this->assertInternalType(
             'array',
-            $subscriber::getSubscribedEvents()
+            Subscriber::getSubscribedEvents()
         );
     }
 
     public function testEmptyMethods()
     {
-        $subscriber = $this->createSubscriberMock();
+        $subscriber = new Subscriber;
         $this->assertNull($subscriber->onScanStart());
         $this->assertNull($subscriber->onScanComplete());
         $this->assertNull($subscriber->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent')));
@@ -25,10 +24,5 @@ class SubscriberTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($subscriber->onFileIssue(m::mock('\Psecio\Parse\Event\IssueEvent')));
         $this->assertNull($subscriber->onFileError(m::mock('\Psecio\Parse\Event\MessageEvent')));
         $this->assertNull($subscriber->onDebug(m::mock('\Psecio\Parse\Event\MessageEvent')));
-    }
-
-    private function createSubscriberMock()
-    {
-        return $this->getObjectForTrait('Psecio\Parse\Subscriber\Helper\SubscriberTrait');
     }
 }

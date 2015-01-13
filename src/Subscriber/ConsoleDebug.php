@@ -17,7 +17,7 @@ class ConsoleDebug extends ConsoleLines
     /**
      * Save timestamp at scan start
      *
-     * @return null
+     * @return void
      */
     public function onScanStart()
     {
@@ -29,7 +29,7 @@ class ConsoleDebug extends ConsoleLines
     /**
      * Write time elapsed at scan complete
      *
-     * @return null
+     * @return void
      */
     public function onScanComplete()
     {
@@ -44,7 +44,7 @@ class ConsoleDebug extends ConsoleLines
      * Write debug message
      *
      * @param  MessageEvent $event
-     * @return null
+     * @return void
      */
     public function onDebug(MessageEvent $event)
     {
