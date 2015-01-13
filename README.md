@@ -6,9 +6,6 @@ Parse: A PHP Security Scanner
 
 > **PLEASE NOTE:** This tool is still in a very early stage. The work continues...
 
-
-The Basics
-----------
 The *Parse* scanner is a static scanning tool to review your PHP code for potential security-related
 issues. A static scanner means that the code is not executed and tested via a web interface (that's
 dynamic testing). Instead, the scanner looks through your code and checks for certain markers and notifies
@@ -27,7 +24,7 @@ Install as a development dependency in your project using [composer](https://get
 
 The path to the installed executable may vary depending on your
 [bin-dir](https://getcomposer.org/doc/04-schema.md#config) setting. With the
-default value parse is located at `vendor/bin/parse`.
+default value parse is located at `vendor/bin/psecio-parse`.
 
 For a system-wide installation use:
 
@@ -38,44 +35,47 @@ Make sure you have `~/.composer/vendor/bin/` in your path.
 
 Usage
 -----
-> **NOTE:** In earlier versions the `--target` option was used to specify the
-> project path, this is no longer supported. Instead use the syntax below.
+> **NOTE:** In version **0.6** the executable was renamed **psecio-parse**. In earlier
+> versions the tool was simply named **parse**.
+
+
+> **NOTE:** In version **0.4** and earlier the `--target` option was used to specify the
+> project path, this is no longer supported. Use the syntax below.
 
 To use the scanner execute it from the command line:
 
-    bin/parse scan /path/to/myproject
+    psecio-parse scan /path/to/myproject
 
 For more detailed information see the `help` and `list` commands.
 
-    bin/parse help
-    bin/parse list
+    psecio-parse help
+    psecio-parse list
 
 ### Output formats
 
 Currently cleartext and xml output formats are available (cleartext is used
 by default). Set format with the `--format` option.
 
-    bin/parse scan /path/to/myproject --format=xml
-    bin/parse scan /path/to/myproject --format=txt
+    psecio-parse scan /path/to/myproject --format=xml
+    psecio-parse scan /path/to/myproject --format=txt
 
 The default format supports setting the verbosity using the `-v` or `-vv` switch.
 
-    bin/parse scan /path/to/myproject -vv
+    psecio-parse scan /path/to/myproject -vv
 
 ### Listing the checks
 
 You can also get a listing of the current checks being done with the `list-tests` command:
 
-    bin/parse list-tests
+    psecio-parse list-tests
 
 
-The Details
------------
+The Tests
+---------
 Here's the current list of tests being executed:
 
 - Warn when sensitive values are committed (as defined by a variable like "username" set to a string)
 - Warn when `display_errors` is enabled manually
-- Avoid magic constants `__DIR__` or `__FILE__`
 - Avoid the use of `eval()`
 - Avoid the use of `exit` or `die()`
 - Avoid the use of logcial operators (ex. using `and` over `&&`)
@@ -86,7 +86,7 @@ Here's the current list of tests being executed:
 - Testing for the system execution functions and shell exec (backticks)
 - Use of `readfile`, `readlink` and `readgzfile`
 - Using `parse_str` or `mb_parse_str` (writes values to the local scope)
-- Throws exception if a `.phps` file is found
+- Warn if a `.phps` file is found
 - Using `session_regenerate_id` either without a paramater or using false
 - Avoid use of `$_REQUEST` (know where your data is coming from)
 - Don't use `mysql_real_escape_string`

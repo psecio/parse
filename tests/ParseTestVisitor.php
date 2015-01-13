@@ -4,7 +4,7 @@ namespace Psecio\Parse;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-Use Mockery as m;
+use Mockery as m;
 
 /**
  * Visitor to run a single test against nodes, accumulating results into a single bool
@@ -44,8 +44,7 @@ class ParseTestVisitor extends \PhpParser\NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        $file = m::mock('\Psecio\Parse\File');
-        if ($this->test->evaluate($node, $file) === false) {
+        if (!$this->test->isValid($node)) {
             $this->result = false;
         }
     }

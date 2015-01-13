@@ -24,11 +24,10 @@ interface TestInterface
     public function getDescription();
 
     /**
-     * Execute test on node
+     * Check if node is valid
      *
-     * @param  Node $node Current node instance
-     * @param  File $file Current file instance
-     * @return boolean Pass/fail of the evaluation
+     * @param  Node $node
+     * @return boolean
      */
-    public function evaluate(Node $node, File $file);
+    public function isValid(Node $node);
 }

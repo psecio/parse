@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Check for output functions that use a variable in the output
@@ -20,7 +19,7 @@ class TestOutputWithVariable implements TestInterface
         return 'Avoid the use of an output method (echo, print, etc) directly with a variable';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         // See if our echo or print (constructs) uses concat
         if ($node instanceof \PhpParser\Node\Stmt\Echo_ || $node instanceof PhpParser\Node\Expr\Print_) {

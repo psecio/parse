@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 
 /**
@@ -19,7 +18,7 @@ class TestUseTypeCheckEqualsOnBoolean implements TestInterface
         return 'Evaluation with booleans should use strict type checking (ex: if $foo === false)';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($node instanceof Equal) {
             if ($this->isBoolLiteral($node->left) || $this->isBoolLiteral($node->right)) {

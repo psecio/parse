@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 
 /**
  * Be sure you're not using an echo with a file_get_contents
@@ -18,7 +17,7 @@ class TestEchoWithFileGetContents implements TestInterface
         return 'Using `echo` with results of `file_get_contents` could lead to injection issues. ';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($node instanceof \PhpParser\Node\Stmt\Echo_) {
             if (isset($node->exprs[0]) && $node->exprs[0] instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {

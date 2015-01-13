@@ -28,7 +28,7 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
 
         // Data for [ISSUE] line
         $issueEvent = m::mock('\Psecio\Parse\Event\IssueEvent');
-        $issueEvent->shouldReceive('getNode->getAttributes')->andReturn(['startLine' => '1']);
+        $issueEvent->shouldReceive('getNode->getLine')->andReturn(1);
         $issueEvent->shouldReceive('getTest->getName')->andReturn('Test');
         $issueEvent->shouldReceive('getFile->getPath')->andReturn('path');
 

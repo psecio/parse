@@ -4,7 +4,6 @@ namespace Psecio\Parse\Tests;
 
 use Psecio\Parse\TestInterface;
 use PhpParser\Node;
-use Psecio\Parse\File;
 use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
 use PhpParser\Node\Expr\BinaryOp\LogicalOr;
 use PhpParser\Node\Expr\BinaryOp\LogicalXor;
@@ -21,7 +20,7 @@ class TestLogicalOperatorsFound implements TestInterface
         return 'Avoid using AND, OR and XOR (in favor of || and &&) as they may cause subtle precedence bugs';
     }
 
-    public function evaluate(Node $node, File $file)
+    public function isValid(Node $node)
     {
         if ($node instanceof LogicalAnd || $node instanceof LogicalOr || $node instanceof LogicalXor) {
             return false;

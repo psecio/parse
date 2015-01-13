@@ -154,14 +154,13 @@ class ConsoleReport implements EventSubscriberInterface
         }
 
         foreach ($this->issues as $index => $issueEvent) {
-            $attrs = $issueEvent->getNode()->getAttributes();
             $str .= sprintf(
                 "<comment>%d) %s on line %d</comment>\n%s\n<error>> %s</error>\n\n",
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
-                $attrs['startLine'],
+                $issueEvent->getNode()->getLine(),
                 $issueEvent->getTest()->getDescription(),
-                trim(implode("\n> ", $issueEvent->getFile()->getLines($attrs['startLine'])))
+                implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode()))
             );
         }
 
