@@ -3,3 +3,6 @@
 /bin/coveralls
 /bin/phpunit
 /bin/test-reporter
+/build*
+/local*
+/.phingci.properties
