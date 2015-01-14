@@ -47,6 +47,13 @@ class ScanCommand extends Command
                 'txt'
             )
             ->addOption(
+                'ignore-paths',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma separated list of paths to ignore.',
+                ''
+            )
+            ->addOption(
                 'include-tests',
                 null,
                 InputOption::VALUE_REQUIRED,
@@ -61,7 +68,7 @@ class ScanCommand extends Command
                 ''
             )
             ->setHelp(
-                "Scan paths for possible security issues:\n\n  <info>%command.full_name% /path/to/src</info>\n"
+                "Scan paths for possible security issues:\n\n  <info>psecio-parse %command.name% /path/to/src</info>\n"
             );
     }
 
@@ -105,7 +112,10 @@ class ScanCommand extends Command
         $scanner = new Scanner($dispatcher, new CallbackVisitor($testFactory->createTestCollection()));
 
         $scanner->scan(
-            new FileIterator($input->getArgument('path'))
+            new FileIterator(
+                $input->getArgument('path'),
+                array_filter(explode(',', $input->getOption('ignore-paths')))
+            )
         );
 
         return $exitCode->getExitCode();
