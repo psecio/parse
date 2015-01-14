@@ -9,6 +9,7 @@ use RecursiveDirectoryIterator;
 use FilesystemIterator;
 use ArrayIterator;
 use SplFileInfo;
+use RuntimeException;
 
 /**
  * Responsible for iterating over filesystem paths
@@ -26,25 +27,50 @@ class FileIterator implements IteratorAggregate, Countable
     private $ignorePaths = ['dirs'=> [], 'files' => []];
 
     /**
+     * @var string[] List of file extensions to scan
+     */
+    private $extensions = [];
+
+    /**
      * Append paths to iterator
      *
-     * @param string[] $paths       List of paths to include
-     * @param string[] $ignorePaths List of paths to ignore
+     * @param  string[] $paths       List of paths to scan
+     * @param  string[] $ignorePaths List of paths to ignore
+     * @param  string[] $extensions  List of file extensions to scan
+     * @throws RuntimeException      If the list of paths to scan is empty
      */
-    public function __construct(array $paths = array(), array $ignorePaths = array())
+    public function __construct(array $paths, array $ignorePaths = array(), array $extensions = array('php'))
     {
+        if (empty($paths)) {
+            throw new RuntimeException('No paths to scan');
+        }
+
+        $this->addExtensions($extensions);
+
         foreach ($ignorePaths as $path) {
             $this->addIgnorePath($path);
         }
+
         foreach ($paths as $path) {
             $this->addPath($path);
         }
     }
 
     /**
+     * Add list of file extensions to scan
+     *
+     * @param  array $extensions
+     * @return void
+     */
+    public function addExtensions(array $extensions)
+    {
+        $this->extensions = array_merge($this->extensions, $extensions);
+    }
+
+    /**
      * Add a path to the list of ignored paths
      *
-     * Non existing paths are silently skipped
+     * Non existing paths are silently skipped.
      *
      * @param  string $path
      * @return void
@@ -114,12 +140,19 @@ class FileIterator implements IteratorAggregate, Countable
     /**
      * Add SplFileInfo object to iterator
      *
+     * If the file extension is not supported, or file is in the ignore
+     * list the file is silently skipped.
+     *
      * @param  SplFileInfo $splFileInfo
      * @return void
      */
     private function addSplFileInfo(SplFileInfo $splFileInfo)
     {
         $realPath = $splFileInfo->getRealPath();
+
+        if (!in_array($splFileInfo->getExtension(), $this->extensions)) {
+            return;
+        }
 
         if (in_array($realPath, $this->ignorePaths['files'])) {
             return;

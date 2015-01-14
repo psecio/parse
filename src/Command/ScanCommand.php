@@ -36,22 +36,29 @@ class ScanCommand extends Command
             ->addArgument(
                 'path',
                 InputArgument::OPTIONAL|InputArgument::IS_ARRAY,
-                'Path to scan.',
-                [getcwd()]
+                'Paths to scan',
+                []
             )
             ->addOption(
                 'format',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Output format (txt or xml).',
+                'Output format (txt or xml)',
                 'txt'
             )
             ->addOption(
                 'ignore-paths',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of paths to ignore.',
+                'Comma separated list of paths to ignore',
                 ''
+            )
+            ->addOption(
+                'extensions',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma-separated list of file extensions to parse',
+                'php,phps,phtml,php5'
             )
             ->addOption(
                 'include-tests',
@@ -114,7 +121,8 @@ class ScanCommand extends Command
         $scanner->scan(
             new FileIterator(
                 $input->getArgument('path'),
-                array_filter(explode(',', $input->getOption('ignore-paths')))
+                array_filter(explode(',', $input->getOption('ignore-paths'))),
+                array_filter(explode(',', $input->getOption('extensions')))
             )
         );
 

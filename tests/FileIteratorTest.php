@@ -28,19 +28,25 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
         mkdir(self::$testDir);
         mkdir(self::expand('dir'));
         mkdir(self::expand('dir2'));
-        touch(self::expand('dir/file'));
-        touch(self::expand('dir2/file'));
-        self::$expectedFiles[] = self::expand('dir/file');
-        self::$expectedFiles[] = self::expand('dir2/file');
+        touch(self::expand('dir/file.php'));
+        touch(self::expand('dir2/file.php'));
+        self::$expectedFiles[] = self::expand('dir/file.php');
+        self::$expectedFiles[] = self::expand('dir2/file.php');
     }
 
     public static function tearDownAfterClass()
     {
-        unlink(self::expand('dir/file'));
-        unlink(self::expand('dir2/file'));
+        unlink(self::expand('dir/file.php'));
+        unlink(self::expand('dir2/file.php'));
         rmdir(self::expand('dir'));
         rmdir(self::expand('dir2'));
         rmdir(self::$testDir);
+    }
+
+    public function testExceptionWhenNoPathsAreSet()
+    {
+        $this->setExpectedException('RuntimeException');
+        new FileIterator([]);
     }
 
     public function testDirectoryPath()
@@ -82,7 +88,7 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testIgnoreNonCompletePaths()
     {
-        $expected = self::expand('dir2/file');
+        $expected = self::expand('dir2/file.php');
         $this->assertArrayHasKey(
             $expected,
             iterator_to_array(new FileIterator(self::$expectedFiles, [self::expand('dir')])),
@@ -96,6 +102,14 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
             __FILE__,
             iterator_to_array(new FileIterator([__FILE__], ['this/really/does/not/exist'])),
             'Adding a non existing path to the ignore list should not affect anything'
+        );
+    }
+
+    public function testFileExtensions()
+    {
+        $this->assertEmpty(
+            iterator_to_array(new FileIterator([__FILE__], [], ['txt'])),
+            __FILE__ . ' should be ignored as it does not have a .txt extension'
         );
     }
 
