@@ -16,6 +16,11 @@ class CallbackVisitor extends NodeVisitorAbstract
     private $ruleCollection;
 
     /**
+     * @var array List of enabled rules, stored as ruleName => bool
+     */
+    private $enabledRules;
+
+    /**
      * @var callable Fail callback
      */
     private $callback;
@@ -33,6 +38,11 @@ class CallbackVisitor extends NodeVisitorAbstract
     public function __construct(RuleCollection $ruleCollection)
     {
         $this->ruleCollection = $ruleCollection;
+
+        $this->enabledRules = [];
+        foreach ($this->ruleCollection as $rule) {
+            $this->enabledRules[strtolower($rule->getName())] = true;
+        }
     }
 
     /**
@@ -64,10 +74,73 @@ class CallbackVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
+        $oldRules = $this->updateRuleFilters($node->getDocComment());
+        if ($oldRules !== false) {
+            $node->setAttribute('oldEnabledRules', $oldRules);
+        }
+
         foreach ($this->ruleCollection as $rule) {
+            if (!$this->enabledRules[strtolower($rule->getName())]) {
+                continue;
+            }
+
             if (!$rule->isValid($node)) {
                 call_user_func($this->callback, $rule, $node, $this->file);
             }
         }
+    }
+
+    public function leaveNode(Node $node)
+    {
+        if (!$node->hasAttribute('oldEnabledRules')) {
+            return;
+        }
+
+        // Restore rules as they were before this node
+        $this->enabledRules = $node->getAttribute('oldEnabledRules');
+    }
+
+    private function updateRuleFilters($docBlock)
+    {
+        if (empty($docBlock)) {
+            return false;
+        }
+
+        $oldRules = $this->enabledRules;
+        $this->enabledRules = $this->evalDocBlock($docBlock, $oldRules);
+        return $oldRules;
+    }
+
+    private function evalDocBlock($docBlock, $initialEnabledRules)
+    {
+        $enabledRules = $initialEnabledRules;
+
+        // This can easily be made more generic:
+        //   1. Replace "(no-)?ignore" with "([a-z0-9_]+)" (and fix handling of first token)
+        //   2. Replace "\s+([_a-z0-9]+)" with "(?:\s+([_a-z0-9]+))*"
+        $cmdFlagRegex = '/^\s*\*\s+' // Look for 0 or more whitespace, a "*", and one or more whitespace characters
+            . '@psecio\\\\parse\\\\' // Followed by "@psecio\parse" (quad-escape the \ to escape from PHP and preg)
+            . '(no-)?ignore'         // And either no-ignore or ignore. Store the "no-" if it exists
+            . '\s+([_a-z0-9]+)'      // Then 1 or more whitespace and a symbol, storing the symbol
+            . '\s*$'                 // Then 0 or more whitespace and the end of the line
+            . '/im';                 // Ignore case, treat source as multilined
+
+        $flags = null;
+
+        // Strip off the initial "/*" and trailing "*/", allowing for short blocks
+        $docBlock = substr($docBlock, 2, -2);
+
+        preg_match_all($cmdFlagRegex, $docBlock, $flags, PREG_SET_ORDER);
+
+        if (empty($flags)) {
+            return $enabledRules;
+        }
+
+        foreach ($flags as $flag) {
+            $rule = strtolower($flag[2]);
+            $enabledRules[$rule] = !empty($flag[1]);
+        }
+
+        return $enabledRules;
     }
 }

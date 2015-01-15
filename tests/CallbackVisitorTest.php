@@ -9,20 +9,18 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
 {
     public function testCallback()
     {
-        $node = m::mock('\PhpParser\Node');
-
-        $falseCheck = m::mock('\Psecio\Parse\RuleInterface')
-            ->shouldReceive('isValid')
-            ->once()
-            ->with($node)
-            ->andReturn(false)
+        $node = m::mock('\PhpParser\Node')
+            ->shouldReceive('getDocComment')
+            ->andReturn('')
+            ->zeroOrMoreTimes()
             ->mock();
 
-        $trueCheck = m::mock('\Psecio\Parse\RuleInterface')
-            ->shouldReceive('isValid')
+        $falseCheck = $this->mockTest($node, false)
             ->once()
-            ->with($node)
-            ->andReturn(true)
+            ->mock();
+
+        $trueCheck = $this->mockTest($node, true)
+            ->once()
             ->mock();
 
         $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
@@ -41,5 +39,42 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node);
+    }
+
+    public function testIgnoreAnnotation()
+    {
+        $node = m::mock('\PhpParser\Node')
+            ->shouldReceive('getDocComment')
+            ->andReturn('@Psecio\Parse\ignore truish')
+            ->zeroOrMoreTimes()
+            ->mock();
+
+        $trueCheck = m::mock('\Psecio\Parse\RuleInterface')
+            ->shouldReceive('getName')
+            ->andReturn('truish')
+            ->zeroOrMoreTimes()
+            ->shouldReceive('isValid')
+            ->with($node)
+            ->andReturn(true);
+
+        $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
+            ->shouldReceive('getIterator')
+            ->andReturn(new \ArrayIterator([$trueCheck]))
+            ->mock();
+
+        $visitor = new CallbackVisitor($ruleCollection);
+        $visitor->setFile(m::mock('\Psecio\Parse\File'));
+
+    }
+
+    protected function mockTest($node, $isValidReturns, $name = 'name')
+    {
+        return m::mock('\Psecio\Parse\RuleInterface')
+            ->shouldReceive('getName')
+            ->andReturn($name)
+            ->zeroOrMoreTimes()
+            ->shouldReceive('isValid')
+            ->with($node)
+            ->andReturn($isValidReturns);
     }
 }
