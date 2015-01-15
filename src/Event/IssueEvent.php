@@ -2,19 +2,19 @@
 
 namespace Psecio\Parse\Event;
 
-use Psecio\Parse\TestInterface;
+use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use Psecio\Parse\File;
 
 /**
- * Event containing a Test and a Node object
+ * Event containing a Rule and a Node object
  */
 class IssueEvent extends FileEvent
 {
     /**
-     * @var TestInterface The Test object this event conserns
+     * @var RuleInterface The rule object this event conserns
      */
-    private $test;
+    private $rule;
 
     /**
      * @var Node The Node object this event conserns
@@ -22,27 +22,27 @@ class IssueEvent extends FileEvent
     private $node;
 
     /**
-     * Set Test and Node objects
+     * Set Rule and Node objects
      *
-     * @param TestInterface $test
+     * @param RuleInterface $rule
      * @param Node $node
      * @param File $file
      */
-    public function __construct(TestInterface $test, Node $node, File $file)
+    public function __construct(RuleInterface $rule, Node $node, File $file)
     {
         parent::__construct($file);
-        $this->test = $test;
+        $this->rule = $rule;
         $this->node = $node;
     }
 
     /**
-     * Get Test object ths event conserns
+     * Get rule object ths event conserns
      *
-     * @return TestInterface
+     * @return RuleInterface
      */
-    public function getTest()
+    public function getRule()
     {
-        return $this->test;
+        return $this->rule;
     }
 
     /**

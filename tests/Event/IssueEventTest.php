@@ -6,17 +6,17 @@ use Mockery as m;
 
 class IssueEventTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetTestAndNode()
+    public function testGetRuleAndNode()
     {
-        $test = m::mock('\Psecio\Parse\TestInterface');
+        $rule = m::mock('\Psecio\Parse\RuleInterface');
         $node = m::mock('\PhpParser\Node');
         $file = m::mock('\Psecio\Parse\File');
 
-        $event = new IssueEvent($test, $node, $file);
+        $event = new IssueEvent($rule, $node, $file);
 
         $this->assertSame(
-            $test,
-            $event->getTest()
+            $rule,
+            $event->getRule()
         );
 
         $this->assertSame(

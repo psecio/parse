@@ -6,17 +6,17 @@ use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
 
 /**
- * Evaluate tests and call callback on test failure
+ * Evaluate rules and call callback on failure
  */
 class CallbackVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var TestCollection Tests to execute
+     * @var RuleCollection Rules to evaluate
      */
-    private $testCollection;
+    private $ruleCollection;
 
     /**
-     * @var callable Test fail callback
+     * @var callable Fail callback
      */
     private $callback;
 
@@ -26,22 +26,22 @@ class CallbackVisitor extends NodeVisitorAbstract
     private $file;
 
     /**
-     * Inject test collection
+     * Inject rule collection
      *
-     * @param TestCollection $testCollection
+     * @param RuleCollection $ruleCollection
      */
-    public function __construct(TestCollection $testCollection)
+    public function __construct(RuleCollection $ruleCollection)
     {
-        $this->testCollection = $testCollection;
+        $this->ruleCollection = $ruleCollection;
     }
 
     /**
-     * Register callback on test failure
+     * Register failure callback
      *
      * @param  callable $callback
      * @return void
      */
-    public function onTestFail(callable $callback)
+    public function onNodeFailure(callable $callback)
     {
         $this->callback = $callback;
     }
@@ -64,9 +64,9 @@ class CallbackVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        foreach ($this->testCollection as $test) {
-            if (!$test->isValid($node)) {
-                call_user_func($this->callback, $test, $node, $this->file);
+        foreach ($this->ruleCollection as $rule) {
+            if (!$rule->isValid($node)) {
+                call_user_func($this->callback, $rule, $node, $this->file);
             }
         }
     }

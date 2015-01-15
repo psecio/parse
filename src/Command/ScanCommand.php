@@ -14,7 +14,7 @@ use Psecio\Parse\Subscriber\ConsoleVerbose;
 use Psecio\Parse\Subscriber\ConsoleDebug;
 use Psecio\Parse\Subscriber\ConsoleReport;
 use Psecio\Parse\Subscriber\Xml;
-use Psecio\Parse\TestFactory;
+use Psecio\Parse\RuleFactory;
 use Psecio\Parse\Scanner;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\FileIterator;
@@ -30,8 +30,7 @@ class ScanCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('scan')
+        $this->setName('scan')
             ->setDescription('Scans paths for possible security issues')
             ->addArgument(
                 'path',
@@ -47,17 +46,17 @@ class ScanCommand extends Command
                 'txt'
             )
             ->addOption(
-                'include-tests',
+                'include-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of tests to include in the test suite.',
+                'Comma separated list of rules to include when scanning.',
                 ''
             )
             ->addOption(
-                'exclude-tests',
+                'exclude-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of tests to exclude from the test suite.',
+                'Comma separated list of rules to exclude when scanning.',
                 ''
             )
             ->setHelp(
@@ -71,7 +70,7 @@ class ScanCommand extends Command
      * @param  InputInterface   $input Input object
      * @param  OutputInterface  $output Output object
      * @throws RuntimeException If output format is not valid
-     * @return null
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -97,12 +96,12 @@ class ScanCommand extends Command
                 throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");
         }
 
-        $testFactory = new TestFactory(
-            array_filter(explode(',', $input->getOption('include-tests'))),
-            array_filter(explode(',', $input->getOption('exclude-tests')))
+        $ruleFactory = new RuleFactory(
+            array_filter(explode(',', $input->getOption('include-rules'))),
+            array_filter(explode(',', $input->getOption('exclude-rules')))
         );
 
-        $scanner = new Scanner($dispatcher, new CallbackVisitor($testFactory->createTestCollection()));
+        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
 
         $scanner->scan(
             new FileIterator($input->getArgument('path'))

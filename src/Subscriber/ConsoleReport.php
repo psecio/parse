@@ -24,12 +24,12 @@ class ConsoleReport implements EventSubscriberInterface, Events
     private $fileCount;
 
     /**
-     * @var array List of test failures
+     * @var array List of failures
      */
     private $issues;
 
     /**
-     * @var array List of scan errors
+     * @var array List of errors
      */
     private $errors;
 
@@ -137,7 +137,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     }
 
     /**
-     * Get report for all tests pass
+     * Get info on scanned files
      *
      * @return string
      */
@@ -151,7 +151,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
     }
 
     /**
-     * Get failure report
+     * Get info on errors and issues
      *
      * @return string
      */
@@ -188,7 +188,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
                 $issueEvent->getNode()->getLine(),
-                $issueEvent->getTest()->getDescription(),
+                $issueEvent->getRule()->getDescription(),
                 implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode()))
             );
         }

@@ -15,7 +15,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
   <file>/error/path</file>
  </error>
  <issue>
-  <type>TestName</type>
+  <type>RuleName</type>
   <description>issue description</description>
   <file>/issue/path</file>
   <line>1</line>
@@ -49,8 +49,8 @@ class XmlTest extends \PHPUnit_Framework_TestCase
         $issueEvent->shouldReceive('getNode')->atLeast(1)->andReturn(
             m::mock('PhpParser\Node')->shouldReceive('getLine')->atLeast(1)->andReturn(1)->mock()
         );
-        $issueEvent->shouldReceive('getTest->getName')->once()->andReturn('TestName');
-        $issueEvent->shouldReceive('getTest->getDescription')->once()->andReturn('issue description');
+        $issueEvent->shouldReceive('getRule->getName')->once()->andReturn('RuleName');
+        $issueEvent->shouldReceive('getRule->getDescription')->once()->andReturn('issue description');
         $issueEvent->shouldReceive('getFile')->zeroOrMoreTimes()->andReturn($file);
 
         $xml->onFileIssue($issueEvent);
