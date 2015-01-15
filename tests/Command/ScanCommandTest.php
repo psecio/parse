@@ -31,8 +31,8 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertRegExp(
             '/\./',
-            $this->executeCommand(['--format' => 'txt']),
-            'Using --format=txt should generate output'
+            $this->executeCommand(['--format' => 'dots']),
+            'Using --format=dots should generate output'
         );
     }
 
@@ -40,7 +40,7 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertRegExp(
             '/\[\=+\]/',
-            $this->executeCommand(['--format' => 'progress']),
+            $this->executeCommand(['--format' => 'progress'], ['decorated' => true]),
             'Using --format=progress should use the progressbar'
         );
     }
