@@ -18,6 +18,14 @@ class BooleanIdentity implements RuleInterface
         return 'Evaluation with booleans should use strict type checking (ex: if $foo === false)';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($node instanceof Equal) {

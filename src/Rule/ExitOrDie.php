@@ -18,6 +18,14 @@ class ExitOrDie implements RuleInterface
         return 'Avoid the use of `exit` or `die` with strings as it could lead to injection issues (direct output)';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return (

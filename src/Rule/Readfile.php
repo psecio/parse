@@ -17,6 +17,14 @@ class Readfile implements RuleInterface
         return 'The readfile/readlink/readgzfile functions output content directly (possible injection)';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !$this->isFunction($node, 'readfile')

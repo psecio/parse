@@ -20,6 +20,14 @@ class LogicalOperators implements RuleInterface
         return 'Avoid using AND, OR and XOR (in favor of || and &&) as they may cause subtle precedence bugs';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($node instanceof LogicalAnd || $node instanceof LogicalOr || $node instanceof LogicalXor) {

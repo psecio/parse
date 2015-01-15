@@ -17,6 +17,14 @@ class HttpRawPostData implements RuleInterface
         return 'Avoid the use of http_raw_post_data. Deprecated and will be removed.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !($node instanceof \PhpParser\Node\Expr\Variable && $node->name == 'http_raw_post_data');

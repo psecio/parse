@@ -23,6 +23,14 @@ class DisplayErrors implements RuleInterface
         return 'The "display_errors" setting should not be enabled manually';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'ini_set') && $this->readArg($node->args[0]) === 'display_errors') {

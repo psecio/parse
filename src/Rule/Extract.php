@@ -20,6 +20,14 @@ class Extract implements RuleInterface
         return 'By default `extract` overwrites variables in the local scope with values given.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'extract') === true) {

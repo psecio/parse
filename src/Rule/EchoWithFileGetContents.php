@@ -17,6 +17,14 @@ class EchoWithFileGetContents implements RuleInterface
         return 'Using `echo` with results of `file_get_contents` could lead to injection issues. ';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($node instanceof \PhpParser\Node\Stmt\Echo_) {

@@ -18,6 +18,14 @@ class ImportRequestVariables implements RuleInterface
         return 'Avoid use of import_request_variables, deprecated in 5.3.0 and removed in 5.4.0';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !$this->isFunction($node, 'import_request_variables');

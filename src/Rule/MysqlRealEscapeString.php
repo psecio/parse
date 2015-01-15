@@ -17,6 +17,14 @@ class MysqlRealEscapeString implements RuleInterface
         return 'Use of mysql_real_escape_string is not recommended. Use prepared statements/bind variables.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'mysql_real_escape_string');

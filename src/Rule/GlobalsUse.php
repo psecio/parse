@@ -17,6 +17,14 @@ class GlobalsUse implements RuleInterface
         return 'The use of $GLOBALS should be avoided.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !($node instanceof \PhpParser\Node\Expr\Variable && $node->name == 'GLOBALS');

@@ -17,6 +17,14 @@ class EvalFunction implements RuleInterface
         return "Don't use eval. Ever.";
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !$this->isExpression($node, 'Eval');

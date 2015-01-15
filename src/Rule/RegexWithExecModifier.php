@@ -19,6 +19,14 @@ class RegexWithExecModifier implements RuleInterface
         return 'Do not use the eval modifier in regular expressions (\e)';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;

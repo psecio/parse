@@ -19,6 +19,14 @@ class SystemFunctions implements RuleInterface
         return 'Use of system functions, especially with user input, is not recommended.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($this->isFunction($node)) {

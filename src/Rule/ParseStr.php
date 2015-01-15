@@ -18,6 +18,14 @@ class ParseStr implements RuleInterface
         return 'The `parse_str` handling sets (and overwrites) variables in the local scope.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !$this->isFunction($node, 'mb_parse_str') && !$this->isFunction($node, 'parse_str');

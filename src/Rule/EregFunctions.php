@@ -20,6 +20,14 @@ class EregFunctions implements RuleInterface
         return 'Remove any use of ereg functions, deprecated and removed. Use preg_*';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         $nodeName = (is_object($node->name)) ? $node->name->parts[0] : $node->name;

@@ -23,6 +23,14 @@ class OutputWithVariable implements RuleInterface
         return 'Avoid the use of an output method (echo, print, etc) directly with a variable';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         // See if our echo or print (constructs) uses concat

@@ -17,6 +17,14 @@ class SetHeaderWithInput implements RuleInterface
         return 'Avoid the use of input in calls to `header`';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'header') === true) {

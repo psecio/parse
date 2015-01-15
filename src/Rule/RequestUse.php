@@ -17,6 +17,14 @@ class RequestUse implements RuleInterface
         return 'Avoid the use of $_REQUEST (know where your data comes fron)';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         return !($node instanceof \PhpParser\Node\Expr\Variable && $node->name == '_REQUEST');

@@ -17,6 +17,14 @@ class SessionRegenerateId implements RuleInterface
         return 'If session_regenerate_id is used, must use second paramater and set to true.';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'session_regenerate_id') === true) {

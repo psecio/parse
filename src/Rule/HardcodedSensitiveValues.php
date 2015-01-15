@@ -22,6 +22,14 @@ class HardcodedSensitiveValues implements RuleInterface
         return 'Avoid hard-coding sensitive values (ex. "username", "password", etc.)';
     }
 
+    /**
+     * @todo
+     */
+    public function getLongDescription()
+    {
+        return 'TODO';
+    }
+
     public function isValid(Node $node)
     {
         list($name, $value) = $this->getNameAndValue($node);
