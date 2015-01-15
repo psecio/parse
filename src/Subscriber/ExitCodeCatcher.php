@@ -41,7 +41,7 @@ class ExitCodeCatcher implements EventSubscriberInterface, Events
     /**
      * Set exit code 1 on file issue
      *
-     * @return null
+     * @return void
      */
     public function onFileIssue()
     {
@@ -51,7 +51,7 @@ class ExitCodeCatcher implements EventSubscriberInterface, Events
     /**
      * Set exit code 1 on file error
      *
-     * @return null
+     * @return void
      */
     public function onFileError()
     {
