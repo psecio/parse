@@ -184,12 +184,13 @@ class ConsoleReport implements EventSubscriberInterface, Events
 
         foreach ($this->issues as $index => $issueEvent) {
             $str .= sprintf(
-                "\n%d) %s:%d\n%s\n> %s\n",
+                "\n%d) %s:%d\n%s\n> %s\nFor more information execute 'psecio-parse rules %s'\n",
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
                 $issueEvent->getNode()->getLine(),
                 $issueEvent->getRule()->getDescription(),
-                implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode()))
+                implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode())),
+                $issueEvent->getRule()->getName()
             );
         }
 

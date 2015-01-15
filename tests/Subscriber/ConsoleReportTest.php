@@ -29,6 +29,7 @@ class ConsoleReportTest extends \PHPUnit_Framework_TestCase
 1) /issue/path:1
 issue description
 > php source
+For more information execute 'psecio-parse rules rulename'
 
 --
 
@@ -64,7 +65,13 @@ error description
         $issueEvent->shouldReceive('getNode')->atLeast(1)->andReturn(
             m::mock('PhpParser\Node')->shouldReceive('getLine')->atLeast(1)->andReturn(1)->mock()
         );
-        $issueEvent->shouldReceive('getRule->getDescription')->once()->andReturn('issue description');
+        $issueEvent->shouldReceive('getRule')->atLeast(1)->andReturn(
+            m::mock('\Psecio\Parse\RuleInterface')
+                ->shouldReceive('getDescription')->once()->andReturn('issue description')
+                ->shouldReceive('getName')->once()->andReturn('rulename')
+                ->mock()
+        );
+
         $issueEvent->shouldReceive('getFile')->zeroOrMoreTimes()->andReturn($file);
 
         $report->onFileIssue($issueEvent);
