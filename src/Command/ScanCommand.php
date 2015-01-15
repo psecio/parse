@@ -45,8 +45,8 @@ class ScanCommand extends Command
                 'format',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Output format (txt or xml).',
-                'txt'
+                'Output format (progress, dots or xml)',
+                'progress'
             )
             ->addOption(
                 'include-tests',
@@ -86,7 +86,7 @@ class ScanCommand extends Command
 
         $format = strtolower($input->getOption('format'));
         switch ($format) {
-            case 'txt':
+            case 'dots':
             case 'progress':
                 $output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
                 if ($output->isVeryVerbose()) {
@@ -97,7 +97,7 @@ class ScanCommand extends Command
                     $dispatcher->addSubscriber(
                         new ConsoleLines($output)
                     );
-                } elseif ('progress' == $format) {
+                } elseif ('progress' == $format && $output->isDecorated()) {
                     $dispatcher->addSubscriber(
                         new ConsoleProgressBar(new ProgressBar($output, count($fileIterator)))
                     );
