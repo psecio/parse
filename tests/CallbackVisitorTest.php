@@ -11,34 +11,34 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $node = m::mock('\PhpParser\Node');
 
-        $falseTest = m::mock('Test')
+        $falseCheck = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('isValid')
             ->once()
             ->with($node)
             ->andReturn(false)
             ->mock();
 
-        $trueTest = m::mock('Test')
+        $trueCheck = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('isValid')
             ->once()
             ->with($node)
             ->andReturn(true)
             ->mock();
 
-        $testCollection = m::mock('\Psecio\Parse\TestCollection')
+        $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
             ->shouldReceive('getIterator')
-            ->andReturn(new \ArrayIterator([$falseTest, $trueTest]))
+            ->andReturn(new \ArrayIterator([$falseCheck, $trueCheck]))
             ->mock();
 
-        $visitor = new CallbackVisitor($testCollection);
+        $visitor = new CallbackVisitor($ruleCollection);
 
         $file = m::mock('\Psecio\Parse\File');
         $visitor->setFile($file);
 
-        // Callback is called ONCE with failing test
+        // Callback is called ONCE with failing check
         $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseTest, $node, $file)->once();
-        $visitor->onTestFail($callback);
+        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->once();
+        $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node);
     }

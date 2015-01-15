@@ -16,11 +16,11 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
         $scanner = new Scanner(
             $dispatcher,
-            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onTestFail')->mock()
+            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure')->mock()
         );
 
-        $scanner->onTestFail(
-            m::mock('\Psecio\Parse\TestInterface'),
+        $scanner->onNodeFailure(
+            m::mock('\Psecio\Parse\RuleInterface'),
             m::mock('\PhpParser\Node'),
             m::mock('\Psecio\Parse\File')
         );
@@ -48,7 +48,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
         $scanner = new Scanner(
             $dispatcher,
-            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onTestFail')->mock(),
+            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure')->mock(),
             m::mock('\PhpParser\Parser'),
             m::mock('\PhpParser\NodeTraverser')->shouldReceive('addVisitor')->mock()
         );
@@ -71,7 +71,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
         $scanner = new Scanner(
             $dispatcher,
-            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onTestFail', 'setFile')->mock(),
+            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure', 'setFile')->mock(),
             m::mock('\PhpParser\Parser')->shouldReceive('parse')->andReturn([])->mock(),
             m::mock('\PhpParser\NodeTraverser')->shouldReceive('traverse', 'addVisitor')->mock()
         );
@@ -95,7 +95,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
 
         $scanner = new Scanner(
             $dispatcher,
-            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onTestFail', 'setFile')->mock(),
+            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure', 'setFile')->mock(),
             m::mock('\PhpParser\Parser')->shouldReceive('parse')->andThrow(new \PhpParser\Error(''))->mock(),
             m::mock('\PhpParser\NodeTraverser')->shouldReceive('addVisitor')->mock()
         );

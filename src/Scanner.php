@@ -9,7 +9,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\Node;
 
 /**
- * Core engine, iterates over source files and evaluates tests
+ * Iterates over and validates files, dispatching events
  */
 class Scanner implements Event\Events
 {
@@ -51,21 +51,21 @@ class Scanner implements Event\Events
         $this->visitor = $visitor;
         $this->parser = $parser ?: new Parser(new Lexer);
         $this->traverser = $traverser ?: new NodeTraverser;
-        $this->visitor->onTestFail([$this, 'onTestFail']);
+        $this->visitor->onNodeFailure([$this, 'onNodeFailure']);
         $this->traverser->addVisitor($this->visitor);
     }
 
     /**
-     * Test fail callback
+     * Node fail callback
      *
-     * @param  TestInterface $test
+     * @param  RuleInterface $rule
      * @param  Node $node
      * @param  File $file
      * @return null
      */
-    public function onTestFail(TestInterface $test, Node $node, File $file)
+    public function onNodeFailure(RuleInterface $rule, Node $node, File $file)
     {
-        $this->dispatcher->dispatch(self::FILE_ISSUE, new Event\IssueEvent($test, $node, $file));
+        $this->dispatcher->dispatch(self::FILE_ISSUE, new Event\IssueEvent($rule, $node, $file));
     }
 
     /**

@@ -15,7 +15,7 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
         $output->shouldReceive('write')->ordered()->once()->with("[PARSE] /path/to/file\n");
         $output->shouldReceive('write')->ordered()->once()->with("<error>[ERROR] message in /path/to/file</error>\n");
         $output->shouldReceive('write')->ordered()->once()->with("[PARSE] /path/to/file\n");
-        $output->shouldReceive('write')->ordered()->once()->with("<error>[ISSUE] [Test] On line 1 in path</error>\n");
+        $output->shouldReceive('write')->ordered()->once()->with("<error>[ISSUE] [Rule] On line 1 in path</error>\n");
 
         // Data for [PARSE] lines
         $fileEvent = m::mock('\Psecio\Parse\Event\FileEvent');
@@ -29,7 +29,7 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
         // Data for [ISSUE] line
         $issueEvent = m::mock('\Psecio\Parse\Event\IssueEvent');
         $issueEvent->shouldReceive('getNode->getLine')->andReturn(1);
-        $issueEvent->shouldReceive('getTest->getName')->andReturn('Test');
+        $issueEvent->shouldReceive('getRule->getName')->andReturn('Rule');
         $issueEvent->shouldReceive('getFile->getPath')->andReturn('path');
 
         $console = new ConsoleLines($output);

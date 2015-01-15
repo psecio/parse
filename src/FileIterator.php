@@ -40,7 +40,7 @@ class FileIterator implements IteratorAggregate, Countable
      * Recursicely append files in directory
      *
      * @param  string $directory Pathname of directory
-     * @return null
+     * @return void
      */
     public function appendDir($directory)
     {
@@ -59,7 +59,7 @@ class FileIterator implements IteratorAggregate, Countable
      * Append file to iterator
      *
      * @param  string $filename
-     * @return null
+     * @return void
      */
     public function appendFile($filename)
     {
