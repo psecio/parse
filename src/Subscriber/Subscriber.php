@@ -10,6 +10,8 @@ use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Empty subscriber, subclass and override desired event methods
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
 class Subscriber implements EventSubscriberInterface, Events
 {

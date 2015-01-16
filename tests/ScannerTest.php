@@ -26,41 +26,6 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSkipNonPhpFile()
-    {
-        $file = m::mock('\Psecio\Parse\File');
-        $file->shouldReceive('isPathMatch')->once()->with('/\.phps$/i')->andReturn(false);
-        $file->shouldReceive('isPathMatch')->once()->with('/\.php$/i')->andReturn(false);
-        $file->shouldReceive('getPath')->once()->andReturn('');
-
-        $dispatcher = m::mock('\Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_START);
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
-            Scanner::FILE_OPEN,
-            m::type('\Psecio\Parse\Event\FileEvent')
-        );
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
-            Scanner::DEBUG,
-            m::type('\Psecio\Parse\Event\MessageEvent')
-        );
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::FILE_CLOSE);
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_COMPLETE);
-
-        $scanner = new Scanner(
-            $dispatcher,
-            m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure')->mock(),
-            m::mock('\PhpParser\Parser'),
-            m::mock('\PhpParser\NodeTraverser')->shouldReceive('addVisitor')->mock()
-        );
-
-        $scanner->scan(
-            m::mock('\Psecio\Parse\FileIterator')
-                ->shouldReceive('getIterator')
-                ->andReturn(new \ArrayIterator([$file]))
-                ->mock()
-        );
-    }
-
     public function testErrorOnPhpsFile()
     {
         $file = m::mock('\Psecio\Parse\File');
@@ -88,7 +53,6 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
     {
         $file = m::mock('\Psecio\Parse\File');
         $file->shouldReceive('isPathMatch')->once()->with('/\.phps$/i')->andReturn(false);
-        $file->shouldReceive('isPathMatch')->once()->with('/\.php$/i')->andReturn(true);
         $file->shouldReceive('getContents')->once()->andReturn('');
 
         $dispatcher = $this->createErrorDispatcherMock();
