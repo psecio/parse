@@ -28,7 +28,23 @@ class DisplayErrors implements RuleInterface
      */
     public function getLongDescription()
     {
-        return 'TODO';
+        return <<<EOD
+The *display_errors* setting determines whether errors should be printed to the screen as part of the output or if they should be hidden from the user.
+
+Displaying errors can be helpful during development, but should never be used in production as it may leak valueable information to an attacker.
+
+To prevent accidentaly displaying errors it is recommended that you never use *ini_set()* to manually enable reporting.
+
+*Example of failing code:*
+
+<?php
+    ini_set('display_errors', true);
+?>
+
+*How to fix?*
+
+Configure display_errors in your *php.ini* file. And make sure that it is set to false in production.
+EOD;
     }
 
     public function isValid(Node $node)

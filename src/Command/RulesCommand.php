@@ -91,6 +91,8 @@ class RulesCommand extends Command
         $output->writeln(" {$rule->getDescription()}\n");
 
         // TODO code blocks should be highlighted using <comment> ...
+        // DisplayErrors har lite text. Men det måste renderas på något sätt...
+        // hur? vilka verktyg kan vi tänka oss?
         $output->writeln(" {$rule->getLongDescription()}");
     }
 }
