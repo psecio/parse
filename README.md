@@ -69,6 +69,45 @@ You can also get a listing of the current checks being done with the `rules` com
 
     psecio-parse rules
 
+### Managing rules to run
+
+There are several ways to control which rules are run. You can specifically include rules using
+the `--include-rules` option, specifically exclude them with `--exclude-rules`, turn them on and
+off on a case-by-case basis using annotations, and disable annotations using
+`--disable-annotations`.
+
+#### Excluding and Including rules
+
+By default, `psecio-parse scan` includes all available rules in its scan. By using
+`--exclude-rules` and `--include-rules`, the rules included can be reduced.
+
+Any rules specified by `--exclude-rules` are explicity excluded from the scan, regardless of any
+other options selected. These rules cannot be added back to the scan, short of re-running the scan
+with different options. Invalid rules are silently ignored.
+
+If `--include-rules` is provided, only those rules specified can be used. No other rules are
+checked. Note that rules that aren't available (whether they do not exist or `--excluded-rules` is
+used to exclude them) cannot be included. Invalid rules are silently ignored.
+
+#### Annotations
+
+Rules can be enabled and disabled using DocBlock annotations. These are comments in the code being
+scanned that tells *Parse* to specifically enable or disable a rule for the block of code the
+DocBlock applies to.
+
+* `@psecio\parse\disable <rule>`: Tells *Parse* to ignore the given rule for the scope of the
+  DocBlock.
+* `@psecio\parse\enable <rule>`: Tells *Parse* to enable the given rule for the scope of the
+  DocBlock. This can be used to re-enable a particular rule when `@psecio\parse\disable` has been
+  applied to the containing scope.
+
+Note that annotations cannot enable tests that have been omitted via the command line options. If
+a test is disabled at the command line, it is disabled for the entire scan, regardless of any
+annotations.
+
+To disable the use of annotations, use the `--disable-annotations` option.
+
+See the `examples` directory for some examples of the ues of annotations for *Parse*.
 
 The Checks
 ----------
