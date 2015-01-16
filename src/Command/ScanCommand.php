@@ -111,8 +111,8 @@ class ScanCommand extends Command
         }
 
         $ruleFactory = new RuleFactory(
-            array_filter(explode(',', $input->getOption('include-rules'))),
-            array_filter(explode(',', $input->getOption('exclude-rules')))
+            $this->parseCsv($input->getOption('include-rules')),
+            $this->parseCsv($input->getOption('exclude-rules'))
         );
 
         $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
@@ -120,11 +120,25 @@ class ScanCommand extends Command
         $scanner->scan(
             new FileIterator(
                 $input->getArgument('path'),
-                array_filter(explode(',', $input->getOption('ignore-paths'))),
-                array_filter(explode(',', $input->getOption('extensions')))
+                $this->parseCsv($input->getOption('ignore-paths')),
+                $this->parseCsv($input->getOption('extensions'))
             )
         );
 
         return $exitCode->getExitCode();
+    }
+
+    /**
+     * Parse comma-separated values from string
+     *
+     * Using array_filter ensures that an empty array is returned when an empty
+     * string is parsed.
+     *
+     * @param  string $string
+     * @return array
+     */
+    public function parseCsv($string)
+    {
+        return array_filter(explode(',', $string));
     }
 }

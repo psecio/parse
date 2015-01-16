@@ -69,6 +69,25 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
         $this->executeCommand(['--format' => 'this-format-does-not-exist']);
     }
 
+    public function testParseCsv()
+    {
+        $this->assertSame(
+            ['php', 'phps'],
+            (new ScanCommand)->parseCsv('php,phps'),
+            'parsing comma separated values should work'
+        );
+        $this->assertSame(
+            ['php', 'phps'],
+            array_values((new ScanCommand)->parseCsv('php,,phps')),
+            'multiple commas should be skipped while parsing csv'
+        );
+        $this->assertSame(
+            [],
+            (new ScanCommand)->parseCsv(''),
+            'parsing an empty string should return an empty array'
+        );
+    }
+
     private function executeCommand(array $input, array $options = array())
     {
         $application = new Application;
