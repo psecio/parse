@@ -38,7 +38,6 @@ Usage
 > **NOTE:** In version **0.6** the executable was renamed **psecio-parse**. In earlier
 > versions the tool was simply named **parse**.
 
-
 > **NOTE:** In version **0.4** and earlier the `--target` option was used to specify the
 > project path, this is no longer supported. Use the syntax below.
 
@@ -48,8 +47,7 @@ To use the scanner execute it from the command line:
 
 For more detailed information see the `help` and `list` commands.
 
-    psecio-parse help
-    psecio-parse list
+    psecio-parse help scan
 
 ### Output formats
 

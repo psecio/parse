@@ -84,12 +84,6 @@ class Scanner implements Event\Events
                     self::FILE_ERROR,
                     new Event\MessageEvent('You have a .phps file - REMOVE NOW', $file)
                 );
-            } elseif (!$file->isPathMatch('/\.php$/i')) {
-                $this->dispatcher->dispatch(
-                    self::DEBUG,
-                    new Event\MessageEvent("Skipping " . $file->getPath(), $file)
-                );
-                continue;
             }
 
             $this->dispatcher->dispatch(self::FILE_OPEN, new Event\FileEvent($file));
