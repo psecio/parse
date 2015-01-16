@@ -40,21 +40,21 @@ class ScanCommand extends Command
             )
             ->addOption(
                 'format',
-                null,
+                'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (txt or xml).',
                 'txt'
             )
             ->addOption(
                 'include-rules',
-                null,
+                'i',
                 InputOption::VALUE_REQUIRED,
                 'Comma separated list of rules to include when scanning.',
                 ''
             )
             ->addOption(
                 'exclude-rules',
-                null,
+                'x',
                 InputOption::VALUE_REQUIRED,
                 'Comma separated list of rules to exclude when scanning.',
                 ''
