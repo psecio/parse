@@ -35,32 +35,46 @@ class ScanCommand extends Command
             ->addArgument(
                 'path',
                 InputArgument::OPTIONAL|InputArgument::IS_ARRAY,
-                'Path to scan.',
-                [getcwd()]
+                'Paths to scan',
+                []
             )
             ->addOption(
                 'format',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Output format (txt or xml).',
+                'Output format (txt or xml)',
                 'txt'
+            )
+            ->addOption(
+                'ignore-paths',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma-separated list of paths to ignore',
+                ''
+            )
+            ->addOption(
+                'extensions',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma-separated list of file extensions to parse',
+                'php,phps,phtml,php5'
             )
             ->addOption(
                 'include-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of rules to include when scanning.',
+                'Comma-separated list of rules to include when scanning',
                 ''
             )
             ->addOption(
                 'exclude-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of rules to exclude when scanning.',
+                'Comma-separated list of rules to exclude when scanning',
                 ''
             )
             ->setHelp(
-                "Scan paths for possible security issues:\n\n  <info>%command.full_name% /path/to/src</info>\n"
+                "Scan paths for possible security issues:\n\n  <info>psecio-parse %command.name% /path/to/src</info>\n"
             );
     }
 
@@ -97,16 +111,34 @@ class ScanCommand extends Command
         }
 
         $ruleFactory = new RuleFactory(
-            array_filter(explode(',', $input->getOption('include-rules'))),
-            array_filter(explode(',', $input->getOption('exclude-rules')))
+            $this->parseCsv($input->getOption('include-rules')),
+            $this->parseCsv($input->getOption('exclude-rules'))
         );
 
         $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
 
         $scanner->scan(
-            new FileIterator($input->getArgument('path'))
+            new FileIterator(
+                $input->getArgument('path'),
+                $this->parseCsv($input->getOption('ignore-paths')),
+                $this->parseCsv($input->getOption('extensions'))
+            )
         );
 
         return $exitCode->getExitCode();
+    }
+
+    /**
+     * Parse comma-separated values from string
+     *
+     * Using array_filter ensures that an empty array is returned when an empty
+     * string is parsed.
+     *
+     * @param  string $string
+     * @return array
+     */
+    public function parseCsv($string)
+    {
+        return array_filter(explode(',', $string));
     }
 }
