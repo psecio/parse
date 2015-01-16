@@ -3,7 +3,7 @@
 /**
  * This class turns off BooleanIdentity.
  *
- * @psecio\parse\ignore BooleanIdentity
+ * @psecio\parse\disable BooleanIdentity
  */
 class testTurnOnRule
 {
@@ -15,7 +15,7 @@ class testTurnOnRule
     }
 
     /**
-     * @psecio\parse\no-ignore BooleanIdentity
+     * @psecio\parse\enable BooleanIdentity
      */
     public function shouldNotError()
     {
@@ -23,7 +23,7 @@ class testTurnOnRule
             echo "I'm not responsible for your bools.!\n";
         }
 
-        /** @psecio\parse\ignore booleanidentity */
+        /** @psecio\parse\disable booleanidentity */
         if ($butThisCanBeIgnored == false) {
             echo "But..yeah. Huh.\n";
         }

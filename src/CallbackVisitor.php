@@ -116,12 +116,12 @@ class CallbackVisitor extends NodeVisitorAbstract
         $enabledRules = $initialEnabledRules;
 
         // This can easily be made more generic:
-        //   1. Replace "(no-)?ignore" with "([a-z0-9_]+)" (and fix handling of first token)
+        //   1. Replace "(en|dis)able" with "([a-z0-9_]+)" (and fix handling of first token)
         //   2. Replace "\s+([_a-z0-9]+)" with "(?:\s+([_a-z0-9]+))*"
         $cmdFlagRegex = '/^\s*\*\s+' // Look for 0 or more whitespace, a "*", and one or more whitespace characters
             . '@psecio\\\\parse\\\\' // Followed by "@psecio\parse" (quad-escape the \ to escape from PHP and preg)
-            . '(no-)?ignore'         // And either no-ignore or ignore. Store the "no-" if it exists
-            . '\s+([_a-z0-9]+)'      // Then 1 or more whitespace and a symbol, storing the symbol
+            . '(en|dis)able'         // And either enable or disable store en or dis
+            . '\s+(\w+)'             // Then 1 or more whitespace and a symbol, storing the symbol
             . '\s*$'                 // Then 0 or more whitespace and the end of the line
             . '/im';                 // Ignore case, treat source as multilined
 
@@ -138,7 +138,7 @@ class CallbackVisitor extends NodeVisitorAbstract
 
         foreach ($flags as $flag) {
             $rule = strtolower($flag[2]);
-            $enabledRules[$rule] = !empty($flag[1]);
+            $enabledRules[$rule] = ($flag[1] == 'en');
         }
 
         return $enabledRules;

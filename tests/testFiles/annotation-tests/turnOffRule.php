@@ -3,7 +3,7 @@
 /**
  * Turn off the rule for the following function
  *
- * @psecio\parse\ignore EvalFunction
+ * @psecio\parse\disable EvalFunction
  */
 function needsEval()
 {
