@@ -27,7 +27,7 @@ class FileIterator implements IteratorAggregate, Countable
     private $ignorePaths = ['dirs'=> [], 'files' => []];
 
     /**
-     * @var string[] List of file extensions to scan
+     * @var string[] List of file extensions to include when scanning dirs
      */
     private $extensions = [];
 
@@ -36,7 +36,7 @@ class FileIterator implements IteratorAggregate, Countable
      *
      * @param  string[] $paths       List of paths to scan
      * @param  string[] $ignorePaths List of paths to ignore
-     * @param  string[] $extensions  List of file extensions to scan
+     * @param  string[] $extensions  List of file extensions to include when scanning dirs
      * @throws RuntimeException      If the list of paths to scan is empty
      */
     public function __construct(array $paths, array $ignorePaths = array(), array $extensions = array('php'))
@@ -57,7 +57,7 @@ class FileIterator implements IteratorAggregate, Countable
     }
 
     /**
-     * Add list of file extensions to scan
+     * Add list of file extensions to include when scanning dirs
      *
      * @param  array $extensions
      * @return void
@@ -95,7 +95,7 @@ class FileIterator implements IteratorAggregate, Countable
     {
         is_dir($path)
             ? $this->addDirectory($path)
-            : $this->addSplFileInfo(new SplFileInfo($path));
+            : $this->addFile(new SplFileInfo($path));
     }
 
     /**
@@ -121,6 +121,8 @@ class FileIterator implements IteratorAggregate, Countable
     /**
      * Recursicely add files in directory
      *
+     * @see FileIterator::isValidFile() Only files that are considered valid are added
+     *
      * @param  string $directory Pathname of directory
      * @return void
      */
@@ -133,37 +135,50 @@ class FileIterator implements IteratorAggregate, Countable
             )
         );
         foreach ($iterator as $splFileInfo) {
-            $this->addSplFileInfo($splFileInfo);
+            if ($this->isValidFile($splFileInfo)) {
+                $this->addFile($splFileInfo);
+            }
         }
     }
 
     /**
-     * Add SplFileInfo object to iterator
-     *
-     * If the file extension is not supported, or file is in the ignore
-     * list the file is silently skipped.
+     * Add a SplFileInfo object to iterator
      *
      * @param  SplFileInfo $splFileInfo
      * @return void
      */
-    private function addSplFileInfo(SplFileInfo $splFileInfo)
+    private function addFile(SplFileInfo $splFileInfo)
     {
-        $realPath = $splFileInfo->getRealPath();
+        $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
+    }
 
+    /**
+     * Check of file should be included
+     *
+     * Returns false if the file extension is not valid or
+     * if the file is in the ignore list.
+     *
+     * @param  SplFileInfo $splFileInfo
+     * @return boolean
+     */
+    private function isValidFile(SplFileInfo $splFileInfo)
+    {
         if (!in_array($splFileInfo->getExtension(), $this->extensions)) {
-            return;
+            return false;
         }
 
+        $realPath = $splFileInfo->getRealPath();
+
         if (in_array($realPath, $this->ignorePaths['files'])) {
-            return;
+            return false;
         }
 
         foreach ($this->ignorePaths['dirs'] as $ignoreDir) {
             if (strpos($realPath, $ignoreDir) === 0) {
-                return;
+                return false;
             }
         }
 
-        $this->files[$realPath] = new File($splFileInfo);
+        return true;
     }
 }

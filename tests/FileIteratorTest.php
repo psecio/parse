@@ -72,17 +72,23 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testIgnoreFilename()
     {
-        $this->assertEmpty(
+        $this->assertArrayHasKey(
+            __FILE__,
             iterator_to_array(new FileIterator([__FILE__], [__FILE__])),
-            __FILE__ . ' should be ignored'
+            __FILE__ . ' should not be ignored as ignore filters should not matter when files are added'
+        );
+        $this->assertArrayNotHasKey(
+            __FILE__,
+            iterator_to_array(new FileIterator([__DIR__], [__FILE__])),
+            __FILE__ . ' should be ignored when ' . __DIR__ . ' is ignored'
         );
     }
 
     public function testIgnoreDirectory()
     {
         $this->assertEmpty(
-            iterator_to_array(new FileIterator([__FILE__], [__DIR__])),
-            __FILE__ . ' should be ignored when ' . __DIR__ . ' is ignored'
+            iterator_to_array(new FileIterator([__DIR__], [__DIR__])),
+            'All files in dir should be ignored when ' . __DIR__ . ' is ignored'
         );
     }
 
@@ -107,9 +113,15 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testFileExtensions()
     {
-        $this->assertEmpty(
-            iterator_to_array(new FileIterator([__FILE__], [], ['txt'])),
+        $this->assertArrayNotHasKey(
+            __FILE__,
+            iterator_to_array(new FileIterator([__DIR__], [], ['txt'])),
             __FILE__ . ' should be ignored as it does not have a .txt extension'
+        );
+        $this->assertArrayHasKey(
+            __FILE__,
+            iterator_to_array(new FileIterator([__FILE__], [], ['txt'])),
+            __FILE__ . ' should be included as extensions should not matter when a file is added'
         );
     }
 
