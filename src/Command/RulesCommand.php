@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Psecio\Parse\RuleFactory;
 use Psecio\Parse\RuleCollection;
 use Psecio\Parse\RuleInterface;
@@ -87,12 +88,19 @@ class RulesCommand extends Command
      */
     public function describeRule(RuleInterface $rule, OutputInterface $output)
     {
-        $output->writeln(" <info>{$rule->getName()}</info>");
-        $output->writeln(" {$rule->getDescription()}\n");
-
-        // TODO code blocks should be highlighted using <comment> ...
-        // DisplayErrors har lite text. Men det måste renderas på något sätt...
-        // hur? vilka verktyg kan vi tänka oss?
-        $output->writeln(" {$rule->getLongDescription()}");
+        $output->getFormatter()->setStyle(
+            'strong',
+            new OutputFormatterStyle(null, null, ['bold', 'reverse'])
+        );
+        $output->getFormatter()->setStyle(
+            'em',
+            new OutputFormatterStyle('yellow', null, ['bold'])
+        );
+        $output->getFormatter()->setStyle(
+            'code',
+            new OutputFormatterStyle('green')
+        );
+        $output->writeln("<strong>{$rule->getName()}</strong>\n");
+        $output->writeln("{$rule->getLongDescription()}\n");
     }
 }
