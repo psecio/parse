@@ -31,11 +31,17 @@ class CallbackVisitor extends NodeVisitorAbstract
     private $file;
 
     /**
+     * @var bool  If false, ignore all annotations
+     */
+    private $useAnnotations;
+
+    /**
      * Inject rule collection
      *
      * @param RuleCollection $ruleCollection
+     * @param bool           $useAnnotations  If false, ignore all annotations
      */
-    public function __construct(RuleCollection $ruleCollection)
+    public function __construct(RuleCollection $ruleCollection, $useAnnotations = true)
     {
         $this->ruleCollection = $ruleCollection;
 
@@ -43,6 +49,8 @@ class CallbackVisitor extends NodeVisitorAbstract
         foreach ($this->ruleCollection as $rule) {
             $this->enabledRules[strtolower($rule->getName())] = true;
         }
+
+        $this->useAnnotations = $useAnnotations;
     }
 
     /**
@@ -74,9 +82,8 @@ class CallbackVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        $oldRules = $this->updateRuleFilters($node->getDocComment());
-        if ($oldRules !== false) {
-            $node->setAttribute('oldEnabledRules', $oldRules);
+        if ($this->useAnnotations) {
+            $this->updateRuleFilters($node);
         }
 
         foreach ($this->ruleCollection as $rule) {
@@ -100,15 +107,15 @@ class CallbackVisitor extends NodeVisitorAbstract
         $this->enabledRules = $node->getAttribute('oldEnabledRules');
     }
 
-    private function updateRuleFilters($docBlock)
+    private function updateRuleFilters($node)
     {
+        $docBlock = $node->getDocComment();
         if (empty($docBlock)) {
             return false;
         }
 
-        $oldRules = $this->enabledRules;
-        $this->enabledRules = $this->evalDocBlock($docBlock, $oldRules);
-        return $oldRules;
+        $node->setAttribute('oldEnabledRules', $this->enabledRules);
+        $this->enabledRules = $this->evalDocBlock($docBlock, $this->enabledRules);
     }
 
     private function evalDocBlock($docBlock, $initialEnabledRules)

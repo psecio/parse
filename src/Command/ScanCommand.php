@@ -59,6 +59,12 @@ class ScanCommand extends Command
                 'Comma separated list of rules to exclude when scanning.',
                 ''
             )
+            ->addOption(
+                'disable-annotations',
+                'd',
+                InputOption::VALUE_NONE,
+                'Skip all annotation-based rule toggles.'
+            )
             ->setHelp(
                 "Scan paths for possible security issues:\n\n  <info>%command.full_name% /path/to/src</info>\n"
             );
@@ -101,7 +107,13 @@ class ScanCommand extends Command
             array_filter(explode(',', $input->getOption('exclude-rules')))
         );
 
-        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
+        $scanner = new Scanner(
+            $dispatcher,
+            new CallbackVisitor(
+                $ruleFactory->createRuleCollection(),
+                !$input->getOption('disable-annotations')
+            )
+        );
 
         $scanner->scan(
             new FileIterator($input->getArgument('path'))
