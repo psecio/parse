@@ -27,12 +27,21 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
         unlink(self::$filename);
     }
 
-    public function testConsoleOutput()
+    public function testDottedOutput()
     {
         $this->assertRegExp(
-            '/Parse: A PHP Security Scanner/',
-            $this->executeCommand(['--format' => 'txt']),
-            'Using --format=txt should generate output'
+            '/\./',
+            $this->executeCommand(['--format' => 'dots']),
+            'Using --format=dots should generate output'
+        );
+    }
+
+    public function testProgressOutput()
+    {
+        $this->assertRegExp(
+            '/\[\=+\]/',
+            $this->executeCommand(['--format' => 'progress'], ['decorated' => true]),
+            'Using --format=progress should use the progressbar'
         );
     }
 
@@ -67,6 +76,25 @@ class ScanCommandTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('RuntimeException');
         $this->executeCommand(['--format' => 'this-format-does-not-exist']);
+    }
+
+    public function testParseCsv()
+    {
+        $this->assertSame(
+            ['php', 'phps'],
+            (new ScanCommand)->parseCsv('php,phps'),
+            'parsing comma separated values should work'
+        );
+        $this->assertSame(
+            ['php', 'phps'],
+            array_values((new ScanCommand)->parseCsv('php,,phps')),
+            'multiple commas should be skipped while parsing csv'
+        );
+        $this->assertSame(
+            [],
+            (new ScanCommand)->parseCsv(''),
+            'parsing an empty string should return an empty array'
+        );
     }
 
     private function executeCommand(array $input, array $options = array())

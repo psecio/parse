@@ -2,21 +2,16 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Psecio\Parse\Event\Events;
+use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
- * Print report to output at scan complete
+ * Print report at scan complete
  */
-class ConsoleReport implements EventSubscriberInterface, Events
+class ConsoleReport extends Subscriber
 {
-    /**
-     * @var OutputInterface Registered output
-     */
-    private $output;
+    use OutputTrait;
 
     /**
      * @var integer Number of scanned files
@@ -32,32 +27,6 @@ class ConsoleReport implements EventSubscriberInterface, Events
      * @var array List of errors
      */
     private $errors;
-
-    /**
-     * Register output interface
-     *
-     * @param OutputInterface $output
-     */
-    public function __construct(OutputInterface $output)
-    {
-        $this->output = $output;
-    }
-
-    /**
-     * Returns an array of event names this subscriber wants to listen to
-     *
-     * @return array The event names to listen to
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            self::SCAN_START => 'onScanStart',
-            self::SCAN_COMPLETE => 'onScanComplete',
-            self::FILE_OPEN => 'onFileOpen',
-            self::FILE_ISSUE => 'onFileIssue',
-            self::FILE_ERROR => 'onFileError'
-        ];
-    }
 
     /**
      * Reset values on scan start
@@ -84,9 +53,10 @@ class ConsoleReport implements EventSubscriberInterface, Events
     /**
      * Increment files scanned counter
      *
+     * @param  FileEvent $event
      * @return void
      */
-    public function onFileOpen()
+    public function onFileOpen(FileEvent $event)
     {
         $this->fileCount++;
     }
@@ -133,7 +103,7 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getReport()
     {
-        return $this->errors || $this->issues ? $this->getFailureReport() : $this->getPassReport();
+        return "\n\n" . ($this->errors || $this->issues ? $this->getFailureReport() : $this->getPassReport());
     }
 
     /**
@@ -157,12 +127,10 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getFailureReport()
     {
-        return $this->getIssueReport()
-            . "\n--\n\n"
-            . $this->getErrorReport()
-            . "\n<error>FAILURES!</error>\n"
+        return $this->getErrorReport()
+            . $this->getIssueReport()
             . sprintf(
-                "<error>Scanned: %d, Errors: %d, Issues: %d.</error>",
+                "<error>FAILURES!</error>\n<error>Scanned: %d, Errors: %d, Issues: %d.</error>",
                 $this->fileCount,
                 count($this->errors),
                 count($this->issues)
@@ -176,15 +144,19 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getIssueReport()
     {
-        $str = $this->pluralize(
-            "There was %d issue\n",
-            "There were %d issues\n",
-            count($this->issues)
-        );
+        $str = '';
+
+        if ($this->issues) {
+            $str .= $this->pluralize(
+                "There was %d issue\n\n",
+                "There were %d issues\n\n",
+                count($this->issues)
+            );
+        }
 
         foreach ($this->issues as $index => $issueEvent) {
             $str .= sprintf(
-                "\n%d) %s:%d\n%s\n> %s\n",
+                "<comment>%d) %s on line %d</comment>\n%s\n<error>> %s</error>\n\n",
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
                 $issueEvent->getNode()->getLine(),
@@ -203,15 +175,19 @@ class ConsoleReport implements EventSubscriberInterface, Events
      */
     private function getErrorReport()
     {
-        $str = $this->pluralize(
-            "There was %d error\n",
-            "There were %d errors\n",
-            count($this->errors)
-        );
+        $str = '';
+
+        if ($this->errors) {
+            $str .= $this->pluralize(
+                "There was %d error\n\n",
+                "There were %d errors\n\n",
+                count($this->errors)
+            );
+        }
 
         foreach ($this->errors as $index => $errorEvent) {
             $str .= sprintf(
-                "\n%d) %s\n%s\n",
+                "<comment>%d) %s</comment>\n<error>%s</error>\n\n",
                 $index + 1,
                 $errorEvent->getFile()->getPath(),
                 $errorEvent->getMessage()

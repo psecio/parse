@@ -8,9 +8,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
-use Psecio\Parse\Subscriber\ConsoleStandard;
-use Psecio\Parse\Subscriber\ConsoleVerbose;
+use Psecio\Parse\Subscriber\ConsoleDots;
+use Psecio\Parse\Subscriber\ConsoleProgressBar;
+use Psecio\Parse\Subscriber\ConsoleLines;
 use Psecio\Parse\Subscriber\ConsoleDebug;
 use Psecio\Parse\Subscriber\ConsoleReport;
 use Psecio\Parse\Subscriber\Xml;
@@ -35,28 +37,42 @@ class ScanCommand extends Command
             ->addArgument(
                 'path',
                 InputArgument::OPTIONAL|InputArgument::IS_ARRAY,
-                'Path to scan.',
-                [getcwd()]
+                'Paths to scan',
+                []
             )
             ->addOption(
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
-                'Output format (txt or xml).',
-                'txt'
+                'Output format (progress, dots or xml)',
+                'progress'
+            )
+            ->addOption(
+                'ignore-paths',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma-separated list of paths to ignore',
+                ''
+            )
+            ->addOption(
+                'extensions',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Comma-separated list of file extensions to parse',
+                'php,phps,phtml,php5'
             )
             ->addOption(
                 'include-rules',
                 'i',
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of rules to include when scanning.',
+                'Comma-separated list of rules to include when scanning',
                 ''
             )
             ->addOption(
                 'exclude-rules',
                 'x',
                 InputOption::VALUE_REQUIRED,
-                'Comma separated list of rules to exclude when scanning.',
+                'Comma-separated list of rules to exclude when scanning',
                 ''
             )
             ->addOption(
@@ -66,7 +82,7 @@ class ScanCommand extends Command
                 'Skip all annotation-based rule toggles.'
             )
             ->setHelp(
-                "Scan paths for possible security issues:\n\n  <info>%command.full_name% /path/to/src</info>\n"
+                "Scan paths for possible security issues:\n\n  <info>psecio-parse %command.name% /path/to/src</info>\n"
             );
     }
 
@@ -81,17 +97,37 @@ class ScanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $dispatcher = new EventDispatcher;
+
         $exitCode = new ExitCodeCatcher;
         $dispatcher->addSubscriber($exitCode);
 
-        switch (strtolower($input->getOption('format'))) {
-            case 'txt':
+        $fileIterator = new FileIterator(
+            $input->getArgument('path'),
+            $this->parseCsv($input->getOption('ignore-paths')),
+            $this->parseCsv($input->getOption('extensions'))
+        );
+
+        $format = strtolower($input->getOption('format'));
+        switch ($format) {
+            case 'dots':
+            case 'progress':
+                $output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
                 if ($output->isVeryVerbose()) {
-                    $dispatcher->addSubscriber(new ConsoleDebug($output));
+                    $dispatcher->addSubscriber(
+                        new ConsoleDebug($output)
+                    );
                 } elseif ($output->isVerbose()) {
-                    $dispatcher->addSubscriber(new ConsoleVerbose($output));
+                    $dispatcher->addSubscriber(
+                        new ConsoleLines($output)
+                    );
+                } elseif ('progress' == $format && $output->isDecorated()) {
+                    $dispatcher->addSubscriber(
+                        new ConsoleProgressBar(new ProgressBar($output, count($fileIterator)))
+                    );
                 } else {
-                    $dispatcher->addSubscriber(new ConsoleStandard($output));
+                    $dispatcher->addSubscriber(
+                        new ConsoleDots($output)
+                    );
                 }
                 $dispatcher->addSubscriber(new ConsoleReport($output));
                 break;
@@ -103,8 +139,8 @@ class ScanCommand extends Command
         }
 
         $ruleFactory = new RuleFactory(
-            array_filter(explode(',', $input->getOption('include-rules'))),
-            array_filter(explode(',', $input->getOption('exclude-rules')))
+            $this->parseCsv($input->getOption('include-rules')),
+            $this->parseCsv($input->getOption('exclude-rules'))
         );
 
         $scanner = new Scanner(
@@ -115,10 +151,22 @@ class ScanCommand extends Command
             )
         );
 
-        $scanner->scan(
-            new FileIterator($input->getArgument('path'))
-        );
+        $scanner->scan($fileIterator);
 
         return $exitCode->getExitCode();
+    }
+
+    /**
+     * Parse comma-separated values from string
+     *
+     * Using array_filter ensures that an empty array is returned when an empty
+     * string is parsed.
+     *
+     * @param  string $string
+     * @return array
+     */
+    public function parseCsv($string)
+    {
+        return array_filter(explode(',', $string));
     }
 }
