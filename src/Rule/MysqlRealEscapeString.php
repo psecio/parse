@@ -6,24 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use the mysql_real_escape_string function, use bound params/prepared statements instead
+ * Use of 'mysql_real_escape_string' is not recommended, use prepared statements instead
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class MysqlRealEscapeString implements RuleInterface
 {
-    use Helper\NameTrait;
-
-    public function getDescription()
-    {
-        return 'Use of mysql_real_escape_string is not recommended. Use prepared statements/bind variables.';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     public function isValid(Node $node)
     {

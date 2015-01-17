@@ -6,26 +6,17 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Ensure that the regular expression handling doesn't use the /e modifier
+ * Do not use the eval modifier in regular expressions (\e)
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class RegexWithExecModifier implements RuleInterface
 {
-    use Helper\NameTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     private $functions = ['preg_match', 'preg_match_all'];
-
-    public function getDescription()
-    {
-        return 'Do not use the eval modifier in regular expressions (\e)';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
 
     public function isValid(Node $node)
     {

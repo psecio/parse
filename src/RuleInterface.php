@@ -30,6 +30,8 @@ interface RuleInterface
      * what could happen if the rule is ignored, include code examples that break
      * the rule and information on how to resolve.
      *
+     * The following html tags may be used: <em> <strong> <code>
+     *
      * @return string
      */
     public function getLongDescription();

@@ -6,24 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use http_raw_post_data
+ * Avoid the use of 'http_raw_post_data', deprecated and will be removed
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class HttpRawPostData implements RuleInterface
 {
-    use Helper\NameTrait;
-
-    public function getDescription()
-    {
-        return 'Avoid the use of http_raw_post_data. Deprecated and will be removed.';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     public function isValid(Node $node)
     {

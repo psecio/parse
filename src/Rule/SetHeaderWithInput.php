@@ -6,24 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Ensure that header() calls don't use concatenation directly
+ * 'header()' calls should not use concatenation directly
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class SetHeaderWithInput implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait;
-
-    public function getDescription()
-    {
-        return 'Avoid the use of input in calls to `header`';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
 
     public function isValid(Node $node)
     {

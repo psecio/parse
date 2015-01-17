@@ -7,28 +7,19 @@ use PhpParser\Node;
 
 /**
  * Avoid hard-coding sensitive values (ex. "username", "password", etc.)
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class HardcodedSensitiveValues implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsExpressionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsExpressionTrait, Helper\IsFunctionTrait;
 
     private $sensitiveNames = [
         'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
         'awskey', 'aws_key', 'secret',
     ];
-
-    public function getDescription()
-    {
-        return 'Avoid hard-coding sensitive values (ex. "username", "password", etc.)';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
 
     public function isValid(Node $node)
     {

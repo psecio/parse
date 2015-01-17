@@ -6,24 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Be sure you're not using an echo with a file_get_contents
+ * Using 'echo' with results of 'file_get_contents' could lead to injection issues
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class EchoWithFileGetContents implements RuleInterface
 {
-    use Helper\NameTrait;
-
-    public function getDescription()
-    {
-        return 'Using `echo` with results of `file_get_contents` could lead to injection issues. ';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     public function isValid(Node $node)
     {

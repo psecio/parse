@@ -7,26 +7,17 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 
 /**
- * The ereg functions have been deprecated as of PHP 5.3.0. Don't use them!
- */
+ * Remove any use of ereg functions, deprecated as of PHP 5.3.0. Use preg_*
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
+*/
 class EregFunctions implements RuleInterface
 {
-    use Helper\NameTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     private $functions = ['ereg', 'eregi', 'ereg_replace', 'eregi_replace'];
-
-    public function getDescription()
-    {
-        return 'Remove any use of ereg functions, deprecated and removed. Use preg_*';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
 
     public function isValid(Node $node)
     {

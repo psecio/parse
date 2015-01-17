@@ -6,24 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use $GLOBALS, know where your data is coming from
+ * The use of $GLOBALS should be avoided, know where your data is coming from
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class GlobalsUse implements RuleInterface
 {
-    use Helper\NameTrait;
-
-    public function getDescription()
-    {
-        return 'The use of $GLOBALS should be avoided.';
-    }
-
-    /**
-     * @todo
-     */
-    public function getLongDescription()
-    {
-        return 'TODO';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     public function isValid(Node $node)
     {
