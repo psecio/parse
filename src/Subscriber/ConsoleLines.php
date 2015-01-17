@@ -7,19 +7,11 @@ use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
- * Verbose console event subscriber
+ * Display descriptive lines to visualize scan progression
  */
-class ConsoleVerbose extends ConsoleStandard
+class ConsoleLines extends Subscriber
 {
-    /**
-     * Add line break on scan complete
-     *
-     * @return void
-     */
-    public function onScanComplete()
-    {
-        $this->write("\n");
-    }
+    use OutputTrait;
 
     /**
      * Write path on file open
@@ -30,15 +22,6 @@ class ConsoleVerbose extends ConsoleStandard
     public function onFileOpen(FileEvent $event)
     {
         $this->write("[PARSE] %s\n", $event->getFile()->getPath());
-    }
-
-    /**
-     * Ignore file close
-     *
-     * @return void
-     */
-    public function onFileClose()
-    {
     }
 
     /**

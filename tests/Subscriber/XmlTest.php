@@ -57,12 +57,4 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 
         $xml->onScanComplete();
     }
-
-    public function testSubscription()
-    {
-        $this->assertInternalType(
-            'array',
-            Xml::getSubscribedEvents()
-        );
-    }
 }

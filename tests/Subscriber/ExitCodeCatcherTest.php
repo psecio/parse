@@ -2,6 +2,8 @@
 
 namespace Psecio\Parse\Subscriber;
 
+use Mockery as m;
+
 class ExitCodeCatcherTest extends \PHPUnit_Framework_TestCase
 {
     public function testSuccessCode()
@@ -15,22 +17,14 @@ class ExitCodeCatcherTest extends \PHPUnit_Framework_TestCase
     public function testErrorcodeOnIssue()
     {
         $exitCode = new ExitCodeCatcher;
-        $exitCode->onFileIssue();
+        $exitCode->onFileIssue(m::mock('\Psecio\Parse\Event\IssueEvent'));
         $this->assertSame(1, $exitCode->getExitCode());
     }
 
     public function testErrorcodeOnError()
     {
         $exitCode = new ExitCodeCatcher;
-        $exitCode->onFileError();
+        $exitCode->onFileError(m::mock('\Psecio\Parse\Event\MessageEvent'));
         $this->assertSame(1, $exitCode->getExitCode());
-    }
-
-    public function testSubscription()
-    {
-        $this->assertInternalType(
-            'array',
-            ExitCodeCatcher::getSubscribedEvents()
-        );
     }
 }

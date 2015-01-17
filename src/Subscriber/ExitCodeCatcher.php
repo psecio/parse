@@ -2,31 +2,18 @@
 
 namespace Psecio\Parse\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Psecio\Parse\Event\Events;
+use Psecio\Parse\Event\IssueEvent;
+use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Capture the exit status code of a scan
  */
-class ExitCodeCatcher implements EventSubscriberInterface, Events
+class ExitCodeCatcher extends Subscriber
 {
     /**
      * @var integer Suggested exit code
      */
     private $exitCode = 0;
-
-    /**
-     * Returns an array of event names this subscriber wants to listen to
-     *
-     * @return array The event names to listen to
-     */
-    public static function getSubscribedEvents()
-    {
-        return [
-            self::FILE_ISSUE => 'onFileIssue',
-            self::FILE_ERROR => 'onFileError'
-        ];
-    }
 
     /**
      * Get suggested exit code
@@ -41,9 +28,10 @@ class ExitCodeCatcher implements EventSubscriberInterface, Events
     /**
      * Set exit code 1 on file issue
      *
+     * @param  IssueEvent $event
      * @return void
      */
-    public function onFileIssue()
+    public function onFileIssue(IssueEvent $event)
     {
         $this->exitCode = 1;
     }
@@ -51,9 +39,10 @@ class ExitCodeCatcher implements EventSubscriberInterface, Events
     /**
      * Set exit code 1 on file error
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onFileError()
+    public function onFileError(MessageEvent $event)
     {
         $this->exitCode = 1;
     }
