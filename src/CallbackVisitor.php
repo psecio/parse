@@ -10,6 +10,9 @@ use PhpParser\Node;
  */
 class CallbackVisitor extends NodeVisitorAbstract
 {
+    const ENABLE_TAG = 'psecio\parse\enable';
+    const DISABLE_TAG = 'psecio\parse\disable';
+
     /**
      * @var RuleCollection Rules to evaluate
      */
@@ -35,6 +38,8 @@ class CallbackVisitor extends NodeVisitorAbstract
      */
     private $useAnnotations;
 
+    private $docBlockParser;
+
     /**
      * Inject rule collection
      *
@@ -51,6 +56,8 @@ class CallbackVisitor extends NodeVisitorAbstract
         }
 
         $this->useAnnotations = $useAnnotations;
+
+        $this->docBlockParser = new BloxNamespacedParser;
     }
 
     /**
@@ -118,36 +125,23 @@ class CallbackVisitor extends NodeVisitorAbstract
         $this->enabledRules = $this->evalDocBlock($docBlock, $this->enabledRules);
     }
 
-    private function evalDocBlock($docBlock, $initialEnabledRules)
+    private function evalDocBlock($docBlock, $rules)
     {
-        $enabledRules = $initialEnabledRules;
+        $block = $this->docBlockParser->parseBlockComment($docBlock);
 
-        // This can easily be made more generic:
-        //   1. Replace "(en|dis)able" with "([a-z0-9_]+)" (and fix handling of first token)
-        //   2. Replace "\s+([_a-z0-9]+)" with "(?:\s+([_a-z0-9]+))*"
-        $cmdFlagRegex = '/^\s*\*\s+' // Look for 0 or more whitespace, a "*", and one or more whitespace characters
-            . '@psecio\\\\parse\\\\' // Followed by "@psecio\parse" (quad-escape the \ to escape from PHP and preg)
-            . '(en|dis)able'         // And either enable or disable store en or dis
-            . '\s+(\w+)'             // Then 1 or more whitespace and a symbol, storing the symbol
-            . '\s*$'                 // Then 0 or more whitespace and the end of the line
-            . '/im';                 // Ignore case, treat source as multilined
+        // Will use $block->tagsByName(self::ENABLE_TAG) and $block->tagsByName(self:DISABLE_TAG)
+        // To do that, tagsByName() needs to run strtolower() internally
+        foreach ($block->tags() as $tag) {
+            $action = strtolower($tag->name());
+            // Get the first word from content. This allows you to add comments to rules.
+            $rule = strtolower(strtok($tag->content(), ' '));
+            if ($action != self::ENABLE_TAG && $action != self::DISABLE_TAG) {
+                continue;
+            }
 
-        $flags = null;
-
-        // Strip off the initial "/*" and trailing "*/", allowing for short blocks
-        $docBlock = substr($docBlock, 2, -2);
-
-        preg_match_all($cmdFlagRegex, $docBlock, $flags, PREG_SET_ORDER);
-
-        if (empty($flags)) {
-            return $enabledRules;
+            $rules[$rule] = $action == self::ENABLE_TAG;
         }
 
-        foreach ($flags as $flag) {
-            $rule = strtolower($flag[2]);
-            $enabledRules[$rule] = ($flag[1] == 'en');
-        }
-
-        return $enabledRules;
+        return $rules;
     }
 }
