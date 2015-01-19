@@ -6,16 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use $_REQUEST, know where your data is coming from
+ * Avoid the use of $_REQUEST (know where your data comes from)
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class RequestUse implements RuleInterface
 {
-    use Helper\NameTrait;
-
-    public function getDescription()
-    {
-        return 'Avoid the use of $_REQUEST (know where your data comes fron)';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     public function isValid(Node $node)
     {

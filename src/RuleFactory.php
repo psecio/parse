@@ -25,7 +25,7 @@ class RuleFactory
     {
         $this->rules = $this->includeFilter(
             $this->excludeFilter(
-                $this->getBundledRules(__DIR__ . '/Rule'),
+                $this->getBundledRules(),
                 $exclude
             ),
             $include
@@ -45,14 +45,13 @@ class RuleFactory
     /**
      * Get rules included in source
      *
-     * @param  string $dir Directory to scan
      * @return RuleInterface[]
      */
-    private function getBundledRules($dir)
+    private function getBundledRules()
     {
         $rules = [];
 
-        foreach (new DirectoryIterator($dir) as $splFileInfo) {
+        foreach (new DirectoryIterator(__DIR__ . '/Rule') as $splFileInfo) {
             if ($splFileInfo->isDot() || $splFileInfo->isDir()) {
                 continue;
             }

@@ -7,15 +7,14 @@ use PhpParser\Node;
 
 /**
  * Don't use eval. Ever.
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class EvalFunction implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsExpressionTrait;
-
-    public function getDescription()
-    {
-        return "Don't use eval. Ever.";
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsExpressionTrait;
 
     public function isValid(Node $node)
     {

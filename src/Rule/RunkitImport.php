@@ -6,16 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Using runkit_import overwrites values by default - do not use
+ * Using the 'runkit_import' function overwrites functions/classes by default
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class RunkitImport implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait;
-
-    public function getDescription()
-    {
-        return 'Using the `runkit_import` function overwrites functions/classes by default.';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
 
     public function isValid(Node $node)
     {

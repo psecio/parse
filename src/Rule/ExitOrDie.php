@@ -7,16 +7,15 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\LNumber;
 
 /**
- * Exit or die usage should be avoided
+ * Avoid the use of `exit` or `die` with strings as it could lead to injection issues (direct output)
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class ExitOrDie implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsExpressionTrait;
-
-    public function getDescription()
-    {
-        return 'Avoid the use of `exit` or `die` with strings as it could lead to injection issues (direct output)';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsExpressionTrait;
 
     public function isValid(Node $node)
     {

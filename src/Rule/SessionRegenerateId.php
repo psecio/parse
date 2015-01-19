@@ -6,16 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use session_regenerate_id without setting the param to true
+ * If 'session_regenerate_id' is used, must use second paramater and set to true
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class SessionRegenerateId implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
-
-    public function getDescription()
-    {
-        return 'If session_regenerate_id is used, must use second paramater and set to true.';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
 
     public function isValid(Node $node)
     {

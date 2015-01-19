@@ -74,7 +74,17 @@ abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
     {
         $this->assertInternalType(
             'string',
-            $this->buildTest()->getDescription()
+            $this->buildTest()->getDescription(),
+            'getDescription() must return a string'
+        );
+    }
+
+    public function testLongDescription()
+    {
+        $this->assertInternalType(
+            'string',
+            $this->buildTest()->getLongDescription(),
+            'getLongDescription() must return a string'
         );
     }
 

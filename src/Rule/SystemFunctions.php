@@ -6,18 +6,17 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Using system functions is risky...
+ * Use of system functions, especially with user input, is not recommended
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class SystemFunctions implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait, Helper\IsExpressionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait, Helper\IsExpressionTrait;
 
     private $functions = ['exec', 'passthru', 'system'];
-
-    public function getDescription()
-    {
-        return 'Use of system functions, especially with user input, is not recommended.';
-    }
 
     public function isValid(Node $node)
     {
