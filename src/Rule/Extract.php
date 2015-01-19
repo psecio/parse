@@ -6,19 +6,18 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
+ * By default 'extract' overwrites variables in the local scope
+ *
  * For the extract function, if either:
  *  - the second param is not set (overwrite by default)
  *  = the second param is set but is EXTR_OVERWRITE
  * fail...
+ *
+ * @todo Add long description to docblock
  */
 class Extract implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait;
-
-    public function getDescription()
-    {
-        return 'By default `extract` overwrites variables in the local scope with values given.';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
 
     public function isValid(Node $node)
     {

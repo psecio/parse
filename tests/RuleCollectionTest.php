@@ -4,33 +4,18 @@ namespace Psecio\Parse;
 
 use Mockery as m;
 
+/**
+ * @covers \Psecio\Parse\RuleCollection
+ */
 class RuleCollectionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @covers \Psecio\Parse\RuleCollection::__construct
-     * @covers \Psecio\Parse\RuleCollection::toArray
-     */
-    public function testToArray()
+    public function testAddHasGetRemove()
     {
         $rule = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('getName')
-            ->andReturn('RuleName')
+            ->andReturn('name')
             ->mock();
 
-        $this->assertSame(
-            (new RuleCollection([$rule]))->toArray(),
-            ['RuleName' => $rule],
-            'toArray() should return the correct array'
-        );
-    }
-
-    /**
-     * @covers \Psecio\Parse\RuleCollection::count
-     * @covers \Psecio\Parse\RuleCollection::add
-     * @covers \Psecio\Parse\RuleCollection::remove
-     */
-    public function testCountable()
-    {
         $collection = new RuleCollection;
 
         $this->assertCount(
@@ -39,12 +24,12 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
             'An empty collection should count to 0'
         );
 
-        $collection->add(
-            m::mock('\Psecio\Parse\RuleInterface')
-                ->shouldReceive('getName')
-                ->andReturn('RuleName')
-                ->mock()
+        $this->assertFalse(
+            $collection->has('name'),
+            'Collection should not contain the name rule'
         );
+
+        $collection->add($rule);
 
         $this->assertCount(
             1,
@@ -52,29 +37,83 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
             '1 added item should be reflected in count'
         );
 
-        $collection->remove('RuleName');
+        $this->assertTrue(
+            $collection->has('name'),
+            'The name rule was added and should be contained'
+        );
+
+        $this->assertSame(
+            $rule,
+            $collection->get('name'),
+            'The named rule should be returned'
+        );
+
+        $collection->remove('name');
 
         $this->assertCount(
             0,
             $collection,
             '1 removed item should be reflected in count'
         );
+
+        $this->assertFalse(
+            $collection->has('name'),
+            'Rule was removed and should not be contained'
+        );
     }
 
-    /**
-     * @covers \Psecio\Parse\RuleCollection::getIterator
-     */
-    public function testIterator()
+    public function testCaseInsensitivity()
+    {
+        $collection = new RuleCollection;
+
+        $collection->add(
+            m::mock('\Psecio\Parse\RuleInterface')
+                ->shouldReceive('getName')
+                ->andReturn('name')
+                ->mock()
+        );
+
+        $this->assertTrue(
+            $collection->has('NAME'),
+            'name should be accessible independent of case'
+        );
+
+        $this->assertSame(
+            $collection->get('NAme'),
+            $collection->get('naME'),
+            'getting a rule should be case insensitive'
+        );
+    }
+
+    public function testIteratorAndArray()
     {
         $rule = m::mock('\Psecio\Parse\RuleInterface')
             ->shouldReceive('getName')
-            ->andReturn('RuleName')
+            ->andReturn('name')
             ->mock();
 
         $this->assertSame(
             iterator_to_array(new RuleCollection([$rule])),
-            ['RuleName' => $rule],
+            ['name' => $rule],
             'iteration of the collection should work correctly'
         );
+
+        $this->assertSame(
+            (new RuleCollection([$rule]))->toArray(),
+            ['name' => $rule],
+            'toArray() should return the correct array'
+        );
+    }
+
+    public function testExceptionInGet()
+    {
+        $this->setExpectedException('RuntimeException');
+        (new RuleCollection)->get('does-not-exist');
+    }
+
+    public function testExceptionInRemove()
+    {
+        $this->setExpectedException('RuntimeException');
+        (new RuleCollection)->remove('does-not-exist');
     }
 }

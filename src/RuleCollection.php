@@ -5,6 +5,7 @@ namespace Psecio\Parse;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
+use RuntimeException;
 
 /**
  * Responsible for handling the ruleset
@@ -56,24 +57,53 @@ class RuleCollection implements Countable, IteratorAggregate
      */
     public function add(RuleInterface $rule)
     {
-        $this->rules[$rule->getName()] = $rule;
+        $this->rules[strtolower($rule->getName())] = $rule;
+    }
+
+    /**
+     * Check if rule exist in collection
+     *
+     * @param  string $name Name of rule
+     * @return bool
+     */
+    public function has($name)
+    {
+        return array_key_exists(strtolower($name), $this->rules);
+    }
+
+    /**
+     * Get rule from collection
+     *
+     * @param  string $name Name of rule
+     * @return RuleInterface
+     * @throws RuntimeException If rule does not exist
+     */
+    public function get($name)
+    {
+        if ($this->has($name)) {
+            return $this->rules[strtolower($name)];
+        }
+        throw new RuntimeException("The rule $name does not exist");
     }
 
     /**
      * Remove an item from the collection
      *
-     * @param  string $name Name of rule to remove
+     * @param  string $name Name of rule
      * @return void
+     * @throws RuntimeException If rule does not exist
      */
     public function remove($name)
     {
-        if (array_key_exists($name, $this->rules)) {
-            unset($this->rules[$name]);
+        if ($this->has($name)) {
+            unset($this->rules[strtolower($name)]);
+            return;
         }
+        throw new RuntimeException("The rule $name does not exist");
     }
 
     /**
-     * Return the current data as an array
+     * Return the collection an array
      *
      * @return array Current data
      */

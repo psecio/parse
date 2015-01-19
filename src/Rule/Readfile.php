@@ -6,16 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use readfile, readlink or readgzfile - they output content directly
+ * The readfile/readlink/readgzfile functions output content directly (possible injection)
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class Readfile implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait;
-
-    public function getDescription()
-    {
-        return 'The readfile/readlink/readgzfile functions output content directly (possible injection)';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
 
     public function isValid(Node $node)
     {

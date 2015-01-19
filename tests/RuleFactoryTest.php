@@ -2,49 +2,52 @@
 
 namespace Psecio\Parse;
 
+/**
+ * @covers \Psecio\Parse\RuleFactory
+ */
 class RuleFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testBundledRules()
     {
-        $rules = (new RuleFactory)->createRuleCollection()->toArray();
+        $rules = (new RuleFactory)->createRuleCollection();
 
         $this->assertTrue(
-            array_key_exists('EvalFunction', $rules),
+            $rules->has('EvalFunction'),
             'Collection should include the EvalFunction rule'
         );
 
         $this->assertTrue(
-            array_key_exists('ExitOrDie', $rules),
+            $rules->has('ExitOrDie'),
             'Collection should include the ExitOrDie rule'
         );
     }
 
     public function testIncludeFilter()
     {
-        $rules = (new RuleFactory(['EvalFunction']))->createRuleCollection()->toArray();
+        $rules = (new RuleFactory(['EvalFunction']))->createRuleCollection();
 
         $this->assertTrue(
-            array_key_exists('EvalFunction', $rules),
+            $rules->has('EvalFunction'),
             'Filtered collection should include the EvalFunction rule'
         );
 
         $this->assertFalse(
-            array_key_exists('ExitOrDie', $rules),
+            $rules->has('ExitOrDie'),
             'Filtered collection should NOT include the ExitOrDie rule'
         );
     }
 
     public function testExcludeFilter()
     {
-        $rules = (new RuleFactory([], ['EvalFunction']))->createRuleCollection()->toArray();
+        $rules = (new RuleFactory([], ['EvalFunction']))->createRuleCollection();
 
         $this->assertFalse(
-            array_key_exists('EvalFunction', $rules),
+            $rules->has('EvalFunction'),
             'Filtered collection should NOT include the EvalFunction rule'
         );
 
         $this->assertTrue(
-            array_key_exists('ExitOrDie', $rules),
+            $rules->has('ExitOrDie'),
             'Filtered collection should include the ExitOrDie rule'
         );
     }

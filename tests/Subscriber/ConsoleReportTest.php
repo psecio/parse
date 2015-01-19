@@ -36,6 +36,7 @@ There was 1 issue
 <comment>1) /issue/path on line 1</comment>
 issue description
 <error>> php source</error>
+For more information execute 'psecio-parse rules rulename'
 
 <error>FAILURES!</error>
 <error>Scanned: 0, Errors: 1, Issues: 1.</error>";
@@ -64,7 +65,13 @@ issue description
         $issueEvent->shouldReceive('getNode')->atLeast(1)->andReturn(
             m::mock('PhpParser\Node')->shouldReceive('getLine')->atLeast(1)->andReturn(1)->mock()
         );
-        $issueEvent->shouldReceive('getRule->getDescription')->once()->andReturn('issue description');
+        $issueEvent->shouldReceive('getRule')->atLeast(1)->andReturn(
+            m::mock('\Psecio\Parse\RuleInterface')
+                ->shouldReceive('getDescription')->once()->andReturn('issue description')
+                ->shouldReceive('getName')->once()->andReturn('rulename')
+                ->mock()
+        );
+
         $issueEvent->shouldReceive('getFile')->zeroOrMoreTimes()->andReturn($file);
 
         $report->onFileIssue($issueEvent);

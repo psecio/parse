@@ -7,16 +7,15 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Equal;
 
 /**
- * If we're evaluating against a boolean (true|false) ensure we're using type checking (===)
+ * Evaluation with booleans should use strict type checking (ex: if $foo === false)
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class BooleanIdentity implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsBoolLiteralTrait;
-
-    public function getDescription()
-    {
-        return 'Evaluation with booleans should use strict type checking (ex: if $foo === false)';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsBoolLiteralTrait;
 
     public function isValid(Node $node)
     {
