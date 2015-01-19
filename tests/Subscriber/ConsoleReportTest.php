@@ -12,31 +12,31 @@ class ConsoleReportTest extends \PHPUnit_Framework_TestCase
             m::mock('\Symfony\Component\Console\Output\OutputInterface')
                 ->shouldReceive('writeln')
                 ->once()
-                ->with("<info>OK (2 files scanned)</info>")
+                ->with("\n\n<info>OK (2 files scanned)</info>")
                 ->mock()
         );
 
         $report->onScanStart();
-        $report->onFileOpen();
-        $report->onFileOpen();
+        $report->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
+        $report->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
         $report->onScanComplete();
     }
 
     public function testFailureReport()
     {
-        $expected = "There was 1 issue
-
-1) /issue/path:1
-issue description
-> php source
-For more information execute 'psecio-parse rules rulename'
-
---
+        $expected = "
 
 There was 1 error
 
-1) /error/path
-error description
+<comment>1) /error/path</comment>
+<error>error description</error>
+
+There was 1 issue
+
+<comment>1) /issue/path on line 1</comment>
+issue description
+<error>> php source</error>
+For more information execute 'psecio-parse rules rulename'
 
 <error>FAILURES!</error>
 <error>Scanned: 0, Errors: 1, Issues: 1.</error>";
@@ -77,13 +77,5 @@ error description
         $report->onFileIssue($issueEvent);
 
         $report->onScanComplete();
-    }
-
-    public function testSubscription()
-    {
-        $this->assertInternalType(
-            'array',
-            ConsoleReport::getSubscribedEvents()
-        );
     }
 }

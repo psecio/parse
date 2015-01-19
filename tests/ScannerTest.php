@@ -32,18 +32,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         $file->shouldReceive('isPathMatch')->once()->with('/\.phps$/i')->andReturn(true);
         $file->shouldReceive('getContents')->once()->andReturn('');
 
-        $dispatcher = m::mock('\Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_START);
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
-            Scanner::FILE_ERROR,
-            m::type('\Psecio\Parse\Event\MessageEvent')
-        );
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
-            Scanner::FILE_OPEN,
-            m::type('\Psecio\Parse\Event\FileEvent')
-        );
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::FILE_CLOSE);
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_COMPLETE);
+        $dispatcher = $this->createErrorDispatcherMock();
 
         $scanner = new Scanner(
             $dispatcher,
@@ -66,18 +55,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         $file->shouldReceive('isPathMatch')->once()->with('/\.phps$/i')->andReturn(false);
         $file->shouldReceive('getContents')->once()->andReturn('');
 
-        $dispatcher = m::mock('\Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_START);
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
-            Scanner::FILE_OPEN,
-            m::type('\Psecio\Parse\Event\FileEvent')
-        );
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
-            Scanner::FILE_ERROR,
-            m::type('\Psecio\Parse\Event\MessageEvent')
-        );
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::FILE_CLOSE);
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_COMPLETE);
+        $dispatcher = $this->createErrorDispatcherMock();
 
         $scanner = new Scanner(
             $dispatcher,
@@ -92,5 +70,23 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
                 ->andReturn(new \ArrayIterator([$file]))
                 ->mock()
         );
+    }
+
+    private function createErrorDispatcherMock()
+    {
+        $dispatcher = m::mock('\Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_START);
+        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
+            Scanner::FILE_OPEN,
+            m::type('\Psecio\Parse\Event\FileEvent')
+        );
+        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
+            Scanner::FILE_ERROR,
+            m::type('\Psecio\Parse\Event\MessageEvent')
+        );
+        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::FILE_CLOSE);
+        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_COMPLETE);
+
+        return $dispatcher;
     }
 }

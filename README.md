@@ -43,7 +43,7 @@ Usage
 
 To use the scanner execute it from the command line:
 
-    psecio-parse scan /path/to/myproject
+    psecio-parse scan /path/to/my/project
 
 For more detailed information see the `help` and `list` commands.
 
@@ -51,15 +51,19 @@ For more detailed information see the `help` and `list` commands.
 
 ### Output formats
 
-Currently cleartext and xml output formats are available (cleartext is used
-by default). Set format with the `--format` option.
+Currently console and xml output formats are available. Set format with the `--format` option.
 
-    psecio-parse scan /path/to/myproject --format=xml
-    psecio-parse scan /path/to/myproject --format=txt
+    psecio-parse scan --format=xml /path/to/my/project 
+    psecio-parse scan --format=dots /path/to/my/project
 
-The default format supports setting the verbosity using the `-v` or `-vv` switch.
+The console formats supports setting the verbosity using the `-v` or `-vv` switch.
 
-    psecio-parse scan /path/to/myproject -vv
+    psecio-parse scan -vv /path/to/my/project
+
+If your platform does not support ANSI codes, or if you want to redirect the console output
+to a file, use the `--no-ansi` option.
+
+    psecio-parse scan --no-ansi /path/to/my/project > filename
 
 ### Listing the checks
 

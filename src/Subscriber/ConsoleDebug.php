@@ -7,7 +7,7 @@ use Psecio\Parse\Event\MessageEvent;
 /**
  * Debug console event subscriber
  */
-class ConsoleDebug extends ConsoleVerbose
+class ConsoleDebug extends ConsoleLines
 {
     /**
      * @var integer Unix timestamp at scan start
