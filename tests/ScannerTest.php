@@ -82,7 +82,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         );
         $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
             Scanner::FILE_ERROR,
-            m::type('\Psecio\Parse\Event\MessageEvent')
+            m::type('\Psecio\Parse\Event\ErrorEvent')
         );
         $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::FILE_CLOSE);
         $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_COMPLETE);

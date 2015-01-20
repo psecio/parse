@@ -39,7 +39,7 @@ interface Events
     /**
      * A scan.file_error event is fired when a file error is encountered
      *
-     * The event listener receives an \Psecio\Parse\Event\MessageEvent instance.
+     * The event listener receives an \Psecio\Parse\Event\ErrorEvent instance.
      */
     const FILE_ERROR = 'scan.file_error';
 

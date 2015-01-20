@@ -6,6 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
+use Psecio\Parse\Event\ErrorEvent;
 use Psecio\Parse\Event\MessageEvent;
 
 /**
@@ -83,10 +84,10 @@ class Subscriber implements EventSubscriberInterface, Events
     /**
      * Empty on file error method
      *
-     * @param  MessageEvent $event
+     * @param  ErrorEvent $event
      * @return void
      */
-    public function onFileError(MessageEvent $event)
+    public function onFileError(ErrorEvent $event)
     {
     }
 

@@ -4,7 +4,7 @@ namespace Psecio\Parse\Subscriber;
 
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
-use Psecio\Parse\Event\MessageEvent;
+use Psecio\Parse\Event\ErrorEvent;
 
 /**
  * Print report at scan complete
@@ -75,10 +75,10 @@ class ConsoleReport extends Subscriber
     /**
      * Save error event
      *
-     * @param  MessageEvent $event
+     * @param  ErrorEvent $event
      * @return void
      */
-    public function onFileError(MessageEvent $event)
+    public function onFileError(ErrorEvent $event)
     {
         $this->errors[] = $event;
     }

@@ -27,7 +27,6 @@ trait OutputTrait
     /**
      * Write to console
      *
-     * @param  string $format sprintf format string
      * @param  mixed  ...$arg Any number of sprintf arguments
      * @return void
      */

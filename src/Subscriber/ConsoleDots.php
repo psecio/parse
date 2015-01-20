@@ -4,7 +4,7 @@ namespace Psecio\Parse\Subscriber;
 
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
-use Psecio\Parse\Event\MessageEvent;
+use Psecio\Parse\Event\ErrorEvent;
 
 /**
  * Display phpunit style dots to visualize scan progression
@@ -88,10 +88,10 @@ class ConsoleDots extends Subscriber
     /**
      * Set file status to E on file error
      *
-     * @param  MessageEvent $event
+     * @param  ErrorEvent $event
      * @return void
      */
-    public function onFileError(MessageEvent $event)
+    public function onFileError(ErrorEvent $event)
     {
         $this->status = '<error>E</error>';
     }

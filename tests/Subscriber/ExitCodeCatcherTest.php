@@ -24,7 +24,7 @@ class ExitCodeCatcherTest extends \PHPUnit_Framework_TestCase
     public function testErrorcodeOnError()
     {
         $exitCode = new ExitCodeCatcher;
-        $exitCode->onFileError(m::mock('\Psecio\Parse\Event\MessageEvent'));
+        $exitCode->onFileError(m::mock('\Psecio\Parse\Event\ErrorEvent'));
         $this->assertSame(1, $exitCode->getExitCode());
     }
 }

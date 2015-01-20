@@ -16,7 +16,10 @@ use Psecio\Parse\Subscriber\ConsoleLines;
 use Psecio\Parse\Subscriber\ConsoleDebug;
 use Psecio\Parse\Subscriber\ConsoleReport;
 use Psecio\Parse\Subscriber\Xml;
+use Psecio\Parse\Event\Events;
+use Psecio\Parse\Event\MessageEvent;
 use Psecio\Parse\RuleFactory;
+use Psecio\Parse\RuleInterface;
 use Psecio\Parse\Scanner;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\FileIterator;
@@ -62,17 +65,17 @@ class ScanCommand extends Command
                 'php,phps,phtml,php5'
             )
             ->addOption(
-                'include-rules',
+                'whitelist-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated list of rules to include when scanning',
+                'Comma-separated list of rules to use',
                 ''
             )
             ->addOption(
-                'exclude-rules',
+                'blacklist-rules',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated list of rules to exclude when scanning',
+                'Comma-separated list of rules to skip',
                 ''
             )
             ->setHelp(
@@ -133,11 +136,22 @@ class ScanCommand extends Command
         }
 
         $ruleFactory = new RuleFactory(
-            $this->parseCsv($input->getOption('include-rules')),
-            $this->parseCsv($input->getOption('exclude-rules'))
+            $this->parseCsv($input->getOption('whitelist-rules')),
+            $this->parseCsv($input->getOption('blacklist-rules'))
         );
 
-        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleFactory->createRuleCollection()));
+        $ruleCollection = $ruleFactory->createRuleCollection();
+
+        $ruleNames = implode(',', array_map(
+            function (RuleInterface $rule) {
+                return $rule->getName();
+            },
+            $ruleCollection->toArray()
+        ));
+
+        $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Using ruleset $ruleNames"));
+
+        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleCollection));
         $scanner->scan($fileIterator);
 
         return $exitCode->getExitCode();
