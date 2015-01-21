@@ -125,6 +125,44 @@ class DocComment
     }
 
     /**
+     * Get tag values matching $tagName
+     *
+     * @param string $tagName
+     *
+     * @return array  List of matching values
+     */
+    public function getMatchingTags($tagName)
+    {
+        if (isset($this->tags[$tagName])) {
+            return $this->tags[$tagName];
+        }
+
+        return array();
+    }
+
+    /**
+     * Get tag values matching $tagName, case insensitively
+     *
+     * @param string $tagName
+     *
+     * @return array  List of matching values
+     */
+    public function getIMatchingTags($tagName)
+    {
+        $tagName = strtolower($tagName);
+
+        $result = array();
+
+        foreach ($this->tags as $name => $values) {
+            if (strtolower($name) == $tagName) {
+                $result = array_merge($result, $values);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Sateful line parser
      *
      * @param  string $line

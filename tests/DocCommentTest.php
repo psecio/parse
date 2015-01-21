@@ -88,4 +88,46 @@ EOF;
             (new DocComment(self::DOC_BLOCK))->getBody()
         );
     }
+
+    public function testGetMatchingTags()
+    {
+        $block = <<<EOD
+/**
+ * Summary
+ *
+ * @tag1 value1
+ * @tag2 value2
+ * @tag1 value3
+ * @tag1 value4
+ * @tag2 value5
+ * @Tag1 valueA
+ */
+EOD;
+        $expectedTag1 = ['value1', 'value3', 'value4'];
+        $expectedTag2 = ['value2', 'value5'];
+        $dc = new DocComment($block);
+
+        $this->assertEquals($expectedTag1, $dc->getMatchingTags('tag1'));
+        $this->assertEquals($expectedTag2, $dc->getMatchingTags('tag2'));
+        $this->assertEquals([], $dc->getMatchingTags('notATag'));
+    }
+
+    public function testGetIMatchingTags()
+    {
+        $block = <<<EOD
+/**
+ * Summary
+ *
+ * @tag1 value1
+ * @Tag1 value3
+ * @TAG1 value4
+ */
+EOD;
+        $expectedTag1 = ['value1', 'value3', 'value4'];
+        $dc = new DocComment($block);
+
+        $this->assertEquals($expectedTag1, $dc->getIMatchingTags('tag1'));
+        $this->assertEquals([], $dc->getIMatchingTags('notATag'));
+    }
+
 }

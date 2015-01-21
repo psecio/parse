@@ -123,24 +123,20 @@ class CallbackVisitor extends NodeVisitorAbstract
 
     private function evalDocBlock($docBlock, $rules)
     {
-        $block = new DocComment($docBlock);
+        $comment = new DocComment($docBlock);
 
-        foreach ($block->getTags() as $tag => $values) {
-            $action = strtolower($tag);
-            if ($action != self::ENABLE_TAG && $action != self::DISABLE_TAG) {
-                continue;
-            }
-
-            $enable = $action == self::ENABLE_TAG;
-
-            // Scan through the rules
-            foreach ($values as $rule) {
-                // Get the first word from content. This allows you to add comments to rules.
-                $rule = strtolower(strtok($rule, ' '));
-                $rules[$rule] = $enable;
-            }
-        }
+        $this->checkTags($comment, $rules, self::ENABLE_TAG, true);
+        $this->checkTags($comment, $rules, self::DISABLE_TAG, false);
 
         return $rules;
+    }
+
+    private function checkTags(DocComment $comment, &$rules, $tag, $value)
+    {
+        $tags = $comment->getIMatchingTags($tag);
+        foreach ($tags as $rule) {
+            // Get the first word from content. This allows you to add comments to rules.
+            $rules[strtolower(strtok($rule, ' '))] = $value;
+        }
     }
 }
