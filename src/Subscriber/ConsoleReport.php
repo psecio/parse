@@ -156,13 +156,14 @@ class ConsoleReport extends Subscriber
 
         foreach ($this->issues as $index => $issueEvent) {
             $str .= sprintf(
-                "<comment>%d) %s on line %d</comment>\n%s\n<error>> %s</error>\n\n",
+                "<comment>%d) %s on line %d</comment>\n%s\n<error>> %s</error>\n",
                 $index + 1,
                 $issueEvent->getFile()->getPath(),
                 $issueEvent->getNode()->getLine(),
                 $issueEvent->getRule()->getDescription(),
                 implode("\n> ", $issueEvent->getFile()->fetchNode($issueEvent->getNode()))
             );
+            $str .= "For more information execute 'psecio-parse rules {$issueEvent->getRule()->getName()}'\n\n";
         }
 
         return $str;

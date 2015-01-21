@@ -5,12 +5,15 @@ namespace Psecio\Parse\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Psecio\Parse\RuleInterface;
-use Psecio\Parse\RuleCollection;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Psecio\Parse\RuleFactory;
+use Psecio\Parse\RuleCollection;
+use Psecio\Parse\RuleInterface;
 
 /**
- * Command for listing current checks and their summaries
+ * Command for displaying information about the pesecio-parse ruleset
  */
 class RulesCommand extends Command
 {
@@ -20,14 +23,19 @@ class RulesCommand extends Command
     protected function configure()
     {
         $this->setName('rules')
-            ->setDescription('List the current checks and their summaries')
+            ->setDescription('Display information about the pesecio-parse ruleset')
+            ->addArgument(
+                'rule',
+                InputArgument::OPTIONAL,
+                'Display info about rule'
+            )
             ->setHelp(
-                "List current checks and their summaries:\n\n  <info>%command.full_name%</info>\n"
+                "Display info about rules:\n\n  <info>psecio-parse %command.name% [name-of-rule]</info>\n"
             );
     }
 
     /**
-     * Execute the "list" command
+     * Execute the "rules" command
      *
      * @param  InputInterface  $input  Input object
      * @param  OutputInterface $output Output object
@@ -35,36 +43,64 @@ class RulesCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write("<comment>Searching for rules:</comment>");
+        $rules = (new RuleFactory)->createRuleCollection();
 
-        $ruleCollection = (new RuleFactory)->createRuleCollection();
-
-        $output->writeln(" " . count($ruleCollection) . " found");
-        $output->writeln("<comment>Listing:</comment>");
-
-        $colWidth = $this->getNameColWidth($ruleCollection);
-
-        foreach ($ruleCollection as $rule) {
-            $output->write(" <info>" . str_pad($rule->getName(), $colWidth) . "</info> ");
-            $output->writeln($rule->getDescription());
+        if ($rulename = $input->getArgument('rule')) {
+            $this->describeRule($rules->get($rulename), $output);
+            return;
         }
+
+        $this->listRules($rules, $output);
     }
 
     /**
-     * Get length of the longest name in collection
+     * List all bundled rules
      *
-     * @param  RuleCollection $ruleCollection
-     * @return int
+     * @param  RuleCollection  $rules
+     * @param  OutputInterface $output
+     * @return void
      */
-    private function getNameColWidth(RuleCollection $ruleCollection)
+    public function listRules(RuleCollection $rules, OutputInterface $output)
     {
-        return max(
-            array_map(
-                function (RuleInterface $rule) {
-                    return strlen($rule->getName());
-                },
-                $ruleCollection->toArray()
-            )
+        $table = new Table($output);
+        $table->setStyle('compact');
+        $table->setHeaders(['Name', 'Description']);
+
+        foreach ($rules as $rule) {
+            $table->addRow(
+                [
+                    '<comment>'.$rule->getName().'</comment>',
+                    $rule->getDescription()
+                ]
+            );
+        }
+
+        $table->render();
+        $output->writeln("\n <info>Use 'psecio-parse rules name-of-rule' for more info about a specific rule</info>");
+    }
+
+    /**
+     * Display rule description
+     *
+     * @param  RuleInterface   $rule
+     * @param  OutputInterface $output
+     * @return void
+     */
+    public function describeRule(RuleInterface $rule, OutputInterface $output)
+    {
+        $output->getFormatter()->setStyle(
+            'strong',
+            new OutputFormatterStyle(null, null, ['bold', 'reverse'])
         );
+        $output->getFormatter()->setStyle(
+            'em',
+            new OutputFormatterStyle('yellow', null, ['bold'])
+        );
+        $output->getFormatter()->setStyle(
+            'code',
+            new OutputFormatterStyle('green')
+        );
+        $output->writeln("<strong>{$rule->getName()}</strong>\n");
+        $output->writeln("{$rule->getLongDescription()}\n");
     }
 }

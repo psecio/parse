@@ -10,18 +10,17 @@ use PhpParser\Node\Stmt\Print_;
 use PhpParser\Node\Expr\FuncCall;
 
 /**
- * Check for output functions that use a variable in the output
+ * Avoid the use of an output method (echo, print, etc) directly with a variable
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class OutputWithVariable implements RuleInterface
 {
-    use Helper\NameTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
 
     private $outputFunctions = ['print_r', 'printf', 'vprintf', 'sprintf'];
-
-    public function getDescription()
-    {
-        return 'Avoid the use of an output method (echo, print, etc) directly with a variable';
-    }
 
     public function isValid(Node $node)
     {

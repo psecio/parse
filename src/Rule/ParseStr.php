@@ -6,17 +6,15 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Don't use mb_parse_str and parse_str as they set the variables
- * into the current scope
+ * Don't use 'mb_parse_str' or 'parse_str' as they sets variables into the current scope
+ *
+ * Long description missing...
+ *
+ * @todo Add long description to docblock
  */
 class ParseStr implements RuleInterface
 {
-    use Helper\NameTrait, Helper\IsFunctionTrait;
-
-    public function getDescription()
-    {
-        return 'The `parse_str` handling sets (and overwrites) variables in the local scope.';
-    }
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
 
     public function isValid(Node $node)
     {
