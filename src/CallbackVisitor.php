@@ -38,8 +38,6 @@ class CallbackVisitor extends NodeVisitorAbstract
      */
     private $useAnnotations;
 
-    private $docBlockParser;
-
     /**
      * Inject rule collection
      *
@@ -56,8 +54,6 @@ class CallbackVisitor extends NodeVisitorAbstract
         }
 
         $this->useAnnotations = $useAnnotations;
-
-        $this->docBlockParser = new BloxNamespacedParser;
     }
 
     /**
@@ -127,19 +123,22 @@ class CallbackVisitor extends NodeVisitorAbstract
 
     private function evalDocBlock($docBlock, $rules)
     {
-        $block = $this->docBlockParser->parseBlockComment($docBlock);
+        $block = new DocComment($docBlock);
 
-        // Will use $block->tagsByName(self::ENABLE_TAG) and $block->tagsByName(self:DISABLE_TAG)
-        // To do that, tagsByName() needs to run strtolower() internally
-        foreach ($block->tags() as $tag) {
-            $action = strtolower($tag->name());
-            // Get the first word from content. This allows you to add comments to rules.
-            $rule = strtolower(strtok($tag->content(), ' '));
+        foreach ($block->getTags() as $tag => $values) {
+            $action = strtolower($tag);
             if ($action != self::ENABLE_TAG && $action != self::DISABLE_TAG) {
                 continue;
             }
 
-            $rules[$rule] = $action == self::ENABLE_TAG;
+            $enable = $action == self::ENABLE_TAG;
+
+            // Scan through the rules
+            foreach ($values as $rule) {
+                // Get the first word from content. This allows you to add comments to rules.
+                $rule = strtolower(strtok($rule, ' '));
+                $rules[$rule] = $enable;
+            }
         }
 
         return $rules;
