@@ -16,8 +16,7 @@
         "php": ">=5.4",
         "nikic/php-parser": "~1.0",
         "symfony/console": "~2.5",
-        "symfony/event-dispatcher": "~2.4",
-        "eloquent/blox": "~3.0"
+        "symfony/event-dispatcher": "~2.4"
     },
     "require-dev": {
         "phpunit/phpunit": "4.2.*",
