@@ -130,4 +130,9 @@ EOD;
         $this->assertEquals([], $dc->getIMatchingTags('notATag'));
     }
 
+    public function testRawComment()
+    {
+        $doc = new DocComment(self::DOC_BLOCK);
+        $this->assertSame(self::DOC_BLOCK, $doc->getRawComment());
+    }
 }

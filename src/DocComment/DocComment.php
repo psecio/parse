@@ -5,7 +5,7 @@ namespace Psecio\Parse\DocComment;
 /**
  * Line based comment parser
  */
-class DocComment
+class DocComment implements DocCommentInterface
 {
     /**
      * Parsing starts now
@@ -75,6 +75,11 @@ class DocComment
     private $body = '';
 
     /**
+     * @var string  The original, raw comment
+     */
+    private $rawComment = '';
+
+    /**
      * @var array Tags in comment
      */
     private $tags = [];
@@ -86,12 +91,23 @@ class DocComment
      */
     public function __construct($comment)
     {
+        $this->rawComment = $comment;
         foreach (preg_split("/\r\n|\n|\r/", $comment) as $line) {
             $line = ltrim($line, "\t\0\x0B /*#");
             $line = rtrim($line, "\t\0\x0B /*");
             $this->parseLine($line);
         }
         $this->saveCurrentTag();
+    }
+
+    /**
+     * Get the original, raw comment
+     *
+     * @return string
+     */
+    public function getRawComment()
+    {
+        return $this->rawComment;
     }
 
     /**
