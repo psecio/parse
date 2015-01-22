@@ -1,6 +1,6 @@
 <?php
 
-namespace Psecio\Parse;
+namespace Psecio\Parse\DocComment;
 
 /**
  * Line based comment parser

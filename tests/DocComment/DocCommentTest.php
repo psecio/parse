@@ -1,6 +1,6 @@
 <?php
 
-namespace Psecio\Parse;
+namespace Psecio\Parse\DocComment;
 
 class DocCommentTest extends \PHPUnit_Framework_TestCase
 {

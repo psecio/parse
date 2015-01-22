@@ -123,7 +123,7 @@ class CallbackVisitor extends NodeVisitorAbstract
 
     private function evalDocBlock($docBlock, $rules)
     {
-        $comment = new DocComment($docBlock);
+        $comment = new DocComment\DocComment($docBlock);
 
         $this->checkTags($comment, $rules, self::ENABLE_TAG, true);
         $this->checkTags($comment, $rules, self::DISABLE_TAG, false);
@@ -131,7 +131,7 @@ class CallbackVisitor extends NodeVisitorAbstract
         return $rules;
     }
 
-    private function checkTags(DocComment $comment, &$rules, $tag, $value)
+    private function checkTags(DocComment\DocComment $comment, &$rules, $tag, $value)
     {
         $tags = $comment->getIMatchingTags($tag);
         foreach ($tags as $rule) {
