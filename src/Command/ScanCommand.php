@@ -20,6 +20,7 @@ use Psecio\Parse\RuleFactory;
 use Psecio\Parse\Scanner;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\FileIterator;
+use Psecio\Parse\DocComment\DocCommentFactory;
 use RuntimeException;
 
 /**
@@ -143,10 +144,13 @@ class ScanCommand extends Command
             $this->parseCsv($input->getOption('exclude-rules'))
         );
 
+        $docCommentFactory = new DocCommentFactory();
+
         $scanner = new Scanner(
             $dispatcher,
             new CallbackVisitor(
                 $ruleFactory->createRuleCollection(),
+                $docCommentFactory,
                 !$input->getOption('disable-annotations')
             )
         );

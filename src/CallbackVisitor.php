@@ -5,6 +5,8 @@ namespace Psecio\Parse;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
 
+use Psecio\Parse\DocComment\DocCommentFactoryInterface;
+
 /**
  * Evaluate rules and call callback on failure
  */
@@ -44,7 +46,9 @@ class CallbackVisitor extends NodeVisitorAbstract
      * @param RuleCollection $ruleCollection
      * @param bool           $useAnnotations  If false, ignore all annotations
      */
-    public function __construct(RuleCollection $ruleCollection, $useAnnotations = true)
+    public function __construct(RuleCollection $ruleCollection,
+                                DocCommentFactoryInterface $docCommentFactory,
+                                $useAnnotations)
     {
         $this->ruleCollection = $ruleCollection;
 

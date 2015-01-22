@@ -7,6 +7,12 @@ use Akamon\MockeryCallableMock\MockeryCallableMock;
 
 class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
 {
+    private $docCommentFactory;
+
+    public function setUp()
+    {
+        $this->docCommentFactory = m::mock('\Psecio\Parse\DocComment\DocCommentFactoryInterface');
+    }
     public function testCallback()
     {
         $node = m::mock('\PhpParser\Node')
@@ -28,7 +34,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
             ->andReturn(new \ArrayIterator([$falseCheck, $trueCheck]))
             ->mock();
 
-        $visitor = new CallbackVisitor($ruleCollection);
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, false);
 
         $file = m::mock('\Psecio\Parse\File');
         $visitor->setFile($file);
@@ -45,7 +51,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     {
         $node = m::mock('\PhpParser\Node')
             ->shouldReceive('getDocComment')
-            ->andReturn('@Psecio\Parse\ignore truish')
+            ->andReturn('@psecio\parse\enable truish')
             ->zeroOrMoreTimes()
             ->mock();
 
@@ -62,7 +68,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
             ->andReturn(new \ArrayIterator([$trueCheck]))
             ->mock();
 
-        $visitor = new CallbackVisitor($ruleCollection);
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, false);
         $visitor->setFile(m::mock('\Psecio\Parse\File'));
 
     }
