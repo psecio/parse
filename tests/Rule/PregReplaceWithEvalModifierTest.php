@@ -8,7 +8,13 @@ class PregReplaceWithEvalModifierTest extends RuleTestCase
     {
         return [
             ['preg_replace("/test/e", "", "");', false],
+            ['preg_replace("/test/ie", "", "");', false],
+            ['preg_replace("/test/ei", "", "");', false],
+            ['preg_replace("/test/eU", "", "");', false],
+            ['preg_replace("#test#e", "", "");', false],
             ['preg_replace("/test/", "", "");', true],
+            ['preg_replace("/test/i", "", "");', true],
+            ['preg_replace("/test/E", "", "");', true],
             ['preg_replace("#/est#", "");', true],
             ['preg_match("/test/e", "");', true],
         ];

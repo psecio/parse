@@ -6,9 +6,9 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
 /**
- * Do not use the eval modifier (\e) with preg_replace()
+ * Do not use the eval modifier (e) with preg_replace()
  *
- * With the <em>\e</em> modifier set <em>preg_replace()</em> does normal substitution of
+ * With the <em>e</em> modifier set <em>preg_replace()</em> does normal substitution of
  * backreferences in the replacement string, evaluates it as PHP code, and
  * uses the result for replacing the search string.
  *
@@ -47,12 +47,10 @@ class PregReplaceWithEvalModifier implements RuleInterface
     public function isValid(Node $node)
     {
         if ($this->isFunction($node, 'preg_replace')) {
-            $regex = (string)$node->args[0]->value->value;
-            if (strpos($regex, '/e') === strlen($regex)-2) {
+            if (preg_match("/e[a-zA-Z]*$/", $node->args[0]->value->value)) {
                 return false;
             }
         }
-
         return true;
     }
 }
