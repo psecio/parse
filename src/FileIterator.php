@@ -59,7 +59,7 @@ class FileIterator implements IteratorAggregate, Countable
     /**
      * Add list of file extensions to include when scanning dirs
      *
-     * @param  array $extensions
+     * @param  string[] $extensions
      * @return void
      */
     public function addExtensions(array $extensions)

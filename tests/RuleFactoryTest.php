@@ -24,7 +24,7 @@ class RuleFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testIncludeFilter()
     {
-        $rules = (new RuleFactory(['EvalFunction']))->createRuleCollection();
+        $rules = (new RuleFactory(['evalfunction']))->createRuleCollection();
 
         $this->assertTrue(
             $rules->has('EvalFunction'),
@@ -39,7 +39,7 @@ class RuleFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testExcludeFilter()
     {
-        $rules = (new RuleFactory([], ['EvalFunction']))->createRuleCollection();
+        $rules = (new RuleFactory([], ['evalfunction']))->createRuleCollection();
 
         $this->assertFalse(
             $rules->has('EvalFunction'),

@@ -51,11 +51,11 @@ For more information execute 'psecio-parse rules rulename'
 
         $report->onScanStart();
 
-        $messageEvent = m::mock('\Psecio\Parse\Event\MessageEvent');
-        $messageEvent->shouldReceive('getMessage')->once()->andReturn('error description');
-        $messageEvent->shouldReceive('getFile->getPath')->once()->andReturn('/error/path');
+        $errorEvent = m::mock('\Psecio\Parse\Event\ErrorEvent');
+        $errorEvent->shouldReceive('getMessage')->once()->andReturn('error description');
+        $errorEvent->shouldReceive('getFile->getPath')->once()->andReturn('/error/path');
 
-        $report->onFileError($messageEvent);
+        $report->onFileError($errorEvent);
 
         $file = m::mock('\Psecio\Parse\File');
         $file->shouldReceive('getPath')->once()->andReturn('/issue/path');

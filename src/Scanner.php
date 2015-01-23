@@ -84,7 +84,7 @@ class Scanner implements Event\Events
             if ($file->isPathMatch('/\.phps$/i')) {
                 $this->dispatcher->dispatch(
                     self::FILE_ERROR,
-                    new Event\MessageEvent('You have a .phps file - REMOVE NOW', $file)
+                    new Event\ErrorEvent('You have a .phps file - REMOVE NOW', $file)
                 );
             }
 
@@ -94,7 +94,7 @@ class Scanner implements Event\Events
             } catch (\PhpParser\Error $e) {
                 $this->dispatcher->dispatch(
                     self::FILE_ERROR,
-                    new Event\MessageEvent($e->getMessage(), $file)
+                    new Event\ErrorEvent($e->getMessage(), $file)
                 );
             }
 

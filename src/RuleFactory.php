@@ -2,97 +2,89 @@
 
 namespace Psecio\Parse;
 
-use ArrayIterator;
 use DirectoryIterator;
 
 /**
- * Responsible for creating a RuleCollection with the bundled set of rules
+ * Create a RuleCollection with bundled rules
  */
 class RuleFactory
 {
     /**
-     * @var RuleInterface[] Current ruleset
+     * @var RuleCollection The created rule collection
      */
-    private $rules;
+    private $collection;
 
     /**
-     * Register include and exclude rules
+     * Optionally filter bundled rules using a whitelist and/or blacklist approach
      *
-     * @param string[] $include Names of rules to include in collection (no value means all rules)
-     * @param string[] $exclude Names of rules to exclude from collection
+     * @param string[] $whitelist Names of rules to keep (empty array means all rules)
+     * @param string[] $blacklist Names of rules to remove
      */
-    public function __construct(array $include = array(), array $exclude = array())
+    public function __construct(array $whitelist = array(), array $blacklist = array())
     {
-        $this->rules = $this->includeFilter(
-            $this->excludeFilter(
-                $this->getBundledRules(),
-                $exclude
-            ),
-            $include
-        );
+        $this->collection = new RuleCollection;
+        $this->setUpCollection();
+        if ($blacklist) {
+            $this->blacklist($blacklist);
+        }
+        if ($whitelist) {
+            $this->whitelist($whitelist);
+        }
     }
 
     /**
-     * Create collection of rules
+     * Get collection of rules
      *
      * @return RuleCollection
      */
     public function createRuleCollection()
     {
-        return new RuleCollection($this->rules);
+        return $this->collection;
     }
 
     /**
-     * Get rules included in source
+     * Remove blacklisted rules from collection
      *
-     * @return RuleInterface[]
+     * @param  string[] $names Names of rules to remove
+     * @return void
      */
-    private function getBundledRules()
+    public function blacklist(array $names)
     {
-        $rules = [];
+        foreach ($names as $ruleName) {
+            $this->collection->remove($ruleName);
+        }
+    }
 
+    /**
+     * Remove non-whitelisted rules from collection
+     *
+     * @param  string[] $names Names of rules to keep
+     * @return void
+     */
+    public function whitelist(array $names)
+    {
+        $oldCollection = $this->collection;
+        $this->collection = new RuleCollection;
+        foreach ($names as $ruleName) {
+            $this->collection->add(
+                $oldCollection->get($ruleName)
+            );
+        }
+    }
+
+    /**
+     * Fill $collection with bundled rules
+     *
+     * @return void
+     */
+    private function setUpCollection()
+    {
         foreach (new DirectoryIterator(__DIR__ . '/Rule') as $splFileInfo) {
             if ($splFileInfo->isDot() || $splFileInfo->isDir()) {
                 continue;
             }
             $className = "\\Psecio\\Parse\\Rule\\{$splFileInfo->getBasename('.php')}";
-            $rules[] = new $className;
+            $this->collection->add(new $className);
         }
-
-        return $rules;
-    }
-
-    /**
-     * Apply include filter
-     *
-     * @param  RuleInterface[] $rules Current ruleset
-     * @param  string[]        $include Names of rules to include in collection
-     * @return RuleInterface[] Filtered ruleset
-     */
-    private function includeFilter(array $rules, array $include)
-    {
-        return array_filter(
-            $rules,
-            function (RuleInterface $rule) use ($include) {
-                return empty($include) || in_array($rule->getName(), $include);
-            }
-        );
-    }
-
-    /**
-     * Apply exclude filter
-     *
-     * @param  RuleInterface[] $rules Current ruleset
-     * @param  string[]        $exclude Names of rules to exclude from collection
-     * @return RuleInterface[] Filtered ruleset
-     */
-    private function excludeFilter(array $rules, array $exclude)
-    {
-        return array_filter(
-            $rules,
-            function (RuleInterface $rule) use ($exclude) {
-                return !in_array($rule->getName(), $exclude);
-            }
-        );
     }
 }

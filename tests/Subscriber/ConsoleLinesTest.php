@@ -22,9 +22,9 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
         $fileEvent->shouldReceive('getFile->getPath')->andReturn('/path/to/file');
 
         // Data for [ERROR] line
-        $messageEvent = m::mock('\Psecio\Parse\Event\MessageEvent');
-        $messageEvent->shouldReceive('getMessage')->andReturn('message');
-        $messageEvent->shouldReceive('getFile->getPath')->andReturn('/path/to/file');
+        $errorEvent = m::mock('\Psecio\Parse\Event\ErrorEvent');
+        $errorEvent->shouldReceive('getMessage')->andReturn('message');
+        $errorEvent->shouldReceive('getFile->getPath')->andReturn('/path/to/file');
 
         // Data for [ISSUE] line
         $issueEvent = m::mock('\Psecio\Parse\Event\IssueEvent');
@@ -42,7 +42,7 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
 
         // Writes [PARSE] and [ERROR] lines
         $console->onFileOpen($fileEvent);
-        $console->onFileError($messageEvent);
+        $console->onFileError($errorEvent);
         $console->onFileClose();
 
         // Writes [PARSE] and [ISSUE] lines
