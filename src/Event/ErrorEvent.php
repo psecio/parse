@@ -2,12 +2,12 @@
 
 namespace Psecio\Parse\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Psecio\Parse\File;
 
 /**
- * Event containing a message
+ * Event containing a File and a message
  */
-class MessageEvent extends Event
+class ErrorEvent extends FileEvent
 {
     /**
      * @var string Message
@@ -18,9 +18,11 @@ class MessageEvent extends Event
      * Set File and message
      *
      * @param string $message
+     * @param File $file
      */
-    public function __construct($message)
+    public function __construct($message, File $file)
     {
+        parent::__construct($file);
         $this->message = $message;
     }
 

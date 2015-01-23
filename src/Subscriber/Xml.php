@@ -5,7 +5,7 @@ namespace Psecio\Parse\Subscriber;
 use Symfony\Component\Console\Output\OutputInterface;
 use XMLWriter;
 use Psecio\Parse\Event\IssueEvent;
-use Psecio\Parse\Event\MessageEvent;
+use Psecio\Parse\Event\ErrorEvent;
 
 /**
  * Xml generating event subscriber
@@ -70,10 +70,10 @@ class Xml extends Subscriber
     /**
      * Write error to document
      *
-     * @param  MessageEvent $event
+     * @param  ErrorEvent $event
      * @return void
      */
-    public function onFileError(MessageEvent $event)
+    public function onFileError(ErrorEvent $event)
     {
         $this->xmlWriter->startElement('error');
         $this->xmlWriter->writeElement('description', $event->getMessage());

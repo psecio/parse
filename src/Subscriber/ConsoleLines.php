@@ -4,7 +4,7 @@ namespace Psecio\Parse\Subscriber;
 
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
-use Psecio\Parse\Event\MessageEvent;
+use Psecio\Parse\Event\ErrorEvent;
 
 /**
  * Display descriptive lines to visualize scan progression
@@ -43,10 +43,10 @@ class ConsoleLines extends Subscriber
     /**
      * Write error as one line
      *
-     * @param  MessageEvent $event
+     * @param  ErrorEvent $event
      * @return void
      */
-    public function onFileError(MessageEvent $event)
+    public function onFileError(ErrorEvent $event)
     {
         $this->write(
             "<error>[ERROR] %s in %s</error>\n",

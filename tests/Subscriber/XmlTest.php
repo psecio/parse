@@ -35,11 +35,11 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 
         $xml->onScanStart();
 
-        $messageEvent = m::mock('\Psecio\Parse\Event\MessageEvent');
-        $messageEvent->shouldReceive('getMessage')->once()->andReturn('error description');
-        $messageEvent->shouldReceive('getFile->getPath')->once()->andReturn('/error/path');
+        $errorEvent = m::mock('\Psecio\Parse\Event\ErrorEvent');
+        $errorEvent->shouldReceive('getMessage')->once()->andReturn('error description');
+        $errorEvent->shouldReceive('getFile->getPath')->once()->andReturn('/error/path');
 
-        $xml->onFileError($messageEvent);
+        $xml->onFileError($errorEvent);
 
         $file = m::mock('\Psecio\Parse\File');
         $file->shouldReceive('getPath')->once()->andReturn('/issue/path');

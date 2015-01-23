@@ -28,7 +28,7 @@ class ConsoleDotsTest extends \PHPUnit_Framework_TestCase
         // Writes an E as an error occurs
         // Also triggers a new line as the line witdth is set to 2
         $console->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
-        $console->onFileError(m::mock('\Psecio\Parse\Event\MessageEvent'));
+        $console->onFileError(m::mock('\Psecio\Parse\Event\ErrorEvent'));
         $console->onFileClose();
 
         // Writes an I as an issue occurs
