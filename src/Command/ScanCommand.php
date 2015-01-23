@@ -53,28 +53,28 @@ class ScanCommand extends Command
             )
             ->addOption(
                 'ignore-paths',
-                null,
+                'i',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of paths to ignore',
                 ''
             )
             ->addOption(
                 'extensions',
-                null,
+                'x',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of file extensions to parse',
                 'php,phps,phtml,php5'
             )
             ->addOption(
                 'whitelist-rules',
-                null,
+                'w',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of rules to use',
                 ''
             )
             ->addOption(
                 'blacklist-rules',
-                null,
+                'b',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of rules to skip',
                 ''
