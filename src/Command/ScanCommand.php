@@ -4,11 +4,17 @@ namespace Psecio\Parse\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Psecio\Parse\RuleFactory;
+use Psecio\Parse\FileIterator;
+use Psecio\Parse\CallbackVisitor;
+use Psecio\Parse\Scanner;
+use Psecio\Parse\Conf\DualConf;
+use Psecio\Parse\Conf\UserConf;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
 use Psecio\Parse\Subscriber\ConsoleDots;
 use Psecio\Parse\Subscriber\ConsoleProgressBar;
@@ -18,11 +24,6 @@ use Psecio\Parse\Subscriber\ConsoleReport;
 use Psecio\Parse\Subscriber\Xml;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\MessageEvent;
-use Psecio\Parse\RuleFactory;
-use Psecio\Parse\RuleInterface;
-use Psecio\Parse\Scanner;
-use Psecio\Parse\CallbackVisitor;
-use Psecio\Parse\FileIterator;
 use RuntimeException;
 
 /**
@@ -40,43 +41,56 @@ class ScanCommand extends Command
             ->addArgument(
                 'path',
                 InputArgument::OPTIONAL|InputArgument::IS_ARRAY,
-                'Paths to scan',
-                []
+                'Path to scan'
             )
             ->addOption(
                 'format',
-                null,
+                'f',
                 InputOption::VALUE_REQUIRED,
-                'Output format (progress, dots or xml)',
-                'progress'
+                'Output format (progress, dots or xml)'
             )
             ->addOption(
                 'ignore-paths',
-                null,
+                'i',
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated list of paths to ignore',
-                ''
+                'Comma-separated list of paths to ignore'
             )
             ->addOption(
                 'extensions',
-                null,
+                'x',
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated list of file extensions to parse',
-                'php,phps,phtml,php5'
+                'Comma-separated list of file extensions to parse (default: php,phps,phtml,php5)'
             )
             ->addOption(
                 'whitelist-rules',
-                null,
+                'w',
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated list of rules to use',
-                ''
+                'Comma-separated list of rules to whitelist'
             )
             ->addOption(
                 'blacklist-rules',
-                null,
+                'b',
                 InputOption::VALUE_REQUIRED,
-                'Comma-separated list of rules to skip',
-                ''
+                'Comma-separated list of rules to blacklist'
+            )
+            ->addOption(
+                'disable-annotations',
+                'd',
+                InputOption::VALUE_NONE,
+                'Skip all annotation-based rule toggles'
+            )
+            ->addOption(
+                'configuration',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Read configuration from file',
+                '.psecio-parse.json'
+            )
+            ->addOption(
+                'no-configuration',
+                null,
+                InputOption::VALUE_NONE,
+                'Ignore default configuration file'
             )
             ->setHelp(
                 "Scan paths for possible security issues:\n\n  <info>psecio-parse %command.name% /path/to/src</info>\n"
@@ -88,24 +102,22 @@ class ScanCommand extends Command
      *
      * @param  InputInterface   $input Input object
      * @param  OutputInterface  $output Output object
-     * @throws RuntimeException If output format is not valid
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $conf = new DualConf(new UserConf($input));
+
+        $rules = (new RuleFactory($conf->getRuleWhitelist(), $conf->getRuleBlacklist()))->createRuleCollection();
+
+        $files = new FileIterator($conf->getPaths(), $conf->getIgnorePaths(), $conf->getExtensions());
+
         $dispatcher = new EventDispatcher;
 
         $exitCode = new ExitCodeCatcher;
         $dispatcher->addSubscriber($exitCode);
 
-        $fileIterator = new FileIterator(
-            $input->getArgument('path'),
-            $this->parseCsv($input->getOption('ignore-paths')),
-            $this->parseCsv($input->getOption('extensions'))
-        );
-
-        $format = strtolower($input->getOption('format'));
-        switch ($format) {
+        switch ($conf->getFormat()) {
             case 'dots':
             case 'progress':
                 $output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
@@ -117,9 +129,9 @@ class ScanCommand extends Command
                     $dispatcher->addSubscriber(
                         new ConsoleLines($output)
                     );
-                } elseif ('progress' == $format && $output->isDecorated()) {
+                } elseif ('progress' == $conf->getFormat() && $output->isDecorated()) {
                     $dispatcher->addSubscriber(
-                        new ConsoleProgressBar(new ProgressBar($output, count($fileIterator)))
+                        new ConsoleProgressBar(new ProgressBar($output, count($files)))
                     );
                 } else {
                     $dispatcher->addSubscriber(
@@ -132,42 +144,14 @@ class ScanCommand extends Command
                 $dispatcher->addSubscriber(new Xml($output));
                 break;
             default:
-                throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");
+                throw new RuntimeException("Unknown output format '{$conf->getFormat()}'");
         }
 
-        $ruleFactory = new RuleFactory(
-            $this->parseCsv($input->getOption('whitelist-rules')),
-            $this->parseCsv($input->getOption('blacklist-rules'))
-        );
+        $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Using ruleset: $rules"));
 
-        $ruleCollection = $ruleFactory->createRuleCollection();
-
-        $ruleNames = implode(',', array_map(
-            function (RuleInterface $rule) {
-                return $rule->getName();
-            },
-            $ruleCollection->toArray()
-        ));
-
-        $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Using ruleset $ruleNames"));
-
-        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleCollection));
-        $scanner->scan($fileIterator);
+        $scanner = new Scanner($dispatcher, new CallbackVisitor($rules));
+        $scanner->scan($files);
 
         return $exitCode->getExitCode();
-    }
-
-    /**
-     * Parse comma-separated values from string
-     *
-     * Using array_filter ensures that an empty array is returned when an empty
-     * string is parsed.
-     *
-     * @param  string $string
-     * @return array
-     */
-    public function parseCsv($string)
-    {
-        return array_filter(explode(',', $string));
     }
 }

@@ -111,4 +111,19 @@ class RuleCollection implements Countable, IteratorAggregate
     {
         return $this->rules;
     }
+
+    /**
+     * Get a comma separated list of rules in collection
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return implode(',', array_map(
+            function (RuleInterface $rule) {
+                return $rule->getName();
+            },
+            $this->toArray()
+        ));
+    }
 }

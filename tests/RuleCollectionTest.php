@@ -116,4 +116,14 @@ class RuleCollectionTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('RuntimeException');
         (new RuleCollection)->remove('does-not-exist');
     }
+
+    public function testTostring()
+    {
+        $ruleA = m::mock('\Psecio\Parse\RuleInterface')->shouldReceive('getName')->andReturn('a')->mock();
+        $ruleB = m::mock('\Psecio\Parse\RuleInterface')->shouldReceive('getName')->andReturn('b')->mock();
+        $this->assertSame(
+            'a,b',
+            (string)(new RuleCollection([$ruleA, $ruleB]))
+        );
+    }
 }
