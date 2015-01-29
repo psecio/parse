@@ -44,7 +44,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     public function testIgnoreAnnotation()
     {
         $ruleName = 'dontIgnoreRule';
-        $node = $this->getMockNodeWithRule('disable', $ruleName);
+        $node = $this->getMockNodeWithAnnotation('disable', $ruleName);
         $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
         $ruleCollection = $this->getMockCollection([$falseCheck]);
         $file = m::mock('\Psecio\Parse\File');
@@ -64,7 +64,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     public function testAnnotation()
     {
         $ruleName = 'ignoreRule';
-        $node = $this->getMockNodeWithRule('disable', $ruleName);
+        $node = $this->getMockNodeWithAnnotation('disable', $ruleName);
         $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
         $ruleCollection = $this->getMockCollection([$falseCheck]);
         $file = m::mock('\Psecio\Parse\File');
@@ -94,7 +94,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         return $m;
     }
 
-    protected function getMockNodeWithRule($annotation, $rule)
+    protected function getMockNodeWithAnnotation($annotation, $rule)
     {
         $node = $this->getMockNode('@psecio\parse\\' . $annotation . ' ' . $rule)
             ->shouldReceive('setAttribute')
