@@ -3,3 +3,4 @@
 /bin/coveralls
 /bin/phpunit
 /bin/test-reporter
+/bin/validate-json

@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Configurations",
+    "description": "Configurations for the psecio-parse security scanner",
+    "type": "object",
+    "properties": {
+        "paths": {
+            "description": "List of paths to scan",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "ignore-paths": {
+            "description": "List of paths to ignore",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "extensions": {
+            "description": "List of file extensions to scan",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "whitelist-rules": {
+            "description": "List of rules to whitelist",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "blacklist-rules": {
+            "description": "List of rules to blacklist",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "disable-annotations": {
+            "description": "Flag if all annotation-based rule toggles should be ignored",
+            "type": "boolean"
+        },
+        "format": {
+            "description": "Output format",
+            "type": "string",
+            "enum": [
+                "progress",
+                "dots",
+                "lines",
+                "debug",
+                "xml"
+            ]
+        }
+    },
+    "additionalProperties": false
+}

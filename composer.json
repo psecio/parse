@@ -17,12 +17,13 @@
         "nikic/php-parser": "~1.0",
         "symfony/console": "~2.5",
         "symfony/event-dispatcher": "~2.4",
-        "eloquent/blox": "~3.0"
+        "eloquent/blox": "~3.0",
+        "justinrainbow/json-schema": ">=1.3.2,<1.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.2.*",
+        "phpunit/phpunit": "~4.2",
         "codeclimate/php-test-reporter": "dev-master",
-        "mockery/mockery": "0.9.*",
+        "mockery/mockery": ">=0.9.3",
         "akamon/mockery-callable-mock": "~1.0"
     },
     "autoload": {

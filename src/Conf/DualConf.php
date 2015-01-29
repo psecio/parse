@@ -3,7 +3,7 @@
 namespace Psecio\Parse\Conf;
 
 /**
- * Read configurations from dual sources
+ * Merge configurations from dual sources
  */
 class DualConf implements Configuration
 {
@@ -22,13 +22,13 @@ class DualConf implements Configuration
      *
      * Primary configurations take precedence if specified
      *
-     * @param Configuration      $primary
-     * @param Configuration|null $secondary
+     * @param Configuration $primary
+     * @param Configuration $secondary
      */
-    public function __construct(Configuration $primary, Configuration $secondary = null)
+    public function __construct(Configuration $primary, Configuration $secondary)
     {
         $this->primary = $primary;
-        $this->secondary = $secondary ?: new DefaultConf;
+        $this->secondary = $secondary;
     }
 
     /**

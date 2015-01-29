@@ -13,8 +13,8 @@ use Psecio\Parse\RuleFactory;
 use Psecio\Parse\FileIterator;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\Scanner;
-use Psecio\Parse\Conf\DualConf;
-use Psecio\Parse\Conf\UserConf;
+use Psecio\Parse\File;
+use Psecio\Parse\Conf\ConfFactory;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
 use Psecio\Parse\Subscriber\ConsoleDots;
 use Psecio\Parse\Subscriber\ConsoleProgressBar;
@@ -25,6 +25,7 @@ use Psecio\Parse\Subscriber\Xml;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\MessageEvent;
 use RuntimeException;
+use SplFileInfo;
 
 /**
  * The main command, scan paths for possible security issues
@@ -83,8 +84,7 @@ class ScanCommand extends Command
                 'configuration',
                 'c',
                 InputOption::VALUE_REQUIRED,
-                'Read configuration from file',
-                '.psecio-parse.json'
+                'Read configuration from file'
             )
             ->addOption(
                 'no-configuration',
@@ -106,7 +106,7 @@ class ScanCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $conf = new DualConf(new UserConf($input));
+        $conf = (new ConfFactory)->createConf($input, $confFileName);
 
         $rules = (new RuleFactory($conf->getRuleWhitelist(), $conf->getRuleBlacklist()))->createRuleCollection();
 
@@ -145,6 +145,10 @@ class ScanCommand extends Command
                 break;
             default:
                 throw new RuntimeException("Unknown output format '{$conf->getFormat()}'");
+        }
+
+        if ($confFileName) {
+            $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Reading configurations from $confFileName"));
         }
 
         $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Using ruleset: $rules"));
