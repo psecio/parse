@@ -84,12 +84,12 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     protected function getMockRule($node, $isValidReturns, $name = 'name')
     {
         $m = m::mock('\Psecio\Parse\RuleInterface')
-           ->shouldReceive('getName')
-           ->andReturn($name)
-           ->zeroOrMoreTimes()
-           ->shouldReceive('isValid')
-           ->with($node)
-           ->andReturn($isValidReturns);
+             ->shouldReceive('getName')
+             ->andReturn($name)
+             ->zeroOrMoreTimes()
+             ->shouldReceive('isValid')
+             ->with($node)
+             ->andReturn($isValidReturns);
 
         return $m;
     }
@@ -97,8 +97,8 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     protected function getMockNodeWithRule($annotation, $rule)
     {
         $node = $this->getMockNode('@psecio\parse\\' . $annotation . ' ' . $rule)
-              ->shouldReceive('setAttribute')
-              ->mock();
+            ->shouldReceive('setAttribute')
+            ->mock();
 
         return $node;
     }
