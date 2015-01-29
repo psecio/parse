@@ -15,24 +15,18 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     }
     public function testCallback()
     {
-        $node = m::mock('\PhpParser\Node')
-            ->shouldReceive('getDocComment')
-            ->andReturn('')
-            ->zeroOrMoreTimes()
+        $node = $this->getMockNode()
             ->mock();
 
-        $falseCheck = $this->mockTest($node, false)
+        $falseCheck = $this->getMockRule($node, false)
             ->once()
             ->mock();
 
-        $trueCheck = $this->mockTest($node, true)
+        $trueCheck = $this->getMockRule($node, true)
             ->once()
             ->mock();
 
-        $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
-            ->shouldReceive('getIterator')
-            ->andReturn(new \ArrayIterator([$falseCheck, $trueCheck]))
-            ->mock();
+        $ruleCollection = $this->getMockCollection([$falseCheck, $trueCheck]);
 
         $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, false);
 
@@ -49,38 +43,83 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
 
     public function testIgnoreAnnotation()
     {
-        $node = m::mock('\PhpParser\Node')
-            ->shouldReceive('getDocComment')
-            ->andReturn('@psecio\parse\enable truish')
-            ->zeroOrMoreTimes()
-            ->mock();
+        $ruleName = 'dontIgnoreRule';
+        $node = $this->getMockNodeWithRule('disable', $ruleName);
+        $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
+        $ruleCollection = $this->getMockCollection([$falseCheck]);
+        $file = m::mock('\Psecio\Parse\File');
 
-        $trueCheck = m::mock('\Psecio\Parse\RuleInterface')
-            ->shouldReceive('getName')
-            ->andReturn('truish')
-            ->zeroOrMoreTimes()
-            ->shouldReceive('isValid')
-            ->with($node)
-            ->andReturn(true);
-
-        $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
-            ->shouldReceive('getIterator')
-            ->andReturn(new \ArrayIterator([$trueCheck]))
-            ->mock();
-
+        // The false means to ignore annotations
         $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, false);
-        $visitor->setFile(m::mock('\Psecio\Parse\File'));
+        $visitor->setFile($file);
 
+        // Callback is called once with failing check
+        $callback = new MockeryCallableMock();
+        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->once();
+        $visitor->onNodeFailure($callback);
+
+        $visitor->enterNode($node);
     }
 
-    protected function mockTest($node, $isValidReturns, $name = 'name')
+    public function testAnnotation()
     {
-        return m::mock('\Psecio\Parse\RuleInterface')
-            ->shouldReceive('getName')
-            ->andReturn($name)
+        $ruleName = 'ignoreRule';
+        $node = $this->getMockNodeWithRule('disable', $ruleName);
+        $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
+        $ruleCollection = $this->getMockCollection([$falseCheck]);
+        $file = m::mock('\Psecio\Parse\File');
+
+        // The true means to use annotations
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
+        $visitor->setFile($file);
+
+        // Callback is called once with failing check
+        $callback = new MockeryCallableMock();
+        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->never();
+        $visitor->onNodeFailure($callback);
+
+        $visitor->enterNode($node);
+    }
+
+    protected function getMockRule($node, $isValidReturns, $name = 'name')
+    {
+        $m = m::mock('\Psecio\Parse\RuleInterface')
+           ->shouldReceive('getName')
+           ->andReturn($name)
+           ->zeroOrMoreTimes()
+           ->shouldReceive('isValid')
+           ->with($node)
+           ->andReturn($isValidReturns);
+
+        return $m;
+    }
+
+    protected function getMockNodeWithRule($annotation, $rule)
+    {
+        $node = $this->getMockNode('@psecio\parse\\' . $annotation . ' ' . $rule)
+              ->shouldReceive('setAttribute')
+              ->mock();
+
+        return $node;
+    }
+
+    protected function getMockCollection($ruleList)
+    {
+        $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
+            ->shouldReceive('getIterator')
+            ->andReturn(new \ArrayIterator($ruleList))
+            ->mock();
+
+        return $ruleCollection;
+    }
+
+    protected function getMockNode($docBlock = '')
+    {
+        $node = m::mock('PhpParser\Node')
+            ->shouldReceive('getDocComment')
+            ->andReturn($docBlock)
             ->zeroOrMoreTimes()
-            ->shouldReceive('isValid')
-            ->with($node)
-            ->andReturn($isValidReturns);
+            ;
+        return $node;
     }
 }
