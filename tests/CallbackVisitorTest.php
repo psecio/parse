@@ -81,6 +81,27 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->enterNode($node);
     }
 
+    public function testEmptyDocBlock()
+    {
+        $ruleName = 'aRule';
+
+        $node = $this->getMockNode()->mock();
+        $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
+        $ruleCollection = $this->getMockCollection([$falseCheck]);
+        $file = m::mock('\Psecio\Parse\File');
+
+        // The true means to use annotations
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
+        $visitor->setFile($file);
+
+        // Callback is called once with failing check
+        $callback = new MockeryCallableMock();
+        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->once();
+        $visitor->onNodeFailure($callback);
+
+        $visitor->enterNode($node);
+    }
+
     protected function getMockRule($node, $isValidReturns, $name = 'name')
     {
         $m = m::mock('\Psecio\Parse\RuleInterface')
