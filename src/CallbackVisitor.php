@@ -94,15 +94,20 @@ class CallbackVisitor extends NodeVisitorAbstract
         }
 
         foreach ($this->ruleCollection as $rule) {
-            if (!$this->enabledRules[strtolower($rule->getName())]) {
-                continue;
-            }
-
-            if (!$rule->isValid($node)) {
-                call_user_func($this->callback, $rule, $node, $this->file);
-            }
+            $this->evaluateRule($node, $rule);
         }
     }
+
+    protected function evaluateRule($node, $rule)
+    {
+        if (!$this->enabledRules[strtolower($rule->getName())]) {
+            return;
+        }
+        
+        if (!$rule->isValid($node)) {
+            call_user_func($this->callback, $rule, $node, $this->file);
+        }
+    }        
 
     public function leaveNode(Node $node)
     {
@@ -118,14 +123,14 @@ class CallbackVisitor extends NodeVisitorAbstract
     {
         $docBlock = $node->getDocComment();
         if (empty($docBlock)) {
-            return false;
+            return;
         }
 
         $node->setAttribute('oldEnabledRules', $this->enabledRules);
-        $this->enabledRules = $this->evalDocBlock($docBlock, $this->enabledRules);
+        $this->enabledRules = $this->evaluateDocBlock($docBlock, $this->enabledRules);
     }
 
-    private function evalDocBlock($docBlock, $rules)
+    private function evaluateDocBlock($docBlock, $rules)
     {
         $comment = new DocComment\DocComment($docBlock);
 
