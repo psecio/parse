@@ -14,7 +14,7 @@ use Psecio\Parse\Event\MessageEvent;
  *
  * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
-class Subscriber implements EventSubscriberInterface, Events
+abstract class BaseSubscriber implements EventSubscriberInterface, Events
 {
     /**
      * Returns an array of event names this subscriber wants to listen to

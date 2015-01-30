@@ -16,11 +16,11 @@ use Psecio\Parse\Scanner;
 use Psecio\Parse\File;
 use Psecio\Parse\Conf\ConfFactory;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
-use Psecio\Parse\Subscriber\ConsoleDots;
-use Psecio\Parse\Subscriber\ConsoleProgressBar;
-use Psecio\Parse\Subscriber\ConsoleLines;
-use Psecio\Parse\Subscriber\ConsoleDebug;
-use Psecio\Parse\Subscriber\ConsoleReport;
+use Psecio\Parse\Subscriber\Console\Dots;
+use Psecio\Parse\Subscriber\Console\Progress;
+use Psecio\Parse\Subscriber\Console\Lines;
+use Psecio\Parse\Subscriber\Console\Debug;
+use Psecio\Parse\Subscriber\Console\Report;
 use Psecio\Parse\Subscriber\Xml;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\MessageEvent;
@@ -48,7 +48,7 @@ class ScanCommand extends Command
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
-                'Output format (progress, dots or xml)'
+                'Output format (progress, dots, lines, debug or xml)'
             )
             ->addOption(
                 'ignore-paths',
@@ -123,22 +123,22 @@ class ScanCommand extends Command
                 $output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
                 if ($output->isVeryVerbose()) {
                     $dispatcher->addSubscriber(
-                        new ConsoleDebug($output)
+                        new Debug($output)
                     );
                 } elseif ($output->isVerbose()) {
                     $dispatcher->addSubscriber(
-                        new ConsoleLines($output)
+                        new Lines($output)
                     );
                 } elseif ('progress' == $conf->getFormat() && $output->isDecorated()) {
                     $dispatcher->addSubscriber(
-                        new ConsoleProgressBar(new ProgressBar($output, count($files)))
+                        new Progress(new ProgressBar($output, count($files)))
                     );
                 } else {
                     $dispatcher->addSubscriber(
-                        new ConsoleDots($output)
+                        new Dots($output)
                     );
                 }
-                $dispatcher->addSubscriber(new ConsoleReport($output));
+                $dispatcher->addSubscriber(new Report($output));
                 break;
             case 'xml':
                 $dispatcher->addSubscriber(new Xml($output));

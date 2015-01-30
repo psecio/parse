@@ -1,10 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Mockery as m;
 
-class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
+class LinesTest extends \PHPUnit_Framework_TestCase
 {
     public function testOutput()
     {
@@ -32,7 +32,7 @@ class ConsoleLinesTest extends \PHPUnit_Framework_TestCase
         $issueEvent->shouldReceive('getRule->getName')->andReturn('Rule');
         $issueEvent->shouldReceive('getFile->getPath')->andReturn('path');
 
-        $console = new ConsoleLines($output);
+        $console = new Lines($output);
 
         $console->onScanStart();
 

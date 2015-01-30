@@ -10,7 +10,7 @@ use Psecio\Parse\Event\ErrorEvent;
 /**
  * Xml generating event subscriber
  */
-class Xml extends Subscriber
+class Xml extends BaseSubscriber
 {
     use OutputTrait;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Mockery as m;
 
-class ConsoleDebugTest extends \PHPUnit_Framework_TestCase
+class DebugTest extends \PHPUnit_Framework_TestCase
 {
     public function testOutput()
     {
@@ -19,7 +19,7 @@ class ConsoleDebugTest extends \PHPUnit_Framework_TestCase
         $messageEvent = m::mock('\Psecio\Parse\Event\MessageEvent');
         $messageEvent->shouldReceive('getMessage')->andReturn('debug message');
 
-        $console = new ConsoleDebug($output);
+        $console = new Debug($output);
 
         // Should write debug start
         $console->onScanStart();

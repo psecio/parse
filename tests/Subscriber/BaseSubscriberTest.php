@@ -4,19 +4,19 @@ namespace Psecio\Parse\Subscriber;
 
 use Mockery as m;
 
-class SubscriberTest extends \PHPUnit_Framework_TestCase
+class BaseSubscriberTest extends \PHPUnit_Framework_TestCase
 {
     public function testSubscription()
     {
         $this->assertInternalType(
             'array',
-            Subscriber::getSubscribedEvents()
+            BaseSubscriber::getSubscribedEvents()
         );
     }
 
     public function testEmptyMethods()
     {
-        $subscriber = new Subscriber;
+        $subscriber = m::mock('\Psecio\Parse\Subscriber\BaseSubscriber[]');
         $this->assertNull($subscriber->onScanStart());
         $this->assertNull($subscriber->onScanComplete());
         $this->assertNull($subscriber->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent')));

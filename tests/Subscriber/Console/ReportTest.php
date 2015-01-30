@@ -1,14 +1,14 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Mockery as m;
 
-class ConsoleReportTest extends \PHPUnit_Framework_TestCase
+class ReportTest extends \PHPUnit_Framework_TestCase
 {
     public function testPassReport()
     {
-        $report = new ConsoleReport(
+        $report = new Report(
             m::mock('\Symfony\Component\Console\Output\OutputInterface')
                 ->shouldReceive('writeln')
                 ->once()
@@ -41,7 +41,7 @@ For more information execute 'psecio-parse rules rulename'
 <error>FAILURES!</error>
 <error>Scanned: 0, Errors: 1, Issues: 1.</error>";
 
-        $report = new ConsoleReport(
+        $report = new Report(
             m::mock('\Symfony\Component\Console\Output\OutputInterface')
                 ->shouldReceive('writeln')
                 ->once()

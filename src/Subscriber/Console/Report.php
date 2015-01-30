@@ -1,7 +1,9 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
+use Psecio\Parse\Subscriber\BaseSubscriber;
+use Psecio\Parse\Subscriber\OutputTrait;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\ErrorEvent;
@@ -9,7 +11,7 @@ use Psecio\Parse\Event\ErrorEvent;
 /**
  * Print report at scan complete
  */
-class ConsoleReport extends Subscriber
+class Report extends BaseSubscriber
 {
     use OutputTrait;
 

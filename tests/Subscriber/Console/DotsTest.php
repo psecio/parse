@@ -1,10 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Mockery as m;
 
-class ConsoleDotsTest extends \PHPUnit_Framework_TestCase
+class DotsTest extends \PHPUnit_Framework_TestCase
 {
     public function testOutput()
     {
@@ -16,7 +16,7 @@ class ConsoleDotsTest extends \PHPUnit_Framework_TestCase
         $output->shouldReceive('write')->ordered()->once()->with("\n");
         $output->shouldReceive('write')->ordered()->once()->with("<error>I</error>");
 
-        $console = new ConsoleDots($output);
+        $console = new Dots($output);
         $console->setLineLength(2);
 
         $console->onScanStart();

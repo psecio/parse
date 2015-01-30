@@ -1,13 +1,13 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Debug console event subscriber
  */
-class ConsoleDebug extends ConsoleLines
+class Debug extends Lines
 {
     /**
      * @var integer Unix timestamp at scan start

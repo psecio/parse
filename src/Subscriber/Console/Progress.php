@@ -1,13 +1,14 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
+use Psecio\Parse\Subscriber\BaseSubscriber;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Display a progress bar to visualize scan progression
  */
-class ConsoleProgressBar extends Subscriber
+class Progress extends BaseSubscriber
 {
     /**
      * The progress bar format used of the number if steps is known

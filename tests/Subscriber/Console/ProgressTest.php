@@ -1,10 +1,10 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Mockery as m;
 
-class ConsoleProgressBarTest extends \PHPUnit_Framework_TestCase
+class ProgressTest extends \PHPUnit_Framework_TestCase
 {
     public function testOutput()
     {
@@ -17,7 +17,7 @@ class ConsoleProgressBarTest extends \PHPUnit_Framework_TestCase
         $bar->shouldReceive('advance')->ordered()->once();
         $bar->shouldReceive('finish')->ordered()->once();
 
-        $console = new ConsoleProgressBar($bar);
+        $console = new Progress($bar);
         $console->onScanStart();
         $console->onFileClose();
         $console->onScanComplete();
