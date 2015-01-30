@@ -2,8 +2,6 @@
 
 namespace Psecio\Parse\Subscriber\Console;
 
-use Psecio\Parse\Subscriber\BaseSubscriber;
-use Psecio\Parse\Subscriber\OutputTrait;
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\ErrorEvent;
@@ -11,10 +9,8 @@ use Psecio\Parse\Event\ErrorEvent;
 /**
  * Display descriptive lines to visualize scan progression
  */
-class Lines extends BaseSubscriber
+class Lines extends Header
 {
-    use OutputTrait;
-
     /**
      * Write path on file open
      *

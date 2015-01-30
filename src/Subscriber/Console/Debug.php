@@ -17,11 +17,12 @@ class Debug extends Lines
     /**
      * Save timestamp at scan start
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onScanStart()
+    public function onScanStart(MessageEvent $event)
     {
-        parent::onScanStart();
+        parent::onScanStart($event);
         $this->write("<comment>[DEBUG] Starting scan</comment>\n");
         $this->startTime = microtime(true);
     }

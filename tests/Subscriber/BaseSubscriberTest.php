@@ -17,7 +17,7 @@ class BaseSubscriberTest extends \PHPUnit_Framework_TestCase
     public function testEmptyMethods()
     {
         $subscriber = m::mock('\Psecio\Parse\Subscriber\BaseSubscriber[]');
-        $this->assertNull($subscriber->onScanStart());
+        $this->assertNull($subscriber->onScanStart(m::mock('\Psecio\Parse\Event\MessageEvent')));
         $this->assertNull($subscriber->onScanComplete());
         $this->assertNull($subscriber->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent')));
         $this->assertNull($subscriber->onFileClose());

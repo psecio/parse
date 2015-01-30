@@ -4,28 +4,19 @@ namespace Psecio\Parse\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Psecio\Parse\RuleFactory;
-use Psecio\Parse\FileIterator;
-use Psecio\Parse\CallbackVisitor;
-use Psecio\Parse\Scanner;
-use Psecio\Parse\File;
 use Psecio\Parse\Conf\ConfFactory;
+use Psecio\Parse\Subscriber\SubscriberFactory;
 use Psecio\Parse\Subscriber\ExitCodeCatcher;
-use Psecio\Parse\Subscriber\Console\Dots;
-use Psecio\Parse\Subscriber\Console\Progress;
-use Psecio\Parse\Subscriber\Console\Lines;
-use Psecio\Parse\Subscriber\Console\Debug;
-use Psecio\Parse\Subscriber\Console\Report;
-use Psecio\Parse\Subscriber\Xml;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\MessageEvent;
-use RuntimeException;
-use SplFileInfo;
+use Psecio\Parse\RuleFactory;
+use Psecio\Parse\CallbackVisitor;
+use Psecio\Parse\Scanner;
+use Psecio\Parse\FileIterator;
 
 /**
  * The main command, scan paths for possible security issues
@@ -107,54 +98,23 @@ class ScanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $conf = (new ConfFactory)->createConf($input, $confFileName);
-
-        $rules = (new RuleFactory($conf->getRuleWhitelist(), $conf->getRuleBlacklist()))->createRuleCollection();
-
-        $files = new FileIterator($conf->getPaths(), $conf->getIgnorePaths(), $conf->getExtensions());
-
         $dispatcher = new EventDispatcher;
+
+        (new SubscriberFactory($conf->getFormat(), $output))->addSubscribersTo($dispatcher);
 
         $exitCode = new ExitCodeCatcher;
         $dispatcher->addSubscriber($exitCode);
-
-        switch ($conf->getFormat()) {
-            case 'dots':
-            case 'progress':
-                $output->writeln("<info>Parse: A PHP Security Scanner</info>\n");
-                if ($output->isVeryVerbose()) {
-                    $dispatcher->addSubscriber(
-                        new Debug($output)
-                    );
-                } elseif ($output->isVerbose()) {
-                    $dispatcher->addSubscriber(
-                        new Lines($output)
-                    );
-                } elseif ('progress' == $conf->getFormat() && $output->isDecorated()) {
-                    $dispatcher->addSubscriber(
-                        new Progress(new ProgressBar($output, count($files)))
-                    );
-                } else {
-                    $dispatcher->addSubscriber(
-                        new Dots($output)
-                    );
-                }
-                $dispatcher->addSubscriber(new Report($output));
-                break;
-            case 'xml':
-                $dispatcher->addSubscriber(new Xml($output));
-                break;
-            default:
-                throw new RuntimeException("Unknown output format '{$conf->getFormat()}'");
-        }
 
         if ($confFileName) {
             $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Reading configurations from $confFileName"));
         }
 
+        $rules = (new RuleFactory($conf->getRuleWhitelist(), $conf->getRuleBlacklist()))->createRuleCollection();
+
         $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Using ruleset: $rules"));
 
         $scanner = new Scanner($dispatcher, new CallbackVisitor($rules));
-        $scanner->scan($files);
+        $scanner->scan(new FileIterator($conf->getPaths(), $conf->getIgnorePaths(), $conf->getExtensions()));
 
         return $exitCode->getExitCode();
     }

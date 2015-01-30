@@ -16,7 +16,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
                 ->mock()
         );
 
-        $report->onScanStart();
+        $report->onScanStart(m::mock('\Psecio\Parse\Event\MessageEvent'));
         $report->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
         $report->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));
         $report->onScanComplete();
@@ -49,7 +49,7 @@ For more information execute 'psecio-parse rules rulename'
                 ->mock()
         );
 
-        $report->onScanStart();
+        $report->onScanStart(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
         $errorEvent = m::mock('\Psecio\Parse\Event\ErrorEvent');
         $errorEvent->shouldReceive('getMessage')->once()->andReturn('error description');

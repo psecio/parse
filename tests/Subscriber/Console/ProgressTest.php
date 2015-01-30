@@ -17,8 +17,13 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $bar->shouldReceive('advance')->ordered()->once();
         $bar->shouldReceive('finish')->ordered()->once();
 
-        $console = new Progress($bar);
-        $console->onScanStart();
+        $output = m::mock('\Symfony\Component\Console\Output\OutputInterface');
+        $output->shouldReceive('writeln')->once()->with("/Parse/");
+
+        $console = new Progress($output, $bar);
+        $console->onScanStart(
+            m::mock('\Psecio\Parse\Event\MessageEvent')->shouldReceive('getMessage')->mock()
+        );
         $console->onFileClose();
         $console->onScanComplete();
     }

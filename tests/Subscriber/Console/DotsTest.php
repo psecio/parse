@@ -11,6 +11,7 @@ class DotsTest extends \PHPUnit_Framework_TestCase
         $output = m::mock('\Symfony\Component\Console\Output\OutputInterface');
 
         // The order of the calls to write should match the order of the events fired on $console
+        $output->shouldReceive('writeln')->once()->with("/Parse/");
         $output->shouldReceive('write')->ordered()->once()->with(".");
         $output->shouldReceive('write')->ordered()->once()->with("<error>E</error>");
         $output->shouldReceive('write')->ordered()->once()->with("\n");
@@ -19,7 +20,7 @@ class DotsTest extends \PHPUnit_Framework_TestCase
         $console = new Dots($output);
         $console->setLineLength(2);
 
-        $console->onScanStart();
+        $console->onScanStart(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
         // Writes a dot as a file is scanned
         $console->onFileOpen(m::mock('\Psecio\Parse\Event\FileEvent'));

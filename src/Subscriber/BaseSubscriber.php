@@ -37,9 +37,10 @@ abstract class BaseSubscriber implements EventSubscriberInterface, Events
     /**
      * Empty on scan start method
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onScanStart()
+    public function onScanStart(MessageEvent $event)
     {
     }
 

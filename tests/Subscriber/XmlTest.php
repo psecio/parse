@@ -33,7 +33,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
 
         $xml = new Xml($output);
 
-        $xml->onScanStart();
+        $xml->onScanStart(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
         $errorEvent = m::mock('\Psecio\Parse\Event\ErrorEvent');
         $errorEvent->shouldReceive('getMessage')->once()->andReturn('error description');

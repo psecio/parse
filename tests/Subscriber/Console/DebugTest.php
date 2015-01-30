@@ -11,6 +11,7 @@ class DebugTest extends \PHPUnit_Framework_TestCase
         $output = m::mock('\Symfony\Component\Console\Output\OutputInterface');
 
         // The order of the calls to write should match the order of the events fired on $console
+        $output->shouldReceive('writeln')->once()->with("/Parse/");
         $output->shouldReceive('write')->ordered()->once()->with("<comment>[DEBUG] Starting scan</comment>\n");
         $output->shouldReceive('write')->ordered()->once()->with("<comment>[DEBUG] debug message</comment>\n");
         $output->shouldReceive('write')->ordered()->once()->with("/\[DEBUG\] Scan completed in \d+\.\d+ seconds/");
@@ -22,7 +23,7 @@ class DebugTest extends \PHPUnit_Framework_TestCase
         $console = new Debug($output);
 
         // Should write debug start
-        $console->onScanStart();
+        $console->onScanStart(m::mock('\Psecio\Parse\Event\MessageEvent'));
 
         // Writes debug message
         $console->onDebug($messageEvent);
