@@ -14,10 +14,10 @@ use PhpParser\Node;
  */
 class RunkitImport implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        return !$this->isFunction($node, 'runkit_import');
+        return !$this->isFunctionCall($node, 'runkit_import');
     }
 }

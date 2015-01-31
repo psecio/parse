@@ -14,7 +14,7 @@ use PhpParser\Node;
  */
 class HardcodedSensitiveValues implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsExpressionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsExpressionTrait, Helper\IsFunctionCallTrait;
 
     private $sensitiveNames = [
         'username', 'user_name', 'password', 'user', 'pass', 'pwd', 'pswd',
@@ -43,9 +43,9 @@ class HardcodedSensitiveValues implements RuleInterface
             return [$node->name, $node->value];
         }
 
-        if ($this->isFunction($node, 'define')) {
-            $name = $node->args[0]->value->value;
-            $value = $node->args[1]->value;
+        if ($this->isFunctionCall($node, 'define')) {
+            $name = $this->getCalledFunctionArgument($node, 0)->value->value;
+            $value = $this->getCalledFunctionArgument($node, 1)->value;
 
             return [$name, $value];
         }

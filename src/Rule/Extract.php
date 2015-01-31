@@ -17,23 +17,24 @@ use PhpParser\Node;
  */
 class Extract implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node, 'extract') === true) {
+        if ($this->isFunctionCall($node, 'extract')) {
             // Check to be sure it has two arguments
-            if (count($node->args) < 2) {
+            if ($this->countCalledFunctionArguments($node) < 2) {
                 return false;
             }
 
-            $name = (!isset($node->args[1]->value->name->parts[0]))
-                ? $node->args[1]->value->name : $node->args[1]->value->name->parts[0];
+            $arg = $this->getCalledFunctionArgument($node, 1);
+
+            $name = (isset($arg->value->name->parts[0]))
+                ? $arg->value->name->parts[0]
+                : $arg->value->name;
 
             // So we have two parameters...see if #2 is not equal to EXTR_OVERWRITE
-            if ($name === 'EXTR_OVERWRITE') {
-                return false;
-            }
+            return $name !== 'EXTR_OVERWRITE';
         }
         return true;
     }

@@ -10,24 +10,25 @@ use PhpParser\Node\Scalar\String;
 use LogicException;
 
 /**
- * Helper to evaluate if node is a function
+ * Helper to check if node is a function call
  */
-trait IsFunctionTrait
+trait IsFunctionCallTrait
 {
     /**
-     * Evaluate if $node is a function instance
+     * Check if $node is a function call
      *
      * Check for name too if provided
      *
-     * @param  Node   $node
-     * @param  string $name Function name
+     * @param  Node $node
+     * @param  string|string[] $names One or more function names to search for
      * @return boolean
      */
-    protected function isFunction(Node $node, $name = '')
+    protected function isFunctionCall(Node $node, $names = '')
     {
         if ($node instanceof FuncCall) {
-            if ($name) {
-                return $this->getCalledFunctionName($node) === $name;
+            if ($names) {
+                $names = array_map('strtolower', (array)$names);
+                return in_array(strtolower($this->getCalledFunctionName($node)), $names, true);
             }
             return true;
         }
@@ -69,5 +70,23 @@ trait IsFunctionTrait
             return $node->args[$index];
         }
         return new Arg(new String(''));
+    }
+
+    /**
+     * Count the arguments of called function
+     *
+     * @param  Node $node
+     * @return integer
+     * @throws LogicException If node is not an instance of FuncCall
+     */
+    protected function countCalledFunctionArguments(Node $node)
+    {
+        if (!$node instanceof FuncCall) {
+            throw new LogicException('Node must be an instance of FuncCall, found: ' . get_class($node));
+        }
+        if (is_array($node->args)) {
+            return count($node->args);
+        }
+        return 0;
     }
 }

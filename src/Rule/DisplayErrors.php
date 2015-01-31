@@ -30,7 +30,7 @@ use PhpParser\Node;
  */
 class DisplayErrors implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait, Helper\IsBoolLiteralTrait;
 
     /**
      * @var array List of allowed display_errors settings
@@ -39,7 +39,7 @@ class DisplayErrors implements RuleInterface
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node, 'ini_set') && $this->readArgument($node, 0) === 'display_errors') {
+        if ($this->isFunctionCall($node, 'ini_set') && $this->readArgument($node, 0) === 'display_errors') {
             return in_array($this->readArgument($node, 1), $this->allowed, true);
         }
         return true;

@@ -7,11 +7,12 @@ class SystemFunctionsTest extends RuleTestCase
     public function parseSampleProvider()
     {
         return [
-            ['exec();', false],
-            ['passthru();', false],
-            ['system();', false],
-            ['$x = `ls -al`;', false],
-            ['another_function();', true],
+            ['EXEC();',         false],
+            ['exec();',         false],
+            ['passthru();',     false],
+            ['system();',       false],
+            ['$x = `ls -al`;',  false],
+            ['another_func();', true],
         ];
     }
 
