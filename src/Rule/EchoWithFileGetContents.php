@@ -4,6 +4,8 @@ namespace Psecio\Parse\Rule;
 
 use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
+use PhpParser\Node\Stmt\Echo_;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 
 /**
  * Using 'echo' with results of 'file_get_contents' could lead to injection issues
@@ -14,21 +16,18 @@ use PhpParser\Node;
  */
 class EchoWithFileGetContents implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        if ($node instanceof \PhpParser\Node\Stmt\Echo_) {
-            if (isset($node->exprs[0]) && $node->exprs[0] instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {
+        if ($node instanceof Echo_) {
+            if (isset($node->exprs[0]) && $node->exprs[0] instanceof Concat) {
                 // Check the right side
-                $right = $node->exprs[0]->right;
-                if ($right instanceof \PhpParser\Node\Expr\FuncCall && $right->name == 'file_get_contents') {
+                if ($this->isFunctionCall($node->exprs[0]->right, 'file_get_contents')) {
                     return false;
                 }
-
                 // Check the left side
-                $left = $node->exprs[0]->left;
-                if ($left instanceof \PhpParser\Node\Expr\FuncCall && $left->name == 'file_get_contents') {
+                if ($this->isFunctionCall($node->exprs[0]->left, 'file_get_contents')) {
                     return false;
                 }
             }

@@ -14,10 +14,10 @@ use PhpParser\Node;
  */
 class MysqlRealEscapeString implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        return !($node instanceof \PhpParser\Node\Expr\FuncCall && $node->name == 'mysql_real_escape_string');
+        return !$this->isFunctionCall($node, 'mysql_real_escape_string');
     }
 }

@@ -16,8 +16,6 @@ class SystemFunctions implements RuleInterface
 {
     use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait, Helper\IsExpressionTrait;
 
-    private $functions = ['exec', 'passthru', 'system'];
-
     public function isValid(Node $node)
     {
         if ($this->isFunctionCall($node, ['exec', 'passthru', 'system'])) {
