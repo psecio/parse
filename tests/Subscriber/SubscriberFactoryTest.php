@@ -74,7 +74,6 @@ class SubscriberFactoryTest extends \PHPUnit_Framework_TestCase
                 ->shouldReceive('isDecorated')->andReturn(true)
                 ->mock()
         );
-
         $factory->addSubscribersTo(
             m::mock('Symfony\Component\EventDispatcher\EventDispatcherInterface')
                 ->shouldReceive('addSubscriber')
