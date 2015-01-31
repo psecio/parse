@@ -75,15 +75,15 @@ class JsonConf implements Configuration
     /**
      * Read configuration options
      *
-     * @param  string $option  Name of config to read
-     * @param  mixed  $default Returned if otion is not set
+     * @param  string $property Name of property to read
+     * @param  mixed  $default  Returned if otion is not set
      * @return mixed
      */
-    private function read($property, $option)
+    private function read($property, $default)
     {
         if (property_exists($this->data, $property)) {
             return $this->data->$property;
         }
-        return $option;
+        return $default;
     }
 }

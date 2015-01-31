@@ -15,8 +15,6 @@ class Header extends BaseSubscriber
 
     /**
      * Print header
-     *
-     * @return void
      */
     public function __construct(OutputInterface $output)
     {
