@@ -7,6 +7,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Scalar\String;
+use LogicException;
 
 /**
  * Helper to evaluate if node is a function
@@ -36,11 +37,15 @@ trait IsFunctionTrait
     /**
      * Get name of called function
      *
-     * @param  FuncCall $node
-     * @return string   Empty string if name could not be parsed
+     * @param  Node   $node
+     * @return string Empty string if name could not be parsed
+     * @throws LogicException If node is not an instance of FuncCall
      */
-    protected function getCalledFunctionName(FuncCall $node)
+    protected function getCalledFunctionName(Node $node)
     {
+        if (!$node instanceof FuncCall) {
+            throw new LogicException('Node must be an instance of FuncCall, found: ' . get_class($node));
+        }
         if ($node->name instanceof Name) {
             return (string)$node->name;
         }
@@ -50,12 +55,16 @@ trait IsFunctionTrait
     /**
      * Get argument of called function
      *
-     * @param  FuncCall $node
-     * @param  integer  $index Index of argument to fetch
-     * @return Arg      If argument is not found an empty string is returned
+     * @param  Node    $node
+     * @param  integer $index Index of argument to fetch
+     * @return Arg     If argument is not found an empty string is returned
+     * @throws LogicException If node is not an instance of FuncCall
      */
-    protected function getCalledFunctionArgument(FuncCall $node, $index)
+    protected function getCalledFunctionArgument(Node $node, $index)
     {
+        if (!$node instanceof FuncCall) {
+            throw new LogicException('Node must be an instance of FuncCall, found: ' . get_class($node));
+        }
         if (is_array($node->args) && array_key_exists($index, $node->args)) {
             return $node->args[$index];
         }

@@ -4,7 +4,6 @@ namespace Psecio\Parse\Rule;
 
 use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
-use PhpParser\Node\Expr\FuncCall;
 
 /**
  * The "display_errors" setting should not be enabled manually
@@ -46,7 +45,7 @@ class DisplayErrors implements RuleInterface
         return true;
     }
 
-    private function readArgument(FuncCall $node, $index)
+    private function readArgument(Node $node, $index)
     {
         $arg = $this->getCalledFunctionArgument($node, $index);
         if ($this->isBoolLiteral($arg->value)) {
