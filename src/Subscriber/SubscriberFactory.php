@@ -73,6 +73,31 @@ class SubscriberFactory
     ];
 
     /**
+     * @var array Maps subscribers to format identifiers
+     */
+    private $subscriberMap = [
+        self::FORMAT_PROGRESS => [
+            '\Psecio\Parse\Subscriber\Console\Progress',
+            '\Psecio\Parse\Subscriber\Console\Report'
+        ],
+        self::FORMAT_DOTS => [
+            '\Psecio\Parse\Subscriber\Console\Dots',
+            '\Psecio\Parse\Subscriber\Console\Report'
+        ],
+        self::FORMAT_LINES => [
+            '\Psecio\Parse\Subscriber\Console\Lines',
+            '\Psecio\Parse\Subscriber\Console\Report'
+        ],
+        self::FORMAT_DEBUG => [
+            '\Psecio\Parse\Subscriber\Console\Debug',
+            '\Psecio\Parse\Subscriber\Console\Report'
+        ],
+        self::FORMAT_XML => [
+            '\Psecio\Parse\Subscriber\Xml'
+        ]
+    ];
+
+    /**
      * @var string Format identifier
      */
     private $format;
@@ -127,26 +152,8 @@ class SubscriberFactory
      */
     public function addSubscribersTo(EventDispatcherInterface $dispatcher)
     {
-        switch ($this->getFormat()) {
-            case self::FORMAT_PROGRESS:
-                $dispatcher->addSubscriber(new Console\Progress($this->output));
-                $dispatcher->addSubscriber(new Console\Report($this->output));
-                return;
-            case self::FORMAT_DOTS:
-                $dispatcher->addSubscriber(new Console\Dots($this->output));
-                $dispatcher->addSubscriber(new Console\Report($this->output));
-                return;
-            case self::FORMAT_LINES:
-                $dispatcher->addSubscriber(new Console\Lines($this->output));
-                $dispatcher->addSubscriber(new Console\Report($this->output));
-                return;
-            case self::FORMAT_DEBUG:
-                $dispatcher->addSubscriber(new Console\Debug($this->output));
-                $dispatcher->addSubscriber(new Console\Report($this->output));
-                return;
-            case self::FORMAT_XML:
-                $dispatcher->addSubscriber(new Xml($this->output));
-                return;
+        foreach ($this->subscriberMap[$this->getFormat()] as $classname) {
+            $dispatcher->addSubscriber(new $classname($this->output));
         }
     }
 }
