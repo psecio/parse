@@ -71,11 +71,12 @@ You can also get a listing of the current checks being done with the `rules` com
 
     psecio-parse rules
 
-### Using a configuraion file
+### Using a configuration file
 
 Specify the name of your configuration file with the `--configuration` option. If no
-filename is given the default `.psecio-parse.json` is used. To ignore the default configuration
-file use the `--no-configuration` option.
+filename is given the default `.psecio-parse.json` is used.
+
+To ignore the default configuration file use the `--no-configuration` option.
 
 #### Configuration file format
 ```json
