@@ -6,7 +6,7 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\Print_;
+use PhpParser\Node\Expr\Print_;
 
 /**
  * Avoid the use of an output method (echo, print, etc) directly with a variable
