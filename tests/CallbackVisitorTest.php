@@ -2,40 +2,43 @@
 
 namespace Psecio\Parse;
 
+use Psecio\Parse\Fakes\FakeRule;
+use Psecio\Parse\Fakes\FakeNode;
+use Psecio\Parse\Fakes\FakeDocComment;
+use Psecio\Parse\Fakes\FakeDocCommentFactory;
 use Mockery as m;
 use Akamon\MockeryCallableMock\MockeryCallableMock;
+use PhpParser\Node;
 
 class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
 {
     private $docCommentFactory;
+    private $file;
 
     public function setUp()
     {
-        $this->docCommentFactory = m::mock('\Psecio\Parse\DocComment\DocCommentFactoryInterface');
+        $this->docCommentFactory = new FakeDocCommentFactory();
+        $this->file = m::mock('\Psecio\Parse\File');
     }
+    
     public function testCallback()
     {
-        $node = $this->getMockNode()
-            ->mock();
+        $node = new FakeNode();
+        
+        $falseCheck = new FakeRule('failed');
 
-        $falseCheck = $this->getMockRule($node, false)
-            ->once()
-            ->mock();
-
-        $trueCheck = $this->getMockRule($node, true)
-            ->once()
-            ->mock();
+        $trueCheck = $this->getMockRule($node, true)->mock();
+//        $trueCheck = new FakeRule('passed', [$node]);
 
         $ruleCollection = $this->getMockCollection([$falseCheck, $trueCheck]);
 
         $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, false);
 
-        $file = m::mock('\Psecio\Parse\File');
-        $visitor->setFile($file);
+        $visitor->setFile($this->file);
 
         // Callback is called ONCE with failing check
         $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->once();
+        $callback->shouldBeCalled()->with($falseCheck, $node, $this->file)->once();
         $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node);
@@ -44,18 +47,18 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     public function testIgnoreAnnotation()
     {
         $ruleName = 'dontIgnoreRule';
-        $node = $this->getMockNodeWithAnnotation('disable', $ruleName);
-        $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
-        $ruleCollection = $this->getMockCollection([$falseCheck]);
-        $file = m::mock('\Psecio\Parse\File');
+        $node = new FakeNode('disable');
+        $rule = new FakeRule($ruleName, []);
+        $ruleCollection = $this->getMockCollection([$rule]);
+        $this->addDoc($node, [$ruleName], []);
 
         // The false means to ignore annotations
         $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, false);
-        $visitor->setFile($file);
+        $visitor->setFile($this->file);
 
         // Callback is called once with failing check
         $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->once();
+        $callback->shouldBeCalled()->with($rule, $node, $this->file)->once();
         $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node);
@@ -64,45 +67,98 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
     public function testAnnotation()
     {
         $ruleName = 'ignoreRule';
-        $node = $this->getMockNodeWithAnnotation('disable', $ruleName);
-        $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
-        $ruleCollection = $this->getMockCollection([$falseCheck]);
-        $file = m::mock('\Psecio\Parse\File');
+        $node = new FakeNode('disable');
+        $rule = new FakeRule($ruleName, []);
+        $ruleCollection = $this->getMockCollection([$rule]);
+        $this->addDoc($node, [$ruleName], []);
 
         // The true means to use annotations
         $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
-        $visitor->setFile($file);
+        $visitor->setFile($this->file);
 
         // Callback is called once with failing check
         $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->never();
+        $callback->shouldBeCalled()->with($rule, $node, $this->file)->never();
         $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node);
+    }
+
+    public function testAnnotationTree()
+    {
+        $ruleName = 'rule1';
+
+        // Structure is:
+        //   node1 - disables rule
+        //     node2 - re-enables rule (flagged invalid)
+        //     node3 - doesn't set anything (disabled)
+        //   node4 - doesn't set anything (enabled) (flagged invalid)
+        // All nodes fail rule
+        $node1 = new FakeNode('disable');
+        $node2 = new FakeNode('enable');
+        $node3 = new FakeNode();
+        $node4 = new FakeNode();
+        
+        $rule = new FakeRule($ruleName, []);
+        $ruleCollection = $this->getMockCollection([$rule]);
+        $this->addDoc($node1, [$ruleName], []);
+        $this->addDoc($node2, [], [$ruleName]);
+
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
+        $visitor->setFile($this->file);
+
+        $callList = [];
+        $callback = function (RuleInterface $r, Node $n, File $f) use (&$callList) {
+            $callList[] = [$r, $n, $f];
+        };
+        
+        $expectedCallList = [
+            [$rule, $node2, $this->file],
+            [$rule, $node4, $this->file],
+        ];
+        
+        $visitor->onNodeFailure($callback);
+
+        $visitor->enterNode($node1);
+        $visitor->enterNode($node2);
+        $visitor->leaveNode($node2);
+        $visitor->enterNode($node3);
+        $visitor->leaveNode($node3);
+        $visitor->leaveNode($node1);
+        
+        $visitor->enterNode($node4);
+        $visitor->leaveNode($node4);
+        
+        $this->assertEquals($expectedCallList, $callList);
     }
 
     public function testEmptyDocBlock()
     {
         $ruleName = 'aRule';
 
-        $node = $this->getMockNode()->mock();
-        $falseCheck = $this->getMockRule($node, false, $ruleName)->mock();
+        $node = new FakeNode();
+        $falseCheck = new FakeRule($ruleName, []);
         $ruleCollection = $this->getMockCollection([$falseCheck]);
-        $file = m::mock('\Psecio\Parse\File');
 
         // The true means to use annotations
         $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
-        $visitor->setFile($file);
+        $visitor->setFile($this->file);
 
         // Callback is called once with failing check
         $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseCheck, $node, $file)->once();
+        $callback->shouldBeCalled()->with($falseCheck, $node, $this->file)->once();
         $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node);
     }
 
-    protected function getMockRule($node, $isValidReturns, $name = 'name')
+    private function addDoc($node, $disabled, $enabled)
+    {
+        $block = new FakeDocComment('', $disabled, $enabled);
+        $this->docCommentFactory->addDocComment($node->getDocComment(), $block);
+    }
+
+    private function getMockRule($node, $isValidReturns, $name = 'name')
     {
         $m = m::mock('\Psecio\Parse\RuleInterface')
              ->shouldReceive('getName')
@@ -115,16 +171,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         return $m;
     }
 
-    protected function getMockNodeWithAnnotation($annotation, $rule)
-    {
-        $node = $this->getMockNode('@psecio\parse\\' . $annotation . ' ' . $rule)
-            ->shouldReceive('setAttribute')
-            ->mock();
-
-        return $node;
-    }
-
-    protected function getMockCollection($ruleList)
+    private function getMockCollection($ruleList)
     {
         $ruleCollection = m::mock('\Psecio\Parse\RuleCollection')
             ->shouldReceive('getIterator')
@@ -132,15 +179,5 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
             ->mock();
 
         return $ruleCollection;
-    }
-
-    protected function getMockNode($docBlock = '')
-    {
-        $node = m::mock('PhpParser\Node')
-            ->shouldReceive('getDocComment')
-            ->andReturn($docBlock)
-            ->zeroOrMoreTimes()
-            ;
-        return $node;
     }
 }

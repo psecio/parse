@@ -41,6 +41,11 @@ class CallbackVisitor extends NodeVisitorAbstract
     private $useAnnotations;
 
     /**
+     * @var DocCommentFactoryInterface
+     */
+    private $docCommentFactory;
+
+    /**
      * Inject rule collection
      *
      * @param RuleCollection $ruleCollection
@@ -58,6 +63,8 @@ class CallbackVisitor extends NodeVisitorAbstract
         }
 
         $this->useAnnotations = $useAnnotations;
+
+        $this->docCommentFactory = $docCommentFactory;
     }
 
     /**
@@ -103,7 +110,7 @@ class CallbackVisitor extends NodeVisitorAbstract
         if (!$this->enabledRules[strtolower($rule->getName())]) {
             return;
         }
-        
+
         if (!$rule->isValid($node)) {
             call_user_func($this->callback, $rule, $node, $this->file);
         }
@@ -132,7 +139,7 @@ class CallbackVisitor extends NodeVisitorAbstract
 
     private function evaluateDocBlock($docBlock, $rules)
     {
-        $comment = new DocComment\DocComment($docBlock);
+        $comment = $this->docCommentFactory->createDocComment($docBlock);
 
         $this->checkTags($comment, $rules, self::ENABLE_TAG, true);
         $this->checkTags($comment, $rules, self::DISABLE_TAG, false);
@@ -140,7 +147,7 @@ class CallbackVisitor extends NodeVisitorAbstract
         return $rules;
     }
 
-    private function checkTags(DocComment\DocComment $comment, &$rules, $tag, $value)
+    private function checkTags(DocComment\DocCommentInterface $comment, &$rules, $tag, $value)
     {
         $tags = $comment->getIMatchingTags($tag);
         foreach ($tags as $rule) {
