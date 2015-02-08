@@ -11,4 +11,4 @@ install:
 
 script:
   - bin/phpunit
-  - bin/psecio-parse scan
+  - bin/psecio-parse scan src tests bin/psecio-parse

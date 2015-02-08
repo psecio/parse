@@ -104,7 +104,7 @@ To ignore the default configuration file use the `--no-configuration` option.
 }
 ```
 
-See the configurations for scanning parse itself [here](.psecio-parse.json). See the
+See example configurations for scanning parse itself [here](.psecio-parse.json.dist). See the
 json schema used to validate configuration files [here](src/Conf/schema.json).
 
 
