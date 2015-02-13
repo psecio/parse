@@ -74,7 +74,7 @@ You can also get a listing of the current checks being done with the `rules` com
 ### Using a configuration file
 
 Specify the name of your configuration file with the `--configuration` option. If no
-filename is given the default `.psecio-parse.json` is used.
+filename is given the default `psecio-parse.json` is used.
 
 To ignore the default configuration file use the `--no-configuration` option.
 
@@ -104,7 +104,7 @@ To ignore the default configuration file use the `--no-configuration` option.
 }
 ```
 
-See example configurations for scanning parse itself [here](.psecio-parse.json.dist). See the
+See example configurations for scanning parse itself [here](psecio-parse.json.dist). See the
 json schema used to validate configuration files [here](src/Conf/schema.json).
 
 

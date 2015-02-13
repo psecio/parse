@@ -42,7 +42,7 @@ class ConfFactoryTest extends \PHPUnit_Framework_TestCase
         $cwd = getcwd();
         chdir(sys_get_temp_dir());
 
-        $filename = sys_get_temp_dir() . '/.psecio-parse.json';
+        $filename = sys_get_temp_dir() . '/psecio-parse.json';
         file_put_contents($filename, '{"extensions": ["foobar"]}');
 
         $confUsingDefaultFile = (new ConfFactory)->createConf(

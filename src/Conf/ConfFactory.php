@@ -43,7 +43,7 @@ class ConfFactory
         }
 
         if (!$input->getOption('no-configuration')) {
-            $confFileInfo = new SplFileInfo('.psecio-parse.json');
+            $confFileInfo = new SplFileInfo('psecio-parse.json');
             if ($confFileInfo->isReadable()) {
                 return $confFileInfo;
             }
