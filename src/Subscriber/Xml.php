@@ -6,11 +6,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use XMLWriter;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\ErrorEvent;
+use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Xml generating event subscriber
  */
-class Xml extends Subscriber
+class Xml extends BaseSubscriber
 {
     use OutputTrait;
 
@@ -22,9 +23,10 @@ class Xml extends Subscriber
     /**
      * Create document at scan start
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onScanStart()
+    public function onScanStart(MessageEvent $event)
     {
         $this->xmlWriter = new XMLWriter;
         $this->xmlWriter->openMemory();

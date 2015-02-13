@@ -9,6 +9,9 @@ interface Events
 {
     /**
      * A scan.start event is fired when the scan starts
+     *
+     * The event listener receives an \Psecio\Parse\Event\MessageEvent instance
+     * with the number of files to scan as message
      */
     const SCAN_START = 'scan.start';
 

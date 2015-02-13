@@ -6,9 +6,14 @@ php:
   - 5.5
   - 5.4
 
+matrix:
+  allow_failures:
+    - php: hhvm
+  fast_finish: true
+
 install:
   - composer install --dev --prefer-source
 
 script:
   - bin/phpunit
-  - bin/psecio-parse scan src tests
+  - bin/psecio-parse scan src tests bin/psecio-parse
