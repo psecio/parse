@@ -42,12 +42,12 @@ use PhpParser\Node;
  */
 class PregReplaceWithEvalModifier implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node, 'preg_replace')) {
-            if (preg_match("/e[a-zA-Z]*$/", $node->args[0]->value->value)) {
+        if ($this->isFunctionCall($node, 'preg_replace')) {
+            if (preg_match("/e[a-zA-Z]*$/", $this->getCalledFunctionArgument($node, 0)->value->value)) {
                 return false;
             }
         }

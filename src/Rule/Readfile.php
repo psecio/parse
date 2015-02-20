@@ -14,12 +14,10 @@ use PhpParser\Node;
  */
 class Readfile implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        return !$this->isFunction($node, 'readfile')
-            && !$this->isFunction($node, 'readlink')
-            && !$this->isFunction($node, 'readgzfile');
+        return !$this->isFunctionCall($node, ['readfile', 'readlink', 'readgzfile']);
     }
 }

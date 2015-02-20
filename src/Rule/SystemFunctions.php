@@ -14,17 +14,12 @@ use PhpParser\Node;
  */
 class SystemFunctions implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait, Helper\IsExpressionTrait;
-
-    private $functions = ['exec', 'passthru', 'system'];
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait, Helper\IsExpressionTrait;
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node)) {
-            $name = (is_object($node->name)) ? $node->name->parts[0] : $node->name;
-            if (in_array(strtolower($name), $this->functions)) {
-                return false;
-            }
+        if ($this->isFunctionCall($node, ['exec', 'passthru', 'system'])) {
+            return false;
         }
 
         return !$this->isExpression($node, 'ShellExec');

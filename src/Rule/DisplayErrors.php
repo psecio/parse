@@ -4,7 +4,6 @@ namespace Psecio\Parse\Rule;
 
 use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 
 /**
  * The "display_errors" setting should not be enabled manually
@@ -31,7 +30,7 @@ use PhpParser\Node\Arg;
  */
 class DisplayErrors implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait, Helper\IsBoolLiteralTrait;
 
     /**
      * @var array List of allowed display_errors settings
@@ -40,14 +39,15 @@ class DisplayErrors implements RuleInterface
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node, 'ini_set') && $this->readArg($node->args[0]) === 'display_errors') {
-            return in_array($this->readArg($node->args[1]), $this->allowed, true);
+        if ($this->isFunctionCall($node, 'ini_set') && $this->readArgument($node, 0) === 'display_errors') {
+            return in_array($this->readArgument($node, 1), $this->allowed, true);
         }
         return true;
     }
 
-    private function readArg(Arg $arg)
+    private function readArgument(Node $node, $index)
     {
+        $arg = $this->getCalledFunctionArgument($node, $index);
         if ($this->isBoolLiteral($arg->value)) {
             return (string)$arg->value->name;
         }
