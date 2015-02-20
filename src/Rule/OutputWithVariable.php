@@ -6,8 +6,7 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Stmt\Echo_;
-use PhpParser\Node\Stmt\Print_;
-use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Print_;
 
 /**
  * Avoid the use of an output method (echo, print, etc) directly with a variable
@@ -18,9 +17,7 @@ use PhpParser\Node\Expr\FuncCall;
  */
 class OutputWithVariable implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait;
-
-    private $outputFunctions = ['print_r', 'printf', 'vprintf', 'sprintf'];
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
@@ -32,8 +29,8 @@ class OutputWithVariable implements RuleInterface
         }
 
         // See if our other output functions use concat
-        if ($node instanceof FuncCall && in_array($node->name, $this->outputFunctions)) {
-            if (isset($node->args[0]) && $node->args[0]->value instanceof Concat) {
+        if ($this->isFunctionCall($node, ['print_r', 'printf', 'vprintf', 'sprintf'])) {
+            if ($this->getCalledFunctionArgument($node, 0)->value instanceof Concat) {
                 return false;
             }
         }

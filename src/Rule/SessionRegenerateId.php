@@ -14,23 +14,13 @@ use PhpParser\Node;
  */
 class SessionRegenerateId implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait, Helper\IsBoolLiteralTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait, Helper\IsBoolLiteralTrait;
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node, 'session_regenerate_id') === true) {
-            // If the argument isn't even set...
-            if (count($node->args) < 1) {
-                return false;
-            }
-
-            // If it's set but it's set to false
-            $arg = $node->args[0];
-            if (!$this->isBoolLiteral($arg->value, true)) {
-                return false;
-            }
+        if ($this->isFunctionCall($node, 'session_regenerate_id')) {
+            return $this->isBoolLiteral($this->getCalledFunctionArgument($node, 0)->value, true);
         }
-
         return true;
     }
 }

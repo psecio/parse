@@ -4,6 +4,7 @@ namespace Psecio\Parse\Rule;
 
 use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 
 /**
  * 'header()' calls should not use concatenation directly
@@ -14,12 +15,12 @@ use PhpParser\Node;
  */
 class SetHeaderWithInput implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        if ($this->isFunction($node, 'header') === true) {
-            if ($node->args[0]->value instanceof \PhpParser\Node\Expr\BinaryOp\Concat) {
+        if ($this->isFunctionCall($node, 'header')) {
+            if ($this->getCalledFunctionArgument($node, 0)->value instanceof Concat) {
                 return false;
             }
         }

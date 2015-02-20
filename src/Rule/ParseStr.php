@@ -14,10 +14,10 @@ use PhpParser\Node;
  */
 class ParseStr implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        return !$this->isFunction($node, 'mb_parse_str') && !$this->isFunction($node, 'parse_str');
+        return !$this->isFunctionCall($node, ['parse_str', 'mb_parse_str']);
     }
 }

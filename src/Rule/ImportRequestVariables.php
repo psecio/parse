@@ -14,10 +14,10 @@ use PhpParser\Node;
  */
 class ImportRequestVariables implements RuleInterface
 {
-    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionTrait;
+    use Helper\NameTrait, Helper\DocblockDescriptionTrait, Helper\IsFunctionCallTrait;
 
     public function isValid(Node $node)
     {
-        return !$this->isFunction($node, 'import_request_variables');
+        return !$this->isFunctionCall($node, 'import_request_variables');
     }
 }

@@ -10,7 +10,7 @@ use Psecio\Parse\Event\MessageEvent;
 class ConsoleDebug extends ConsoleLines
 {
     /**
-     * @var integer Unix timestamp at scan start
+     * @var double Unix timestamp at scan start
      */
     private $startTime;
 
