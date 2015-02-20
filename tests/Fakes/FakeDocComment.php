@@ -8,7 +8,7 @@ class FakeDocComment implements DocCommentInterface
 {
     private $disabledRules = [];
     private $enabledRules = [];
-    
+
     /**
      * Parse comment
      *
@@ -74,11 +74,11 @@ class FakeDocComment implements DocCommentInterface
         if (strtolower($tagName) == 'psecio\parse\disable') {
             return $this->disabledRules;
         }
-        
+
         if (strtolower($tagName) == 'psecio\parse\enable') {
             return $this->enabledRules;
         }
-        
+
         return [];
     }
 

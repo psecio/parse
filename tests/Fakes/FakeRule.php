@@ -15,7 +15,7 @@ class FakeRule implements RuleInterface
         $this->name = $name;
         $this->validNodes = $validNodes;
     }
-    
+
     public function getName()
     {
         return $this->name;
@@ -41,4 +41,3 @@ class FakeRule implements RuleInterface
         $this->validNodes[] = $node;
     }
 }
-

@@ -20,15 +20,15 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $this->docCommentFactory = new FakeDocCommentFactory();
         $this->file = m::mock('\Psecio\Parse\File');
     }
-    
+
     public function testCallback()
     {
         $node = new FakeNode();
-        
+
         $falseCheck = new FakeRule('failed');
 
         $trueCheck = $this->getMockRule($node, true)->mock();
-//        $trueCheck = new FakeRule('passed', [$node]);
+        //$trueCheck = new FakeRule('passed', [$node]);
 
         $ruleCollection = $this->getMockCollection([$falseCheck, $trueCheck]);
 
@@ -98,7 +98,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $node2 = new FakeNode('enable');
         $node3 = new FakeNode();
         $node4 = new FakeNode();
-        
+
         $rule = new FakeRule($ruleName, []);
         $ruleCollection = $this->getMockCollection([$rule]);
         $this->addDoc($node1, [$ruleName], []);
@@ -111,12 +111,12 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $callback = function (RuleInterface $r, Node $n, File $f) use (&$callList) {
             $callList[] = [$r, $n, $f];
         };
-        
+
         $expectedCallList = [
             [$rule, $node2, $this->file],
             [$rule, $node4, $this->file],
         ];
-        
+
         $visitor->onNodeFailure($callback);
 
         $visitor->enterNode($node1);
@@ -125,10 +125,10 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->enterNode($node3);
         $visitor->leaveNode($node3);
         $visitor->leaveNode($node1);
-        
+
         $visitor->enterNode($node4);
         $visitor->leaveNode($node4);
-        
+
         $this->assertEquals($expectedCallList, $callList);
     }
 

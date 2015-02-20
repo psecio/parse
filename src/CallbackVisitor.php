@@ -56,14 +56,13 @@ class CallbackVisitor extends NodeVisitorAbstract
                                 $useAnnotations)
     {
         $this->ruleCollection = $ruleCollection;
-
         $this->enabledRules = [];
+
         foreach ($this->ruleCollection as $rule) {
             $this->enabledRules[strtolower($rule->getName())] = true;
         }
 
         $this->useAnnotations = $useAnnotations;
-
         $this->docCommentFactory = $docCommentFactory;
     }
 
@@ -114,7 +113,7 @@ class CallbackVisitor extends NodeVisitorAbstract
         if (!$rule->isValid($node)) {
             call_user_func($this->callback, $rule, $node, $this->file);
         }
-    }        
+    }
 
     public function leaveNode(Node $node)
     {

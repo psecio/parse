@@ -9,11 +9,26 @@ class FakeNode implements Node
     protected $attributes = [];
     protected $docComment = null;
 
+    /**
+     * For the fake. Create a new one.
+     *
+     * @param string $docComment the comment for this node
+     */
     public function __construct($docComment = '')
     {
         $this->setDocComment($docComment);
     }
-    
+
+    /**
+     * For the fake, set the doc comment of this node
+     *
+     * @param string $docComment  The comment to use
+     */
+    public function setDocComment($docComment)
+    {
+        $this->docComment = $docComment;
+    }
+
     /**
      * Gets the type of the node.
      *
@@ -63,11 +78,6 @@ class FakeNode implements Node
     public function getDocComment()
     {
         return $this->docComment;
-    }
-
-    public function setDocComment($docComment)
-    {
-        $this->docComment = $docComment;
     }
 
     /**
@@ -121,4 +131,3 @@ class FakeNode implements Node
         return $this->attributes;
     }
 }
-
