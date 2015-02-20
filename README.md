@@ -53,7 +53,7 @@ For more detailed information see the `help` and `list` commands.
 
 Currently console and xml output formats are available. Set format with the `--format` option.
 
-    psecio-parse scan --format=xml /path/to/my/project 
+    psecio-parse scan --format=xml /path/to/my/project
     psecio-parse scan --format=dots /path/to/my/project
 
 The console formats supports setting the verbosity using the `-v` or `-vv` switch.
@@ -106,6 +106,9 @@ DocBlock applies to.
 Note that annotations cannot enable tests that have been omitted via the command line options. If
 a test is disabled at the command line, it is disabled for the entire scan, regardless of any
 annotations.
+
+Comments can be added after `<rule>`. It is recommended that comments be used to indicate why the
+rule has been disabled or enabled.
 
 To disable the use of annotations, use the `--disable-annotations` option.
 
