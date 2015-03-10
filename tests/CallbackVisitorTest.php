@@ -37,11 +37,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->setFile($this->file);
 
         // Callback is called ONCE with failing check
-        $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseCheck, $node, $this->file)->once();
-        $visitor->onNodeFailure($callback);
-
-        $visitor->enterNode($node);
+        $this->assertFailureCalled(1, $falseCheck, $node, $visitor);
     }
 
     public function testIgnoreAnnotation()
@@ -57,11 +53,7 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->setFile($this->file);
 
         // Callback is called once with failing check
-        $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($rule, $node, $this->file)->once();
-        $visitor->onNodeFailure($callback);
-
-        $visitor->enterNode($node);
+        $this->assertFailureCalled(1, $rule, $node, $visitor);
     }
 
     public function testAnnotation()
@@ -77,11 +69,9 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->setFile($this->file);
 
         // Callback is called once with failing check
-        $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($rule, $node, $this->file)->never();
-        $visitor->onNodeFailure($callback);
+        $this->assertFailureCalled(0, $rule, $node, $visitor);
+    }
 
-        $visitor->enterNode($node);
     }
 
     public function testAnnotationTree()
@@ -145,17 +135,22 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor->setFile($this->file);
 
         // Callback is called once with failing check
-        $callback = new MockeryCallableMock();
-        $callback->shouldBeCalled()->with($falseCheck, $node, $this->file)->once();
-        $visitor->onNodeFailure($callback);
-
-        $visitor->enterNode($node);
+        $this->assertFailureCalled(1, $falseCheck, $node, $visitor);
     }
 
     private function addDoc($node, $disabled, $enabled)
     {
         $block = new FakeDocComment('', $disabled, $enabled);
         $this->docCommentFactory->addDocComment($node->getDocComment(), $block);
+    }
+
+    private function assertFailureCalled($times, RuleInterface $rule,
+                                         Node $node, CallbackVisitor $visitor)
+    {
+        $callback = new MockeryCallableMock();
+        $callback->shouldBeCalled()->with($rule, $node, $this->file)->times($times);
+        $visitor->onNodeFailure($callback);
+        $visitor->enterNode($node);
     }
 
     private function getMockRule($node, $isValidReturns, $name = 'name')
