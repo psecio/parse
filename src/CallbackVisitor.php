@@ -149,9 +149,11 @@ class CallbackVisitor extends NodeVisitorAbstract
     private function checkTags(DocComment\DocCommentInterface $comment, &$rules, $tag, $value)
     {
         $tags = $comment->getIMatchingTags($tag);
+
         foreach ($tags as $rule) {
             // Get the first word from content. This allows you to add comments to rules.
-            $rules[strtolower(strtok($rule, ' '))] = $value;
+            $ruleName = trim(strtolower(strtok($rule, '//')));
+            $rules[$ruleName] = $value;
         }
     }
 }

@@ -107,8 +107,8 @@ Note that annotations cannot enable tests that have been omitted via the command
 a test is disabled at the command line, it is disabled for the entire scan, regardless of any
 annotations.
 
-Comments can be added after `<rule>`. It is recommended that comments be used to indicate why the
-rule has been disabled or enabled.
+Comments can be added after `<rule>` following a dobule-slash (`//`) comment separator. It is
+recommended that comments be used to indicate why the rule has been disabled or enabled.
 
 To disable the use of annotations, use the `--disable-annotations` option.
 

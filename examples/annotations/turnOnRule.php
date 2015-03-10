@@ -3,7 +3,7 @@
 /**
  * This class turns off BooleanIdentity.
  *
- * @psecio\parse\disable BooleanIdentity  This class has lots of brokeness here to be fixed later
+ * @psecio\parse\disable BooleanIdentity // This class has lots of brokeness here to be fixed later
  */
 class testTurnOnRule
 {

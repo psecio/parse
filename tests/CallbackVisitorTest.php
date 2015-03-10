@@ -72,6 +72,36 @@ class CallbackVisitorTest extends \PHPUnit_Framework_TestCase
         $this->assertFailureCalled(0, $rule, $node, $visitor);
     }
 
+    public function testAnnotationComment()
+    {
+        $ruleName = 'aRule';
+        $node = new FakeNode('disable');
+        $rule = new FakeRule($ruleName);
+        $ruleCollection = $this->getMockCollection([$rule]);
+        $block = new FakeDocComment('', [$ruleName . ' // ignore this'], []);
+        $this->docCommentFactory->addDocComment($node->getDocComment(), $block);
+
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
+        $visitor->setFile($this->file);
+
+        $this->assertFailureCalled(0, $rule, $node, $visitor);
+    }
+
+    public function testRuleWithSpaces()
+    {
+        // While having a rule with a space is not currently possible (it wouldn't
+        // ever match normally), this makes sure the parser is allowing spaces before
+        // the comment mark.
+        $ruleName = 'a rule';
+        $node = new FakeNode('disable');
+        $rule = new FakeRule($ruleName, []);
+        $ruleCollection = $this->getMockCollection([$rule]);
+        $this->addDoc($node, [$ruleName], []);
+
+        $visitor = new CallbackVisitor($ruleCollection, $this->docCommentFactory, true);
+        $visitor->setFile($this->file);
+
+        $this->assertFailureCalled(0, $rule, $node, $visitor);
     }
 
     public function testAnnotationTree()
