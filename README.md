@@ -35,7 +35,7 @@ Make sure you have `~/.composer/vendor/bin/` in your path.
 
 Usage
 -----
-> **NOTE:** In version **0.5** the executable was renamed **psecio-parse**. In earlier
+> **NOTE:** In version **0.6** the executable was renamed **psecio-parse**. In earlier
 > versions the tool was simply named **parse**.
 
 > **NOTE:** In version **0.4** and earlier the `--target` option was used to specify the
@@ -53,7 +53,7 @@ For more detailed information see the `help` and `list` commands.
 
 Currently console and xml output formats are available. Set format with the `--format` option.
 
-    psecio-parse scan --format=xml /path/to/my/project
+    psecio-parse scan --format=xml /path/to/my/project 
     psecio-parse scan --format=dots /path/to/my/project
 
 The console formats supports setting the verbosity using the `-v` or `-vv` switch.
