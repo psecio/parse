@@ -2,7 +2,7 @@
 
 namespace Psecio\Parse\Rule\Helper;
 
-use Eloquent\Blox\BloxParser;
+use Psecio\Parse\DocComment\DocComment;
 use ReflectionClass;
 
 /**
@@ -11,19 +11,19 @@ use ReflectionClass;
 trait DocblockDescriptionTrait
 {
     /**
-     * @var \Eloquent\Blox\Element\DocumentationBlock The parsed doc comment
+     * @var \Psecio\Parse\DocComment\DocComment The parsed doc comment
      */
     private $docblock;
 
     /**
      * Read and parse class level doc comment
      *
-     * @return \Eloquent\Blox\Element\DocumentationBlock
+     * @return \Psecio\Parse\DocComment\DocComment
      */
     private function getDocblock()
     {
         if (!isset($this->docblock)) {
-            $this->docblock = (new BloxParser)->parseBlockComment(
+            $this->docblock = new DocComment(
                 (new ReflectionClass($this))->getDocComment()
             );
         }
@@ -38,7 +38,7 @@ trait DocblockDescriptionTrait
      */
     public function getDescription()
     {
-        return $this->getDocblock()->summary();
+        return $this->getDocblock()->getSummary();
     }
 
     /**
@@ -48,6 +48,6 @@ trait DocblockDescriptionTrait
      */
     public function getLongDescription()
     {
-        return $this->getDocblock()->body();
+        return $this->getDocblock()->getBody();
     }
 }

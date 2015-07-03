@@ -23,6 +23,7 @@ use Psecio\Parse\RuleInterface;
 use Psecio\Parse\Scanner;
 use Psecio\Parse\CallbackVisitor;
 use Psecio\Parse\FileIterator;
+use Psecio\Parse\DocComment\DocCommentFactory;
 use RuntimeException;
 
 /**
@@ -45,38 +46,44 @@ class ScanCommand extends Command
             )
             ->addOption(
                 'format',
-                null,
+                'f',
                 InputOption::VALUE_REQUIRED,
                 'Output format (progress, dots or xml)',
                 'progress'
             )
             ->addOption(
                 'ignore-paths',
-                null,
+                'i',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of paths to ignore',
                 ''
             )
             ->addOption(
                 'extensions',
-                null,
+                'x',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of file extensions to parse',
                 'php,phps,phtml,php5'
             )
             ->addOption(
                 'whitelist-rules',
-                null,
+                'w',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of rules to use',
                 ''
             )
             ->addOption(
                 'blacklist-rules',
-                null,
+                'b',
                 InputOption::VALUE_REQUIRED,
                 'Comma-separated list of rules to skip',
                 ''
+            )
+            ->addOption(
+                'disable-annotations',
+                'd',
+                InputOption::VALUE_NONE,
+                'Skip all annotation-based rule toggles.'
             )
             ->setHelp(
                 "Scan paths for possible security issues:\n\n  <info>psecio-parse %command.name% /path/to/src</info>\n"
@@ -151,7 +158,16 @@ class ScanCommand extends Command
 
         $dispatcher->dispatch(Events::DEBUG, new MessageEvent("Using ruleset $ruleNames"));
 
-        $scanner = new Scanner($dispatcher, new CallbackVisitor($ruleCollection));
+        $docCommentFactory = new DocCommentFactory();
+
+        $scanner = new Scanner(
+            $dispatcher,
+            new CallbackVisitor(
+                $ruleCollection,
+                $docCommentFactory,
+                !$input->getOption('disable-annotations')
+            )
+        );
         $scanner->scan($fileIterator);
 
         return $exitCode->getExitCode();
