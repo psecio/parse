@@ -8,7 +8,7 @@ use Psecio\Parse\Event\ErrorEvent;
 /**
  * Capture the exit status code of a scan
  */
-class ExitCodeCatcher extends Subscriber
+class ExitCodeCatcher extends BaseSubscriber
 {
     /**
      * @var integer Suggested exit code

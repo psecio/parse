@@ -21,6 +21,16 @@ trait OutputTrait
      */
     public function __construct(OutputInterface $output)
     {
+        $this->setOutput($output);
+    }
+
+    /**
+     * Register output interface
+     *
+     * @param OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output)
+    {
         $this->output = $output;
     }
 
