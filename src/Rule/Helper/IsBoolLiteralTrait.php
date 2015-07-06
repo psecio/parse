@@ -20,7 +20,7 @@ trait IsBoolLiteralTrait
      */
     protected function isBoolLiteral(Node $node, $value = null)
     {
-        if ($node->name instanceof \PhpParser\Node\Name) {
+        if (isset($node->name) && $node->name instanceof \PhpParser\Node\Name) {
             $name = strtolower($node->name);
             if ($name === 'true' || $name === 'false') {
                 if ($value === true) {
