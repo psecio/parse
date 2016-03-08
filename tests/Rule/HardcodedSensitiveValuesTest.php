@@ -78,6 +78,8 @@ class HardcodedSensitiveValuesTest extends RuleTestCase
             ['$this->{$key} = "value";', true],
             ['const USER = "username";', false],
             ['define("user", "username");', false],
+            ['$this->events[$event] = array();', true],
+            ['define($const_name, $const_value);', true],
         ];
     }
 

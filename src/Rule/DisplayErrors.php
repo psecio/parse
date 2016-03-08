@@ -51,6 +51,6 @@ class DisplayErrors implements RuleInterface
         if ($this->isBoolLiteral($arg->value)) {
             return (string)$arg->value->name;
         }
-        return $arg->value->value;
+        return property_exists($arg->value, 'value') ? $arg->value->value : '';
     }
 }
