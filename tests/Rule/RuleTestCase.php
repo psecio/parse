@@ -2,9 +2,9 @@
 
 namespace Psecio\Parse\Rule;
 
-use Psecio\Parse\RuleInterface;
 use PhpParser\Parser;
-use PhpParser\Lexer\Emulative as Lexer;
+use Psecio\Parse\RuleInterface;
+use PhpParser\ParserFactory;
 use PhpParser\NodeTraverser;
 
 /**
@@ -22,7 +22,7 @@ abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->parser = new Parser(new Lexer);
+        $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Assert that running $test against $code results in $expected
      *
-     * Note taht $message does not replace the message from the assertion,
+     * Note that $message does not replace the message from the assertion,
      * only augments it.
      *
      * @param string  $code      The PHP code to parse and evaulate

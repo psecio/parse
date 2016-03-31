@@ -37,7 +37,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         $scanner = new Scanner(
             $dispatcher,
             m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure', 'setFile')->mock(),
-            m::mock('\PhpParser\Parser')->shouldReceive('parse')->andReturn([])->mock(),
+            m::mock('alias:Psecio\Parse\Parser')->shouldReceive('parse')->andReturn([])->mock(),
             m::mock('\PhpParser\NodeTraverser')->shouldReceive('traverse', 'addVisitor')->mock()
         );
 
@@ -60,7 +60,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
         $scanner = new Scanner(
             $dispatcher,
             m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure', 'setFile')->mock(),
-            m::mock('\PhpParser\Parser')->shouldReceive('parse')->andThrow(new \PhpParser\Error(''))->mock(),
+            m::mock('alias:Psecio\Parse\Parser')->shouldReceive('parse')->andThrow(new \PhpParser\Error(''))->mock(),
             m::mock('\PhpParser\NodeTraverser')->shouldReceive('addVisitor')->mock()
         );
 
