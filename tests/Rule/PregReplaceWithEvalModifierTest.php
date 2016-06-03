@@ -17,6 +17,7 @@ class PregReplaceWithEvalModifierTest extends RuleTestCase
             ['preg_replace("/test/E", "", "");', true],
             ['preg_replace("#/est#", "");', true],
             ['preg_match("/test/e", "");', true],
+            ['preg_replace("/^".preg_quote(PROTOCOL.SERVER_NAME, "/")."/", FULL_PATH, $src);', true],
         ];
     }
 

@@ -47,7 +47,9 @@ class PregReplaceWithEvalModifier implements RuleInterface
     public function isValid(Node $node)
     {
         if ($this->isFunctionCall($node, 'preg_replace')) {
-            if (preg_match("/e[a-zA-Z]*$/", $this->getCalledFunctionArgument($node, 0)->value->value)) {
+            $value = $this->getCalledFunctionArgument($node, 0)->value;
+
+            if (property_exists($value, 'value') && preg_match("/e[a-zA-Z]*$/", $value->value)) {
                 return false;
             }
         }

@@ -35,7 +35,7 @@ class HardcodedSensitiveValues implements RuleInterface
 
     protected function getNameAndValue($node)
     {
-        if ($this->isExpression($node, 'Assign')) {
+        if ($this->isExpression($node, 'Assign') && property_exists($node->var, 'name')) {
             return [$node->var->name, $node->expr];
         }
 
@@ -44,10 +44,14 @@ class HardcodedSensitiveValues implements RuleInterface
         }
 
         if ($this->isFunctionCall($node, 'define')) {
-            $name = $this->getCalledFunctionArgument($node, 0)->value->value;
-            $value = $this->getCalledFunctionArgument($node, 1)->value;
+            $constantNameArgument = $this->getCalledFunctionArgument($node, 0)->value;
 
-            return [$name, $value];
+            if (property_exists($constantNameArgument, 'value')) {
+                $name = $constantNameArgument->value;
+                $value = $this->getCalledFunctionArgument($node, 1)->value;
+
+                return [$name, $value];
+            }
         }
 
         return [false, false];

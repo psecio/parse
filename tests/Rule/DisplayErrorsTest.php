@@ -14,6 +14,7 @@ class DisplayErrorsTest extends RuleTestCase
             ["ini_set('display_errors', 'off');",    true],
             ["ini_set('display_errors', 'stderr');", true],
             ["ini_set('something-else', 1);",        true],
+            ['ini_set($setting_name, $new_value);',  true],
             ["ini_set('display_errors', 1);",        false],
             ["ini_set('display_errors', '1');",      false],
             ["ini_set('display_errors', true);",     false],
