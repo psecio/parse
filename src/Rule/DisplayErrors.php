@@ -2,6 +2,7 @@
 
 namespace Psecio\Parse\Rule;
 
+use PhpParser\Node\Expr;
 use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 

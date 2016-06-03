@@ -2,6 +2,8 @@
 
 namespace Psecio\Parse;
 
+use DirectoryIterator;
+
 /**
  * @covers \Psecio\Parse\FileIterator
  */

@@ -2,6 +2,10 @@
 
 namespace Psecio\Parse\Rule;
 
+use PhpParser\Node\Const_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\List_;
+use PhpParser\Node\Scalar\String_;
 use Psecio\Parse\RuleInterface;
 use PhpParser\Node;
 
@@ -30,7 +34,7 @@ class HardcodedSensitiveValues implements RuleInterface
 
         // Fail on straight $var = 'value', where $var is in $sensitiveNames
         return !($this->isSensitiveName($name) &&
-                 $value instanceof \PhpParser\Node\Scalar\String);
+                 $value instanceof String_);
     }
 
     protected function getNameAndValue($node)
@@ -39,7 +43,7 @@ class HardcodedSensitiveValues implements RuleInterface
             return [$node->var->name, $node->expr];
         }
 
-        if ($node instanceof \PhpParser\Node\Const_) {
+        if ($node instanceof Const_) {
             return [$node->name, $node->value];
         }
 

@@ -2,11 +2,10 @@
 
 namespace Psecio\Parse;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use PhpParser\Parser;
-use PhpParser\Lexer\Emulative as Lexer;
-use PhpParser\NodeTraverser;
 use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\ParserFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Iterates over and validates files, dispatching events
@@ -49,7 +48,7 @@ class Scanner implements Event\Events
     ) {
         $this->dispatcher = $dispatcher;
         $this->visitor = $visitor;
-        $this->parser = $parser ?: new Parser(new Lexer);
+        $this->parser = $parser ?: (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         $this->traverser = $traverser ?: new NodeTraverser;
         $this->visitor->onNodeFailure([$this, 'onNodeFailure']);
         $this->traverser->addVisitor($this->visitor);

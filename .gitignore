@@ -1,5 +1,3 @@
 /vendor
 /composer.lock
-/bin/coveralls
-/bin/phpunit
-/bin/test-reporter
+/bin/
