@@ -18,6 +18,10 @@ class ParseStr implements RuleInterface
 
     public function isValid(Node $node)
     {
-        return !$this->isFunctionCall($node, ['parse_str', 'mb_parse_str']);
+        if (!$this->isFunctionCall($node, ['parse_str', 'mb_parse_str'])) {
+            return true;
+        }
+
+        return $this->countCalledFunctionArguments($node) > 1;
     }
 }
