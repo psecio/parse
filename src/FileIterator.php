@@ -77,7 +77,12 @@ class FileIterator implements IteratorAggregate, Countable
      */
     public function addIgnorePath($path)
     {
-        $splFileInfo = new SplFileInfo($path);
+        $realPath = realpath($path);
+        if ($realPath == false) {
+            return false;
+        }
+        $splFileInfo = new SplFileInfo($realPath);
+
         if ($splFileInfo->isFile()) {
             $this->ignorePaths['files'][] = $splFileInfo->getRealPath();
         } elseif ($splFileInfo->isDir()) {
@@ -93,9 +98,15 @@ class FileIterator implements IteratorAggregate, Countable
      */
     public function addPath($path)
     {
-        is_dir($path)
-            ? $this->addDirectory($path)
-            : $this->addFile(new SplFileInfo($path));
+        if (is_dir($path)) {
+            $this->addDirectory($path);
+        } else {
+            $realPath = realpath($path);
+            if ($realPath == false) {
+                return false;
+            }
+            $this->addFile(new SplFileInfo($realPath));
+        }
     }
 
     /**
@@ -128,6 +139,7 @@ class FileIterator implements IteratorAggregate, Countable
      */
     private function addDirectory($directory)
     {
+        $directory = realpath($directory);
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
                 $directory,

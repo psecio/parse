@@ -93,9 +93,12 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group single
+     */
     public function testIgnoreNonCompletePaths()
     {
-        $expected = self::expand('dir2/file.php');
+        $expected = realpath(self::expand('dir2/file.php'));
         $iterator = new FileIterator(self::$expectedFiles, [self::expand('dir')]);
 
         $this->assertArrayHasKey(
