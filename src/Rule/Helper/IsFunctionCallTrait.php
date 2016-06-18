@@ -6,7 +6,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Scalar\String;
+use PhpParser\Node\Scalar\String_ as SString;
 use LogicException;
 
 /**
@@ -69,7 +69,7 @@ trait IsFunctionCallTrait
         if (is_array($node->args) && array_key_exists($index, $node->args)) {
             return $node->args[$index];
         }
-        return new Arg(new String(''));
+        return new Arg(new SString(''));
     }
 
     /**
