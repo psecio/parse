@@ -161,9 +161,7 @@ class FileIterator implements IteratorAggregate, Countable
      */
     private function addFile(SplFileInfo $splFileInfo)
     {
-        if ($this->isValidFile($splFileInfo) == true) {
-            $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
-        }
+        $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
     }
 
     /**

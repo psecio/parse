@@ -31,8 +31,8 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
         mkdir(self::expand('dir2'));
         touch(self::expand('dir/file.php'));
         touch(self::expand('dir2/file.php'));
-        self::$expectedFiles[] = self::expand('dir/file.php');
-        self::$expectedFiles[] = self::expand('dir2/file.php');
+        self::$expectedFiles[] = realpath(self::expand('dir/file.php'));
+        self::$expectedFiles[] = realpath(self::expand('dir2/file.php'));
     }
 
     public static function tearDownAfterClass()
@@ -58,7 +58,7 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $iterator = new FileIterator([self::$testDir]);
         $paths = $iterator->getPaths();
-
+        
         $this->assertCount(0, array_diff($paths, self::$expectedFiles));
     }
 
