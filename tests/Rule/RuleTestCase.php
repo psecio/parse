@@ -6,6 +6,7 @@ use Psecio\Parse\RuleInterface;
 use PhpParser\Parser;
 use PhpParser\Lexer\Emulative as Lexer;
 use PhpParser\NodeTraverser;
+use PhpParser\ParserFactory;
 
 /**
  * Base test for implementing full-parse based unit tests
@@ -22,7 +23,7 @@ abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->parser = new Parser(new Lexer);
+        $this->parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
     }
 
     /**

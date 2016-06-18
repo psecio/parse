@@ -25,6 +25,7 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$testDir = sys_get_temp_dir() . '/' . uniqid('psecio-parse');
+
         mkdir(self::$testDir);
         mkdir(self::expand('dir'));
         mkdir(self::expand('dir2'));
@@ -49,16 +50,16 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
         new FileIterator([]);
     }
 
+    /**
+     * Test that the directory and files were created correctly and
+     * the iterator contains them
+     */
     public function testDirectoryPath()
     {
-        $foundFiles = iterator_to_array(new FileIterator([self::$testDir]));
-        foreach (self::$expectedFiles as $filename) {
-            $this->assertArrayHasKey(
-                $filename,
-                $foundFiles,
-                "FileIterator should find $filename"
-            );
-        }
+        $iterator = new FileIterator([self::$testDir]);
+        $paths = $iterator->getPaths();
+
+        $this->assertCount(0, array_diff($paths, self::$expectedFiles));
     }
 
     public function testFilenamePath()
@@ -95,9 +96,11 @@ class FileIteratorTest extends \PHPUnit_Framework_TestCase
     public function testIgnoreNonCompletePaths()
     {
         $expected = self::expand('dir2/file.php');
+        $iterator = new FileIterator(self::$expectedFiles, [self::expand('dir')]);
+
         $this->assertArrayHasKey(
             $expected,
-            iterator_to_array(new FileIterator(self::$expectedFiles, [self::expand('dir')])),
+            $iterator->toArray(),
             "'$expected' should not be ignored as 'dir' should not match 'dir2'"
         );
     }
