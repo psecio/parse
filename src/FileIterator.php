@@ -149,7 +149,9 @@ class FileIterator implements IteratorAggregate, Countable
      */
     private function addFile(SplFileInfo $splFileInfo)
     {
-        $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
+        if ($this->isValidFile($splFileInfo) == true) {
+            $this->files[$splFileInfo->getRealPath()] = new File($splFileInfo);
+        }
     }
 
     /**
@@ -180,5 +182,29 @@ class FileIterator implements IteratorAggregate, Countable
         }
 
         return true;
+    }
+
+    /**
+     * Convert the interator to an array (return current files)
+     *
+     * @return array Set of current files
+     */
+    public function toArray()
+    {
+        return $this->files;
+    }
+
+    /**
+     * Get the full paths for the current files
+     *
+     * @return array Set of file paths
+     */
+    public function getPaths()
+    {
+        $paths = [];
+        foreach ($this->files as $file) {
+            $paths[] = $file->getPath();
+        }
+        return $paths;
     }
 }
