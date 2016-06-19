@@ -53,7 +53,7 @@ For more detailed information see the `help` and `list` commands.
 
 Currently console and xml output formats are available. Set format with the `--format` option.
 
-    psecio-parse scan --format=xml /path/to/my/project 
+    psecio-parse scan --format=xml /path/to/my/project
     psecio-parse scan --format=dots /path/to/my/project
 
 The console formats supports setting the verbosity using the `-v` or `-vv` switch.
@@ -83,7 +83,7 @@ off on a case-by-case basis using annotations, and disable annotations using
 By default, `psecio-parse scan` includes all available rules in its scan. By using
 `--exclude-rules` and `--include-rules`, the rules included can be reduced.
 
-Any rules specified by `--exclude-rules` are explicity excluded from the scan, regardless of any
+Any rules specified by `--exclude-rules` are explicitly excluded from the scan, regardless of any
 other options selected. These rules cannot be added back to the scan, short of re-running the scan
 with different options. Invalid rules are silently ignored.
 
@@ -112,7 +112,7 @@ recommended that comments be used to indicate why the rule has been disabled or 
 
 To disable the use of annotations, use the `--disable-annotations` option.
 
-See the `examples` directory for some examples of the ues of annotations for *Parse*.
+See the `examples` directory for some examples of the use of annotations for *Parse*.
 
 The Checks
 ----------
@@ -122,16 +122,16 @@ Here's the current list of checks:
 - Warn when `display_errors` is enabled manually
 - Avoid the use of `eval()`
 - Avoid the use of `exit` or `die()`
-- Avoid the use of logcial operators (ex. using `and` over `&&`)
+- Avoid the use of logical operators (ex. using `and` over `&&`)
 - Avoid the use of the `ereg*` functions (now deprecated)
-- Ensure that the second paramater of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
+- Ensure that the second parameter of `extract` is set to not overwrite (*not* EXTR_OVERWRITE)
 - Checking output methods (`echo`, `print`, `printf`, `print_r`, `vprintf`, `sprintf`) that use variables in their options
 - Ensuring you're not using `echo` with `file_get_contents`
 - Testing for the system execution functions and shell exec (backticks)
 - Use of `readfile`, `readlink` and `readgzfile`
 - Using `parse_str` or `mb_parse_str` (writes values to the local scope)
 - Warn if a `.phps` file is found
-- Using `session_regenerate_id` either without a paramater or using false
+- Using `session_regenerate_id` either without a parameter or using false
 - Avoid use of `$_REQUEST` (know where your data is coming from)
 - Don't use `mysql_real_escape_string`
 - Avoiding use of `import_request_variables`
