@@ -52,7 +52,7 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
     public function testErrorOnParseException()
     {
         $file = m::mock('\Psecio\Parse\File');
-        $file->shouldReceive('isPathMatch')->once()->with('/\.phps$/i')->andReturn(false);
+        $file->shouldReceive('isPathMatch')->once()->with('/\.phps$/i')->andReturn(true);
         $file->shouldReceive('getContents')->once()->andReturn('');
 
         $dispatcher = $this->createErrorDispatcherMock();
@@ -61,7 +61,8 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
             $dispatcher,
             m::mock('\Psecio\Parse\CallbackVisitor')->shouldReceive('onNodeFailure', 'setFile')->mock(),
             m::mock('\PhpParser\Parser')->shouldReceive('parse')->andThrow(new \PhpParser\Error(''))->mock(),
-            m::mock('\PhpParser\NodeTraverser')->shouldReceive('addVisitor')->mock()
+            m::mock('\PhpParser\NodeTraverser')
+                ->shouldReceive('addVisitor')->shouldReceive('traverse')->mock()
         );
 
         $scanner->scan(
