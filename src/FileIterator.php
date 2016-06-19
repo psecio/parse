@@ -78,7 +78,7 @@ class FileIterator implements IteratorAggregate, Countable
     public function addIgnorePath($path)
     {
         $realPath = realpath($path);
-        if ($realPath == false) {
+        if ($realPath === false) {
             return false;
         }
         $splFileInfo = new SplFileInfo($realPath);
@@ -102,7 +102,7 @@ class FileIterator implements IteratorAggregate, Countable
             $this->addDirectory($path);
         } else {
             $realPath = realpath($path);
-            if ($realPath == false) {
+            if ($realPath === false) {
                 return false;
             }
             $this->addFile(new SplFileInfo($realPath));
