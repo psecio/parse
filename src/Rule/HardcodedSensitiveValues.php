@@ -30,7 +30,7 @@ class HardcodedSensitiveValues implements RuleInterface
 
         // Fail on straight $var = 'value', where $var is in $sensitiveNames
         return !($this->isSensitiveName($name) &&
-                 $value instanceof \PhpParser\Node\Scalar\String);
+                 $value instanceof \PhpParser\Node\Scalar\String_);
     }
 
     protected function getNameAndValue($node)
