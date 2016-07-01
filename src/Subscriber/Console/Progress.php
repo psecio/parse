@@ -1,13 +1,15 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Display a progress bar to visualize scan progression
  */
-class ConsoleProgressBar extends Subscriber
+class Progress extends Header
 {
     /**
      * The progress bar format used of the number if steps is known
@@ -27,11 +29,13 @@ class ConsoleProgressBar extends Subscriber
     /**
      * Inject progress bar
      *
-     * @param ProgressBar $progressBar
+     * @param OutputInterface $output
+     * @param ProgressBar|null $progressBar
      */
-    public function __construct(ProgressBar $progressBar)
+    public function __construct(OutputInterface $output, ProgressBar $progressBar = null)
     {
-        $this->progressBar = $progressBar;
+        parent::__construct($output);
+        $this->progressBar = $progressBar ?: new ProgressBar($output);
         $this->progressBar->setFormat(
             $this->progressBar->getMaxSteps() ? self::FORMAT_STEPS_KNOWN : self::FORMAT_STEPS_UNKNOWN
         );
@@ -40,11 +44,12 @@ class ConsoleProgressBar extends Subscriber
     /**
      * Reset progress bar on scan start
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onScanStart()
+    public function onScanStart(MessageEvent $event)
     {
-        $this->progressBar->start();
+        $this->progressBar->start((int)$event->getMessage());
     }
 
     /**

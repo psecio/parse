@@ -79,7 +79,7 @@ class Scanner implements Event\Events
      */
     public function scan(FileIterator $fileIterator)
     {
-        $this->dispatcher->dispatch(self::SCAN_START);
+        $this->dispatcher->dispatch(self::SCAN_START, new Event\MessageEvent(count($fileIterator)));
 
         foreach ($fileIterator as $file) {
             $this->dispatcher->dispatch(self::FILE_OPEN, new Event\FileEvent($file));

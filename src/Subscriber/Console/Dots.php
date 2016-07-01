@@ -1,18 +1,17 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
 use Psecio\Parse\Event\ErrorEvent;
+use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Display phpunit style dots to visualize scan progression
  */
-class ConsoleDots extends Subscriber
+class Dots extends Header
 {
-    use OutputTrait;
-
     /**
      * @var string One charactes status descriptor
      */
@@ -42,9 +41,10 @@ class ConsoleDots extends Subscriber
     /**
      * Write header on scan start
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onScanStart()
+    public function onScanStart(MessageEvent $event)
     {
         $this->fileCount = 0;
     }
