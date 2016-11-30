@@ -5,6 +5,7 @@ namespace Psecio\Parse\Conf;
 use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use RuntimeException;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Json configuration wrapper
@@ -44,7 +45,15 @@ class JsonConf implements Configuration
 
     public function getPaths()
     {
-        return $this->read('paths', []);
+        $finder = (new Finder())->directories();
+        foreach ($this->read('paths', []) as $path) {
+            $finder->in($path);
+        }
+        $out = [];
+        foreach ($finder as $path) {
+          $out[] = $path;
+        }
+        return $out;
     }
 
     public function getIgnorePaths()
