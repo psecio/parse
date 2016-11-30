@@ -41,12 +41,12 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
             m::mock('\PhpParser\NodeTraverser')->shouldReceive('traverse', 'addVisitor')->mock()
         );
 
-        $scanner->scan(
-            m::mock('\Psecio\Parse\FileIterator')
-                ->shouldReceive('getIterator')
-                ->andReturn(new \ArrayIterator([$file]))
-                ->mock()
-        );
+        $fileIterator = m::mock('\Psecio\Parse\FileIterator')
+            ->shouldReceive('getIterator')->andReturn(new \ArrayIterator([$file]))
+            ->shouldReceive('count')->andReturn(1)
+            ->mock();
+
+        $scanner->scan($fileIterator);
     }
 
     public function testErrorOnParseException()
@@ -65,18 +65,21 @@ class ScannerTest extends \PHPUnit_Framework_TestCase
                 ->shouldReceive('addVisitor')->shouldReceive('traverse')->mock()
         );
 
-        $scanner->scan(
-            m::mock('\Psecio\Parse\FileIterator')
-                ->shouldReceive('getIterator')
-                ->andReturn(new \ArrayIterator([$file]))
-                ->mock()
-        );
+        $fileIterator = m::mock('\Psecio\Parse\FileIterator')
+            ->shouldReceive('getIterator')->andReturn(new \ArrayIterator([$file]))
+            ->shouldReceive('count')->andReturn(1)
+            ->mock();
+
+        $scanner->scan($fileIterator);
     }
 
     private function createErrorDispatcherMock()
     {
         $dispatcher = m::mock('\Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(Scanner::SCAN_START);
+        $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
+            Scanner::SCAN_START,
+            m::type('\Psecio\Parse\Event\MessageEvent')
+        );
         $dispatcher->shouldReceive('dispatch')->ordered()->once()->with(
             Scanner::FILE_OPEN,
             m::type('\Psecio\Parse\Event\FileEvent')

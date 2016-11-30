@@ -1,0 +1,8 @@
+{
+    "paths": [
+        "src",
+        "tests",
+        "bin/psecio-parse"
+    ],
+    "format": "progress"
+}
