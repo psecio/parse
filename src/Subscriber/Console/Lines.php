@@ -1,6 +1,6 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Psecio\Parse\Event\FileEvent;
 use Psecio\Parse\Event\IssueEvent;
@@ -9,10 +9,8 @@ use Psecio\Parse\Event\ErrorEvent;
 /**
  * Display descriptive lines to visualize scan progression
  */
-class ConsoleLines extends Subscriber
+class Lines extends Header
 {
-    use OutputTrait;
-
     /**
      * Write path on file open
      *

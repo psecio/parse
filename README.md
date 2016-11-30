@@ -71,7 +71,7 @@ You can also get a listing of the current checks being done with the `rules` com
 
     psecio-parse rules
 
-### Managing rules to run
+### Managing the rules to run
 
 There are several ways to control which rules are run. You can specifically include rules using
 the `--include-rules` option, specifically exclude them with `--exclude-rules`, turn them on and
@@ -113,6 +113,42 @@ recommended that comments be used to indicate why the rule has been disabled or 
 To disable the use of annotations, use the `--disable-annotations` option.
 
 See the `examples` directory for some examples of the use of annotations for *Parse*.
+
+### Using a configuration file
+
+Specify the name of your configuration file with the `--configuration` option. If no
+filename is given the default `psecio-parse.json` is used.
+
+To ignore the default configuration file use the `--no-configuration` option.
+
+#### Configuration file format
+```json
+{
+    "paths": [
+        "path/to/scan"
+    ],
+    "ignore-paths": [
+        "path/to/ignore"
+    ],
+    "extensions": [
+        "php",
+        "phps",
+        "phtml",
+        "php5"
+    ],
+    "whitelist-rules": [
+        "rule-name"
+    ],
+    "blacklist-rules": [
+        "rule-name"
+    ],
+    "disable-annotations": false,
+    "format": "dots|progress|lines|debug|xml"
+}
+```
+
+See example configurations for scanning parse itself [here](psecio-parse.json.dist). See the
+json schema used to validate configuration files [here](src/Conf/schema.json).
 
 The Checks
 ----------

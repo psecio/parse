@@ -1,13 +1,13 @@
 <?php
 
-namespace Psecio\Parse\Subscriber;
+namespace Psecio\Parse\Subscriber\Console;
 
 use Psecio\Parse\Event\MessageEvent;
 
 /**
  * Debug console event subscriber
  */
-class ConsoleDebug extends ConsoleLines
+class Debug extends Lines
 {
     /**
      * @var double Unix timestamp at scan start
@@ -17,11 +17,12 @@ class ConsoleDebug extends ConsoleLines
     /**
      * Save timestamp at scan start
      *
+     * @param  MessageEvent $event
      * @return void
      */
-    public function onScanStart()
+    public function onScanStart(MessageEvent $event)
     {
-        parent::onScanStart();
+        parent::onScanStart($event);
         $this->write("<comment>[DEBUG] Starting scan</comment>\n");
         $this->startTime = microtime(true);
     }
