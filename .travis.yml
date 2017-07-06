@@ -1,5 +1,7 @@
 language: php
 
+dist: trusty
+
 php:
   - hhvm
   - 7.0
@@ -8,7 +10,7 @@ php:
   - 5.4
 
 install:
-  - composer install --dev --prefer-source
+  - composer install --prefer-source
 
 script:
   - bin/phpunit
