@@ -1,7 +1,2 @@
 #!/bin/bash
-
-echo NOTE: The parse command is deprecated since version 0.6 and will be removed
-echo Use psecio-parse instead
-echo
-
 `dirname $0`/psecio-parse "$@"
