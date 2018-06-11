@@ -21,7 +21,7 @@ class ExitOrDie implements RuleInterface
     public function isValid(Node $node)
     {
         // If it's an exit, see if there's any concatenation happening
-        if ($this->isExpression($node, 'Exit') == true) {
+        if ($this->isExpression($node, 'Exit') === true) {
             if ($node->expr instanceof Concat) {
                 return false;
             }

@@ -33,7 +33,7 @@ class FakeRule implements RuleInterface
 
     public function isValid(Node $node)
     {
-        $valid = in_array($node, $this->validNodes);
+        $valid = in_array($node, $this->validNodes, true);
     }
 
     public function addValidNode($node)

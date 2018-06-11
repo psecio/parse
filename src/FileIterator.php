@@ -175,13 +175,13 @@ class FileIterator implements IteratorAggregate, Countable
      */
     private function isValidFile(SplFileInfo $splFileInfo)
     {
-        if (!in_array($splFileInfo->getExtension(), $this->extensions)) {
+        if (!in_array($splFileInfo->getExtension(), $this->extensions, true)) {
             return false;
         }
 
         $realPath = $splFileInfo->getRealPath();
 
-        if (in_array($realPath, $this->ignorePaths['files'])) {
+        if (in_array($realPath, $this->ignorePaths['files'], true)) {
             return false;
         }
 

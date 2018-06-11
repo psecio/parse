@@ -20,7 +20,7 @@ class TypeSafeInArray implements RuleInterface
 
     public function isValid(Node $node)
     {
-        if ($node instanceof FuncCall && $this->getCalledFunctionName($node)) {            
+        if ($node instanceof FuncCall && $this->getCalledFunctionName($node) === 'in_array') {            
             if (count($node->args) == 2) {
                 return false;
             } elseif (count($node->args) == 3 && $this->isBoolLiteral($node->args[2]->value, false)) {
