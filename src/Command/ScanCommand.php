@@ -16,6 +16,7 @@ use Psecio\Parse\Subscriber\ConsoleLines;
 use Psecio\Parse\Subscriber\ConsoleDebug;
 use Psecio\Parse\Subscriber\ConsoleReport;
 use Psecio\Parse\Subscriber\Xml;
+use Psecio\Parse\Subscriber\Json;
 use Psecio\Parse\Event\Events;
 use Psecio\Parse\Event\MessageEvent;
 use Psecio\Parse\RuleFactory;
@@ -48,7 +49,7 @@ class ScanCommand extends Command
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
-                'Output format (progress, dots or xml)',
+                'Output format (progress, dots, xml or json)',
                 'progress'
             )
             ->addOption(
@@ -137,6 +138,9 @@ class ScanCommand extends Command
                 break;
             case 'xml':
                 $dispatcher->addSubscriber(new Xml($output));
+                break;
+            case 'json':
+                $dispatcher->addSubscriber(new Json($output));
                 break;
             default:
                 throw new RuntimeException("Unknown output format '{$input->getOption('format')}'");
