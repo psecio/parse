@@ -16,12 +16,12 @@ class ExitOrDieTest extends RuleTestCase
             ['die(1);', true],
 
             // Shouldn't exit with a string
-            ['exit("message");', false],
-            ['die("message");', false],
+            ['exit("message");', true],
+            ['die("message");', true],
 
             // Shouldn't exit with a variable
-            ['exit($e);', false],
-            ['die($e);', false],
+            ['exit($e);', true],
+            ['die($e);', true],
 
             // Something else
             ['exitOrNot("message");', true],
