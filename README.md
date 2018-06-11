@@ -51,10 +51,11 @@ For more detailed information see the `help` and `list` commands.
 
 ### Output formats
 
-Currently console and xml output formats are available. Set format with the `--format` option.
+Currently console (dots), xml and json output formats are available. Set format with the `--format` option.
 
     psecio-parse scan --format=xml /path/to/my/project
     psecio-parse scan --format=dots /path/to/my/project
+    psecio-parse scan --format=json /path/to/my/project
 
 The console formats supports setting the verbosity using the `-v` or `-vv` switch.
 
