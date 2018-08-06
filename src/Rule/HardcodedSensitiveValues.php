@@ -40,7 +40,7 @@ class HardcodedSensitiveValues implements RuleInterface
         }
 
         if ($node instanceof \PhpParser\Node\Const_) {
-            return [$node->name, $node->value];
+            return [$node->name->name, $node->value];
         }
 
         if ($this->isFunctionCall($node, 'define')) {
