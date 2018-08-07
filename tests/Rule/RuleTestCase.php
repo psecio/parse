@@ -92,7 +92,7 @@ abstract class RuleTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Assert that running $test against $code results in $expected
      *
-     * Note that $message does not replace the message from the assertion,
+     * Note taht $message does not replace the message from the assertion,
      * only augments it.
      *
      * @param string  $code      The PHP code to parse and evaulate
